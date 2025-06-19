@@ -1,0 +1,85 @@
+function init(self)
+	-- Creating general Galaxy array
+	galaxy = {}
+	
+	-- Number of star Systems
+	local map_size = {
+		{nom = "minuscule", map_X = 1000, map_Y = 1000},
+		{nom = "petite", map_X = 1500, map_Y = 1500},
+		{nom = "medium", map_X = 2000, map_Y = 2000},
+		{nom = "grande", map_X = 2500, map_Y = 2500},
+		{nom = "geante", map_X = 3500, map_Y = 3500},
+		{nom = "immense", map_X = 5000, map_Y = 5000}
+	}
+
+	local map_density = {
+		{nom = "épars", density = 0.5},
+		{nom = "clairsemé", density = 0.75},
+		{nom = "medium", density = 1},
+		{nom = "dense", density = 1.5},
+		{nom = "compact", density = 1.2}
+	}
+
+	-- default map characteristics
+	local map_size_tmp = 3
+	local map_density_tmp = 3
+	local map_X = map_size[map_size_tmp]["map_X"]
+	local map_Y = map_size[map_size_tmp]["map_Y"]
+
+	-- Number of stars
+	galaxy = {Nombre_Etoiles = ((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"]}
+
+	-- Stars types
+	local type_etoiles = {"rouge","orange","jaune","blanc","cyan","bleu","violet"}
+	galaxy.Type_Etoiles = type_etoiles
+	for i = 1, galaxy["Nombre_Etoiles"] do
+		-- Creating system : Star type
+		local number = math.random(1,#type_etoiles)
+		local number2 = type_etoiles[number]
+		factory.create("#StarSystem", nil, nil, {number = number}, nil)
+	end
+		
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
