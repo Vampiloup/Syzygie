@@ -1,7 +1,8 @@
-go.property("number", 0)
+go.property("Etoile_Type", 0)
+go.property("Etoile_Taille", 0)
 
 function init(self)
-	pprint (galaxy["Type_Etoiles"][self.number])
+	pprint (galaxie.Ref.Etoiles_Type[self.Etoile_Type], " ", galaxie.Ref.Etoiles_Taille[self.Etoile_Taille])
 end
 
 function final(self)

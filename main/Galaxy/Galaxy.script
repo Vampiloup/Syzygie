@@ -1,6 +1,6 @@
 function init(self)
 	-- Creating general Galaxy array
-	galaxy = {}
+	galaxie = {}
 	
 	-- Number of star Systems
 	local map_size = {
@@ -26,17 +26,24 @@ function init(self)
 	local map_X = map_size[map_size_tmp]["map_X"]
 	local map_Y = map_size[map_size_tmp]["map_Y"]
 
-	-- Number of stars
-	galaxy = {Nombre_Etoiles = ((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"]}
+	-- galaxy stats
+	galaxie.Nombre_Etoiles = ((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"]
+	galaxie.Taille = {}
+	galaxie.Taille.Map_X = map_X
+	galaxie.Taille.Map_Y = map_Y
 
 	-- Stars types
-	local type_etoiles = {"rouge","orange","jaune","blanc","cyan","bleu","violet"}
-	galaxy.Type_Etoiles = type_etoiles
-	for i = 1, galaxy["Nombre_Etoiles"] do
+	local type_etoiles = {"rouge","orange","jaune", "citron","blanc", "cyan", "blue"}
+	local type_etoiles_taille = {"naine", "medium", "géante"}
+
+	galaxie.Ref = {}
+	galaxie.Ref.Etoiles_Type = type_etoiles
+	galaxie.Ref.Etoiles_Taille = type_etoiles_taille
+	for i = 1, galaxie["Nombre_Etoiles"] do
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
-		local number2 = type_etoiles[number]
-		factory.create("#StarSystem", nil, nil, {number = number}, nil)
+		local number2 = math.random(1,#type_etoiles_taille)
+		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
 	end
 		
 end
