@@ -1,6 +1,8 @@
 function init(self)
 	-- Creating general Galaxy array
 	galaxie = {}
+	galaxie.Ref = {}
+	local Number_Orbits = {}
 	
 	-- Number of star Systems
 	local map_size = {
@@ -20,6 +22,9 @@ function init(self)
 		{nom = "compact", density = 1.2}
 	}
 
+	-- Number of orbits by system
+	galaxie.Ref.NbOrbits = 5
+
 	-- default map characteristics
 	local map_size_tmp = 3
 	local map_density_tmp = 3
@@ -36,16 +41,18 @@ function init(self)
 	local type_etoiles = {"rouge","orange","jaune", "citron","blanc", "cyan", "blue"}
 	local type_etoiles_taille = {"naine", "medium", "géante"}
 
-	galaxie.Ref = {}
 	galaxie.Ref.Etoiles_Type = type_etoiles
 	galaxie.Ref.Etoiles_Taille = type_etoiles_taille
 	for i = 1, galaxie["Nombre_Etoiles"] do
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
 		local number2 = math.random(1,#type_etoiles_taille)
-		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
-	end
+		 
 		
+		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
+
+	end	
+	
 end
 
 function final(self)
