@@ -1,24 +1,25 @@
 go.property("Etoile_Type", 0)
 go.property("Etoile_Taille", 0)
-go.property("Number_Orbits", 0)
-
-
 
 function init(self)
 	-- require "main.Galaxy.StarSystem"
 
-	-- Size of Objects orbiting a Star
-
-	local a = {"vide", "rocheuse", "géante", "astéroïdes"}
-	
+	-- Orbital objects
+	self.orbitals = {"1","2","3","4","5"}
 	for i = 1,galaxie.Ref.NbOrbits do
-		local number = math.random(1,#a)
-		--local a = Creation_Orbites()
-		pprint(i .. " " .. a[number])
-	 end
-	pprint("...")
+		-- Orbital type (rock planet, nothing, gaz giant, asteroids, etc)
+		local b = math.random(1,#galaxie.Ref.Orbitals_Types)
 	
-	-- pprint (galaxie.Ref.Etoiles_Type[self.Etoile_Type] , " " , galaxie.Ref.Etoiles_Taille[self.Etoile_Taille])
+		self.orbitals[i] = {"type", "genre"}
+		self.orbitals[i]["type"] = b
+
+		local b2 = math.random(#galaxie["Ref"]["Orbitals_Types"][b]["genre"])
+			self.orbitals[i]["type"] = b2
+		
+		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][b]["nom"]) .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][b]["genre"][b2]))
+	 end
+	 pprint("...")
+	
 end
 
 function final(self)

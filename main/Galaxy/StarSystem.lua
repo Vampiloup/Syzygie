@@ -4,8 +4,6 @@
 -- in any script using the functions.
 
 function Creation_Orbites()
-	local a = {rock, gaz, ice}
-	
-	return a
+
 	
 end

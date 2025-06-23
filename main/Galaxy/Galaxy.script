@@ -43,6 +43,21 @@ function init(self)
 
 	galaxie.Ref.Etoiles_Type = type_etoiles
 	galaxie.Ref.Etoiles_Taille = type_etoiles_taille
+
+
+	-- Size of Objects orbiting a Star
+	-- liste_orbitals = {[0] = 4}
+	local liste_orbitals = {}
+	table.insert(liste_orbitals, 1, {chance = 50, nom = "Espace", genre = {"Vide"}})
+	-- Rock planets
+	table.insert(liste_orbitals, 2, {chance = 20 ,nom = "Rock planet",genre={"minuscule", "petite", "medium", "grande", "enorme"}})
+	-- Gaz planets
+	table.insert(liste_orbitals, 3, {chance = 15 ,nom = "Gaz planet", genre={"subgéante glacée", "géante glacée", "supergéante glacée", "subgéante gazeuse", "géante gazeuze", "supergéante gazeuse"}})
+	-- Asteroids
+	table.insert(liste_orbitals, 4, {chance = 10 ,nom = "Asteroids", genre={"groupe d'astéroides", "groupe d'astéroides", "ceinture d'astéroides", "large ceinture d'aséroides"}})
+
+	galaxie.Ref.Orbitals_Types = liste_orbitals
+	
 	for i = 1, galaxie["Nombre_Etoiles"] do
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
@@ -52,6 +67,8 @@ function init(self)
 		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
 
 	end	
+
+	-- pprint(galaxie)
 	
 end
 
