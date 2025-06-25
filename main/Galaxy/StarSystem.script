@@ -4,21 +4,45 @@ go.property("Etoile_Taille", 0)
 function init(self)
 	-- require "main.Galaxy.StarSystem"
 
+	pprint (" *** " .. galaxie.Ref.Etoiles_Type[self.Etoile_Type] .. " ***")
+	
 	-- Orbital objects
 	self.orbitals = {"1","2","3","4","5"}
+
+	local temp_chaud = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type])
+	local temp_froid = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type]) + temp_chaud
+	local temp_counter = 0
+	pprint(temp_chaud)
+	pprint(temp_froid)
 	for i = 1,galaxie.Ref.NbOrbits do
 		-- Orbital type (rock planet, nothing, gaz giant, asteroids, etc)
 		local b = math.random(1,#galaxie.Ref.Orbitals_Types)
 	
-		self.orbitals[i] = {"type", "genre"}
+		self.orbitals[i] = {"type", "genre","temp_zone"}
 		self.orbitals[i]["type"] = b
 
 		local b2 = math.random(#galaxie["Ref"]["Orbitals_Types"][b]["genre"])
 			self.orbitals[i]["type"] = b2
-		
-		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][b]["nom"]) .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][b]["genre"][b2]))
-	 end
-	 pprint("...")
+
+		-- orbital temp zones
+		if i <= (temp_chaud) then
+			temp_counter = 1
+			temp_planetes.chaud = temp_planetes.chaud + 1
+		elseif i <= (temp_froid) then
+			temp_counter = 2
+			temp_planetes.tempere = temp_planetes.tempere + 1
+		else
+			temp_counter = 3
+			temp_planetes.froid = temp_planetes.froid + 1
+		end
+		self.orbitals[i]["temp_zone"] = temp_counter
+		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][b]["nom"]))
+		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][b]["genre"][b2]))
+		pprint(tostring(galaxie.Ref.Orbitals_temp.nom[self.orbitals[i]["temp_zone"]]))
+				
+	end
+
+	pprint("...")
 	
 end
 
