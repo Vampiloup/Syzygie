@@ -51,25 +51,39 @@ function init(self)
 
 	-- Size of Objects orbiting a Star
 	local liste_orbitals = {}
-	table.insert(liste_orbitals, 1, {chance = 50, nom = "Espace",           genre = {"Vide"}})
+	table.insert(liste_orbitals, 1, {chance = 40, nom = "Espace",           genre = {"Vide"}})
 	-- Rock planets
-	table.insert(liste_orbitals, 2, {chance = 20 ,nom = "Planète rocheuse", genre={"minuscule", "petite", "medium", "grande", "enorme"}})
+	table.insert(liste_orbitals, 2, {chance = 25 ,nom = "Planète rocheuse", genre={"minuscule", "petite", "medium", "grande", "enorme"}})
 	-- Giant Ice planets
-	table.insert(liste_orbitals, 3, {chance = 10 ,nom = "Géante glacée",    genre={"subgéante glacée", "géante glacée", "supergéante glacée"}})
+	table.insert(liste_orbitals, 3, {chance = 12 ,nom = "Géante glacée",    genre={"subgéante glacée", "géante glacée", "supergéante glacée"}})
 	-- Giant Gaz planets
-	table.insert(liste_orbitals, 4, {chance = 10 ,nom = "Géante gazeuse",   genre={"subgéante gazeuse", "géante gazeuze", "supergéante gazeuse"}})
+	table.insert(liste_orbitals, 4, {chance = 12 ,nom = "Géante gazeuse",   genre={"subgéante gazeuse", "géante gazeuze", "supergéante gazeuse"}})
 	-- Asteroids
-	table.insert(liste_orbitals, 5, {chance = 05 ,nom = "Astéroïdes",       genre={"groupe d'astéroïdes", "multiple groupes d'astéroïdes", "Ceinture clairsemée d'astéroïdes", "ceinture d'astéroïdes", "large ceinture d'astéroïdes"}})
+	table.insert(liste_orbitals, 5, {chance = 11 ,nom = "Astéroïdes",       genre={"groupe d'astéroïdes", "multiple groupes d'astéroïdes", "Ceinture clairsemée d'astéroïdes", "ceinture d'astéroïdes", "large ceinture d'astéroïdes"}})
 
 	galaxie.Ref.Orbitals_Types = liste_orbitals
 
-	-- Temp orbits acording to star colour
+	-- Total chance to have an Object at a Star's orbit
+	local total_orbit_chance = {}
+	local toc = 0
+	for i = 1, #liste_orbitals do
+		toc = toc + liste_orbitals[i]["chance"]
+		table.insert (total_orbit_chance, i, toc)
+	end
+	galaxie.Ref.Orbitals_Types_Chance = total_orbit_chance
+
+	temp_orbitals = {0,0,0,0,0}
+	-- pprint(galaxie.Ref.Orbitals_Types_Chance)
+
+	-- Temp orbits according to star colour
 	galaxie.Ref.Orbitals_temp = {}
 	galaxie.Ref.Orbitals_temp.nom = {"Chaud","Tempéré","Froid"}
 	galaxie.Ref.Orbitals_temp.chaud = {1,2,3,4,5,6,7}
+	-- temp_planetes = {}
+	-- temp_planetes = {chaud = 0, tempere = 0, froid = 0}
 
-	temp_planetes = {}
-	temp_planetes = {chaud = 0, tempere = 0, froid = 0}
+	-- Wetness (!) of orbit (planet)
+	galaxie.Ref.Orbitals_wet = {nom = {"sec","aride","humide","aquatique"}, nb_zones_water = {{1,1,1},{2,1,1},{2,2,1},{2,2,2}}}
 	
 	for i = 1, galaxie["Nombre_Etoiles"] do
 		-- Creating system : Star type
@@ -80,12 +94,9 @@ function init(self)
 		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
 
 	end	
+	-- pprint(temp_orbitals)
 
-	pprint ("chaud : " .. temp_planetes.chaud)
-	pprint ("tempere : " .. temp_planetes.tempere)
-	pprint ("froid : " .. temp_planetes.froid)
 	
-	-- pprint(galaxie)
 	
 end
 
