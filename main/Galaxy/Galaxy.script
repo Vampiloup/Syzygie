@@ -6,6 +6,8 @@ function init(self)
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
+	galaxie.etoiles = {nom = {}}
+	
 	local Number_Orbits = {}
 	
 	-- Number of star Systems
@@ -72,9 +74,6 @@ function init(self)
 	end
 	galaxie.Ref.Orbitals_Types_Chance = total_orbit_chance
 
-	temp_orbitals = {0,0,0,0,0}
-	-- pprint(galaxie.Ref.Orbitals_Types_Chance)
-
 	-- Temp orbits according to star colour
 	galaxie.Ref.Orbitals_temp = {}
 	galaxie.Ref.Orbitals_temp.nom = {"Chaud","Tempéré","Froid"}
@@ -89,16 +88,63 @@ function init(self)
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
 		local number2 = math.random(1,#type_etoiles_taille)
-		 
+
+
+		-- temporaty name creation
+		local Premiere = {
+			"a", "ab", "ad", "ae", "aes", "au", "be","car", "clau", "cen", "con", "dan", "de","dic", "do", "e", "est", "ex", "den", "di", "dis", "duo" ,"ex", "fe", "fi", "foe", "gra", "in", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni",
+			"no", "o", "ob", "pa", "pe", "plu", "pu", "qua", "quam", "re", "rem", "res", "ro", "sa", "san", "sax", "si", "sub", "tan","ter", "tol", "tri", "ui", "ver","vi", "vo"
+		}
+
+		local Medium = {
+			"a", "bi", "ci", "di", "cer", "clu", "de", "e", "el", "er", "fa", "fe", "iu", "la", "le", "li", "ma", "mi", "mit", "mo", "mu", "na", "ne", "ni", "ob", "phan", "qui", "ri", "tin", "vi", "zen"
+		}
+
+		local Derniere = {
+			"a", "bus", "ca", "ce", "cus", "cris", "ctae", "cto", "cus", "cut", "des", "do", "dos", "dus", "e", "er", "est", "hil", "git", "go", "gno", 
+			"io", "ior", "ius", "la", "lo", "lus", "ma", "mnes", "mu", "mus", "na", "ne", "no", "num", "nus", "o", "que", "quis", "ra", "re", "rem", "ro", "ros", "sa",
+			"sis","sit", "sor", "sti", "sto", "stris", "strum", "sul", "sum", "tae", "tem", "to", "ter", "tes", "tius", "to", "tor", "tur",
+			"tus", "um" ,"us", "va"
+		}
+
+		nom_choisi = ""
+		repeat
+
+			local nom_disponible = true
+			nom_choisi = StartNameGeneration (Premiere, Medium, Derniere)
+			-- check if the newly created name is already taken by another star
+			if i > 1 then
+				for j = 1, i-1 do
+					nomJ = galaxie.etoiles.nom[j]
+					if nomJ == nom_choisi then
+						nom_disponible = false
+					end
+		end
+			end
+		until (nom_disponible == true)
+		galaxie.etoiles.nom[i] = nom_choisi			 
 		
-		factory.create("#StarSystem", nil, nil, {Etoile_Type = number, Etoile_Taille = number2}, nil)
+		factory.create("#StarSystem", nil, nil, {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}, nil)
 
 	end	
-	-- pprint(temp_orbitals)
-
-	
-	
 end
+
+
+function StartNameGeneration (Premiere, Medium, Derniere)
+	local number2 = Premiere[math.random(1,#Premiere)]
+
+	-- choose number of middle syllages (can be 0 to 2)
+	local number = math.random(0,2)
+	-- Choose "number" middle syllabes
+	for i = 1, number do
+		number2 = number2 .. Medium[math.random(1,#Medium)]
+	end
+
+	-- Choose last syllabe
+	number2 = number2 .. Derniere[math.random(1,#Derniere)]
+	return number2
+end
+
 
 function final(self)
 	-- Add finalization code here

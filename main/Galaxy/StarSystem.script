@@ -1,3 +1,4 @@
+go.property("Etoile_nb", 0)
 go.property("Etoile_Type", 0)
 go.property("Etoile_Taille", 0)
 
@@ -5,17 +6,23 @@ function init(self)
 	-- require "main.Galaxy.StarSystem"
 
 	-- pprint (" *** " .. galaxie.Ref.Etoiles_Type[self.Etoile_Type] .. " ***")
+
+	self.orbitals = {"1","2","3","4","5"}
+
 	
 	-- Orbital objects
-	self.orbitals = {"1","2","3","4","5"}
+
+	pprint (galaxie.etoiles.nom[self.Etoile_nb])
 
 	local temp_chaud = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type])
 	local temp_froid = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type]) + temp_chaud
 	local temp_counter = 0
 	for i = 1,galaxie.Ref.NbOrbits do
 
-		-- Orbital type (rock planet, nothing, gaz giant, asteroids, etc)
 		self.orbitals[i] = {"type", "genre","temp_zone", "wet_zone"}
+		self.orbitals[i]["wet_zone"] = {"orbit","zones"}
+		self.orbitals[i]["wet_zone"]["zones"] = {}
+		
 		-- Using the "chance" value in liste_orbitals as weights
 		local b = math.random(1,galaxie.Ref.Orbitals_Types_Chance[#galaxie.Ref.Orbitals_Types_Chance])
 		-- pprint(galaxie.Ref.Orbitals_Types_Chance[#galaxie.Ref.Orbitals_Types_Chance])
@@ -43,17 +50,30 @@ function init(self)
 			temp_planetes.froid = temp_planetes.froid + 1
 		end
 		self.orbitals[i]["temp_zone"] = temp_counter
-	-- orbital wet zone
+		
+		-- orbital wet zone
+		-- choose randomly a wet zone (number) for the orbit, then put its number in the orbital webzone array
 		local temp_wetzone = 1
 		local w = math.random ( #galaxie.Ref.Orbitals_wet.nom )
+		self.orbitals[i]["wet_zone"]["orbit"] = w
+		-- put the wet zone of the orbit in the orbital wet array, then shuffling them
+		-- pprint (galaxie.Ref.Orbitals_wet.nb_zones_water[self.orbitals[i]["wet_zone"]["orbit"]])
+		local w={}
+		for j = 1,3 do
+			w[j] = galaxie.Ref.Orbitals_wet.nb_zones_water[self.orbitals[i]["wet_zone"]["orbit"]][j]
+		end
+		for j = 3, 2, -1 do
+			local k = math.random(3)
+			w[j], w[k] = w[k], w[j]
+		end
 
-		self.orbitals[i]["wet_zone"] = w
 		
-			pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
-			pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))
-			pprint(tostring(galaxie.Ref.Orbitals_temp.nom[self.orbitals[i]["temp_zone"]]))
-			pprint(tostring(galaxie.Ref.Orbitals_wet.nom[self.orbitals[i]["wet_zone"]]))
+	--		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
+	--		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))
+	--		pprint(tostring(galaxie.Ref.Orbitals_temp.nom[self.orbitals[i]["temp_zone"]]))
+	--		pprint(tostring(galaxie.Ref.Orbitals_wet.nom[self.orbitals[i]["wet_zone"]]))
 	end
+
 	pprint("...")
 	
 end
