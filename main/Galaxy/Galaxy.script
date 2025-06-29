@@ -6,7 +6,8 @@ function init(self)
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
-	galaxie.etoiles = {nom = {}}
+	galaxie.etoiles = {nom = {}, position = {}}
+	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
 	
 	local Number_Orbits = {}
 	
@@ -83,14 +84,16 @@ function init(self)
 
 	-- Wetness (!) of orbit (planet)
 	galaxie.Ref.Orbitals_wet = {nom = {"sec","aride","humide","aquatique"}, nb_zones_water = {{1,1,1},{2,1,1},{2,2,1},{2,2,2}}}
-	
+
+	-- Creation Star System
+	Essayer = ""
 	for i = 1, galaxie["Nombre_Etoiles"] do
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
 		local number2 = math.random(1,#type_etoiles_taille)
 
 
-		-- temporaty name creation
+		-- temporary name creation
 		local Premiere = {
 			"a", "ab", "ad", "ae", "aes", "au", "be","car", "clau", "cen", "con", "dan", "de","dic", "do", "e", "est", "ex", "den", "di", "dis", "duo" ,"ex", "fe", "fi", "foe", "gra", "in", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni",
 			"no", "o", "ob", "pa", "pe", "plu", "pu", "qua", "quam", "re", "rem", "res", "ro", "sa", "san", "sax", "si", "sub", "tan","ter", "tol", "tri", "ui", "ver","vi", "vo"
@@ -119,14 +122,53 @@ function init(self)
 					if nomJ == nom_choisi then
 						nom_disponible = false
 					end
-		end
+				end
 			end
 		until (nom_disponible == true)
-		galaxie.etoiles.nom[i] = nom_choisi			 
-		
-		factory.create("#StarSystem", nil, nil, {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}, nil)
+		galaxie.etoiles.nom[i] = nom_choisi
 
-	end	
+		-- Coordinates of the new system
+		local Essayer2 = 0
+		repeat
+			Essayer2 = Essayer2 + 1
+			local x1 = math.random(100, map_X-100)
+			local y1 = math.random(100, map_Y-100)
+			local distance = true
+			galaxie.etoiles.position[i] = vmath.vector3(x1, y1, 1)
+			if i > 1 then
+				for j = 1, i-1 do
+					ecart = vmath.length(galaxie.etoiles.position[i] - galaxie.etoiles.position[j])
+					if ecart < galaxie.Ref.distmini then
+						distance = false
+						break
+					end
+				end
+			end
+			if Essayer2 > 1000 then
+				Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
+				pprint ("ALARME !")
+				break
+			end
+
+		until (distance == true)
+		if Essayer ~= "" then
+			break
+		else
+			Essayer = "Aucune erreur generation"			
+		end
+		
+		-- Call thefactory to create the new Star System
+		factory.create("#StarSystem", nil, nil, {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}, nil)
+	end
+
+	print (Essayer)
+	
+	-- pprint(galaxie.etoiles.position)
+	-- pprint(galaxie.Taille.Map_X)
+	-- pprint(galaxie.Taille.Map_Y)
+
+	-- pprint(galaxie.etoiles)
+	
 end
 
 

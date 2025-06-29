@@ -12,7 +12,7 @@ function init(self)
 	
 	-- Orbital objects
 
-	pprint (galaxie.etoiles.nom[self.Etoile_nb])
+	-- pprint (galaxie.etoiles.nom[self.Etoile_nb])
 
 	local temp_chaud = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type])
 	local temp_froid = math.random(0, galaxie.Ref.Orbitals_temp.chaud[self.Etoile_Type]) + temp_chaud
