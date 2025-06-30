@@ -6,6 +6,8 @@ shared_state = 1
 
 [display]
 high_dpi = 1
+width = 1920
+height = 1080
 
 [android]
 input_method = HiddenInputField

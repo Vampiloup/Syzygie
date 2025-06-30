@@ -74,6 +74,13 @@ function init(self)
 	--		pprint(tostring(galaxie.Ref.Orbitals_wet.nom[self.orbitals[i]["wet_zone"]]))
 	end
 
+	-- position on the map
+	pprint(galaxie.etoiles.position[self.Etoile_nb])
+	go.set_position(galaxie.etoiles.position[self.Etoile_nb], ".")
+
+	-- color of star on the map
+	msg.post("#Etoile", "play_animation", {id = hash("etoile_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
+
 	pprint("...")
 	
 end
