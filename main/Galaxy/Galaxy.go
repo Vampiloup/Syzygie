@@ -4,5 +4,5 @@ components {
 }
 components {
   id: "StarSystem"
-  component: "/main/Galaxy/StarSystem.factory"
+  component: "/main/Galaxy/StarSystem/StarSystem.collectionfactory"
 }

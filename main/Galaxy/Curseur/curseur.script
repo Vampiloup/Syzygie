@@ -1,0 +1,61 @@
+go.property("etoile_click", 0)
+
+function init(self)
+
+	msg.post(".", "acquire_input_focus")
+	self.collision_id = nil  -- The cursor activate no collision on appearance.
+	
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	self.collision_id = nil
+	
+	
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("etoile_click") then
+		if message.click == true then
+			self.etoile_click = message.id
+			pprint(galaxie.etoiles.nom[self.etoile_click])
+		else
+			self.etoile_click = 0
+			pprint("***")
+		end
+	end
+
+
+	
+end
+
+function on_input(self, action_id, action)
+
+	local a = vmath.vector3(action.x, action.y, 1)
+	go.set_position(a, ".")
+	
+	if action_id == hash("Touch") then
+		print("click !")
+	end
+	
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

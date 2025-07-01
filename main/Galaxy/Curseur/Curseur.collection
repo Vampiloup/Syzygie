@@ -1,8 +1,4 @@
-name: "main"
-instances {
-  id: "Galaxy"
-  prototype: "/main/Galaxy/Galaxy.go"
-}
+name: "Curseur"
 instances {
   id: "curseur"
   prototype: "/main/Galaxy/Curseur/curseur.go"

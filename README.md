@@ -6,8 +6,8 @@ Made with Defold https://defold.com/, and coded with LUA
 That's an old pet project from me, from the time I wanted to mod Master of Orion II. I'm trying to do a little every day or so.
 
 #### Licence :
-Apache 2.0
-I'm all for open-source and free-software, and if people can't reuse it even commercialy it's not free software for me. After all, "it's not a lot, but it's honest job)".
+Apache 2.0.
+I'm all for open-source and free-software, and if people can't reuse it even commercialy it's not free software for me. After all, "it's not a lot, but it's honest job".
 
 #### For now :
 

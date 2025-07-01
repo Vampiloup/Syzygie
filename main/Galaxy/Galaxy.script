@@ -145,7 +145,7 @@ function init(self)
 				end
 			end
 			if Essayer2 > 1000 then
-				Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
+				Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
 				break
 			end
 
@@ -157,7 +157,9 @@ function init(self)
 		end
 		
 		-- Call thefactory to create the new Star System
-		factory.create("#StarSystem", nil, nil, {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}, nil)
+		local props = {}
+		props[hash("/StarSystem")] = {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}
+		collectionfactory.create("#StarSystem", nil, nil, props , nil)
 	end
 
 	print (Essayer)
