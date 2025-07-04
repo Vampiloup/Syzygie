@@ -32,10 +32,8 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("etoile_click") then
 		if message.click == true then
 			self.etoile_click = message.id
-			pprint(galaxie.etoiles.nom[self.etoile_click])
 		else
 			self.etoile_click = 0
-			pprint("***")
 		end
 	end
 
@@ -45,11 +43,27 @@ end
 
 function on_input(self, action_id, action)
 
-	local a = vmath.vector3(action.x, action.y, 1)
-	go.set_position(a, ".")
-	
+	--pprint(action)
+
+	if action.x and action.y then
+		local a = vmath.vector3(action.x, action.y, 1)
+		go.set_position(a, ".")					
+	end
+		
 	if action_id == hash("Touch") then
-		print("click !")
+		if self.etoile_click ~= 0 then
+			pprint(galaxie.etoiles.nom[self.etoile_click])
+		else
+			pprint("*** CLICK ! ***")
+		end
+	elseif action_id == hash("Up") then
+		print("up !")
+	elseif action_id == hash("Down") then
+		print("down !")
+	elseif action_id == hash("Left") then
+		print("left !")
+	elseif action_id == hash("Right") then
+		print("right !")
 	end
 	
 end
