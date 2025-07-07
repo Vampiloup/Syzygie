@@ -21,3 +21,6 @@ title = Syzygie
 [label]
 max_count = 2000
 
+[sprite]
+max_count = 2048
+

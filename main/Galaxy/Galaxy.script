@@ -2,16 +2,20 @@ function init(self)
 
 	-- Initialize Random generator
 	math.randomseed(os.time())
+
+	-- UI
+	game_ref = {zoom_state = 0, zoom_gap = 1.1, zoom_min = -20, zoom_max = 20}
+	-- Size of the game screen
+	game_ref.screen_X = sys.get_config_int("display.width")
+	game_ref.screen_Y = sys.get_config_int("display.height")
 	
+
+		
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
-	galaxie.etoiles = {nom = {}, position = {}}
+	galaxie.etoiles = {id = {}, nom = {}, position = {}}
 	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
-
-	-- Size of the game screen
-	galaxie.Ref.screen_X = sys.get_config_int("display.width")
-	galaxie.Ref.screen_Y = sys.get_config_int("display.height")
 	
 	local Number_Orbits = {}
 	
@@ -163,7 +167,7 @@ function init(self)
 		-- Call thefactory to create the new Star System
 		local props = {}
 		props[hash("/StarSystem")] = {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}
-		collectionfactory.create("#StarSystem", nil, nil, props , nil)
+		galaxie.etoiles.id[i] = collectionfactory.create("#StarSystem", nil, nil, props , nil)
 	end
 
 	print (Essayer)
@@ -254,8 +258,8 @@ function screen_to_world(x, y, z)
 	-- The window.get_size() function will return the scaled window size,
 	-- ie taking into account display scaling (Retina screens on macOS for
 	-- instance). We need to adjust for display scaling in our calculation.
-	w = w / (w / galaxie.Ref.screen_X)
-	h = h / (h / galaxie.Ref.screen_Y)
+	w = w / (w / game_ref.screen_X)
+	h = h / (h / game_ref.screen_Y)
 
 	-- https://defold.com/manuals/camera/#converting-mouse-to-world-coordinates
 	local inv = vmath.inv(projection * view)

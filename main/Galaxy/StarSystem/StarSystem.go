@@ -6,6 +6,10 @@ components {
   id: "Etoile"
   component: "/Sprites/Etoile.sprite"
 }
+components {
+  id: "Etoile_proche"
+  component: "/Sprites/Etoile_proche.sprite"
+}
 embedded_components {
   id: "collisionobject"
   type: "collisionobject"
