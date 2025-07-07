@@ -111,11 +111,11 @@ function on_message(self, message_id, message, sender)
 		if message.enter then
 			-- take action for entry
 		--	go.set_scale(2)
-			msg.post("/curseur", "etoile_click", {click = true, id = self.Etoile_nb})
+			msg.post("/Curseur", "etoile_click", {click = true, id = self.Etoile_nb})
 		else
 			-- take action for exit
 		--	go.set_scale(1)
-			msg.post("/curseur", "etoile_click", {click = false, id = self.Etoile_nb})
+			msg.post("/Curseur", "etoile_click", {click = false, id = self.Etoile_nb})
 		end
 	end
 	

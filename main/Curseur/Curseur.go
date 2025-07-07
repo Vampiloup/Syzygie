@@ -1,6 +1,6 @@
 components {
   id: "curseur"
-  component: "/main/Galaxy/Curseur/curseur.script"
+  component: "/main/Curseur/Curseur.script"
 }
 embedded_components {
   id: "collisionobject"

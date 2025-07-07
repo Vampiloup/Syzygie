@@ -4,7 +4,30 @@ instances {
   prototype: "/main/Galaxy/Galaxy.go"
 }
 instances {
-  id: "curseur"
-  prototype: "/main/Galaxy/Curseur/curseur.go"
+  id: "Curseur"
+  prototype: "/main/Curseur/Curseur.go"
 }
 scale_along_z: 0
+embedded_instances {
+  id: "Camera"
+  data: "components {\n"
+  "  id: \"Camera\"\n"
+  "  component: \"/Camera/Camera.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"camera\"\n"
+  "  type: \"camera\"\n"
+  "  data: \"aspect_ratio: 1.0\\n"
+  "fov: 0.7854\\n"
+  "near_z: 0.1\\n"
+  "far_z: 1000.0\\n"
+  "orthographic_projection: 1\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 100.0
+    y: 100.0
+    z: 100.0
+  }
+}

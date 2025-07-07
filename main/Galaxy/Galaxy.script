@@ -8,6 +8,10 @@ function init(self)
 	galaxie.Ref = {}
 	galaxie.etoiles = {nom = {}, position = {}}
 	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
+
+	-- Size of the game screen
+	galaxie.Ref.screen_X = sys.get_config_int("display.width")
+	galaxie.Ref.screen_Y = sys.get_config_int("display.height")
 	
 	local Number_Orbits = {}
 	
@@ -169,6 +173,16 @@ function init(self)
 	-- pprint(galaxie.Taille.Map_Y)
 
 	-- pprint(galaxie.etoiles)
+
+	-- Put camera at the center of the map
+	local pos_X = galaxie.Taille.Map_X/2
+	local pos_Y = galaxie.Taille.Map_Y/2
+	local pos = vmath.vector3(pos_X, pos_Y, 10)
+	go.set_position(pos ,"Camera")
+
+	-- Telling the cursor where the camera start
+	--local action_x, action_y = screen_to_world(pos.x, pos.y, 9)
+	-- go.set_position(pos ,"Curseur")
 	
 end
 
@@ -230,4 +244,26 @@ function on_reload(self)
 	-- Add reload-handling code here
 	-- Learn more: https://defold.com/manuals/hot-reload/
 	-- Remove this function if not needed
+end
+
+function screen_to_world(x, y, z)
+
+	local projection = go.get("/Camera#camera", "projection")
+	local view = go.get("/Camera#camera", "view")
+	local w, h = window.get_size()
+	-- The window.get_size() function will return the scaled window size,
+	-- ie taking into account display scaling (Retina screens on macOS for
+	-- instance). We need to adjust for display scaling in our calculation.
+	w = w / (w / galaxie.Ref.screen_X)
+	h = h / (h / galaxie.Ref.screen_Y)
+
+	-- https://defold.com/manuals/camera/#converting-mouse-to-world-coordinates
+	local inv = vmath.inv(projection * view)
+	x = (2 * x / w) - 1
+	y = (2 * y / h) - 1
+	z = (2 * z) - 1
+	local x1 = x * inv.m00 + y * inv.m01 + z * inv.m02 + inv.m03
+	local y1 = x * inv.m10 + y * inv.m11 + z * inv.m12 + inv.m13
+	local z1 = x * inv.m20 + y * inv.m21 + z * inv.m22 + inv.m23
+	return x1, y1, z1
 end
