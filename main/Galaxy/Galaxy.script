@@ -7,7 +7,7 @@ function init(self)
 	game_ref = {}
 	game_ref.screen_X = sys.get_config_int("display.width")
 	game_ref.screen_Y = sys.get_config_int("display.height")
-	game_ref.zoom = {state = 1, gap = 1.1, min = -20, max = 20, proche = 10}
+	game_ref.zoom = {state = 1, gap = 1.1, min = -20, max = 20, proche = 8}
 			
 	-- Creating general Galaxy array
 	galaxie = {}

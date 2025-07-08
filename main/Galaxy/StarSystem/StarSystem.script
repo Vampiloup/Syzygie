@@ -80,8 +80,12 @@ function init(self)
 	-- color of star on the map
 	msg.post("#Etoile", "play_animation", {id = hash("etoile_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
 	msg.post("#Etoile_proche", "play_animation", {id = hash("etoile_proche_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
-	
-	sprite.set_constant("#Etoile_proche", "tint", vmath.vector4(1, 1, 1, 0))
+
+	if game_ref.zoom.state > game_ref.zoom.proche+1 then
+		sprite.set_constant("#Etoile_proche", "tint", vmath.vector4(1, 1, 1, 1))
+	else
+		sprite.set_constant("#Etoile_proche", "tint", vmath.vector4(1, 1, 1, 0))
+	end
 
 	-- Change label_name for the name of the star system
 	label.set_text("StarSystemLabel", galaxie.etoiles.nom[self.Etoile_nb])
