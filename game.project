@@ -24,3 +24,9 @@ max_count = 2000
 [sprite]
 max_count = 2048
 
+[collection]
+max_instances = 2048
+
+[physics]
+max_collision_object_count = 2048
+

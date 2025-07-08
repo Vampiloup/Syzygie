@@ -32,10 +32,8 @@ function init(self)
 		while b > galaxie.Ref.Orbitals_Types_Chance[b2] do
 			b2 = b2 + 1
 		end
-		self.orbitals[i]["type"] = b2
-				
-		local b2 = math.random(#galaxie["Ref"]["Orbitals_Types"][b2]["genre"])
-		self.orbitals[i]["genre"] = b2
+		self.orbitals[i]["type"] = b2		
+		self.orbitals[i]["genre"] = math.random(#galaxie["Ref"]["Orbitals_Types"][b2]["genre"])
 		
 		-- orbital temp zones
 		temp_planetes = {chaud = 0, tempere = 0, froid = 0}
@@ -67,6 +65,9 @@ function init(self)
 			w[j], w[k] = w[k], w[j]
 		end
 
+		-- Moons ?
+				
+		self.orbitals[i]["moon_nb"] = math.random(0, #galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"])
 		
 	--		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
 	--		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))

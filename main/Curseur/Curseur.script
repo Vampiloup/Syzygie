@@ -13,9 +13,11 @@ function init(self)
 	
 	msg.post(".", "acquire_input_focus")
 	self.collision_id = nil  -- The cursor activate no collision on start.
+	
+end
 
-	
-	
+local function Wheel_Zoom(sens, self)
+	self.wheel = 0
 end
 
 function final(self)
@@ -54,8 +56,6 @@ end
 
 function on_input(self, action_id, action)
 
-	-- temporary zoom variable
-	zoom = 1
 	local position = go.get_position()
 	
 	local position_camera = go.get_position("/Camera#camera")
@@ -74,19 +74,22 @@ function on_input(self, action_id, action)
 		end
 	end
 
-	if action.pressed  and (action_id == hash("wheelclick")) then
+	if action.released then
+		self.wheelclick = false
+	elseif (action.pressed  and (action_id == hash("wheelclick"))) then
 		self.wheelclick = true
 		self.wheelclick_pos = vmath.vector3(action.x, action.y, 10)
 		self.wheelclick_camera_pos = position_camera
-	elseif action.released then
-		self.wheelclick = false
 	end
 	
 		
 	if self.wheelclick == true then
 		-- moving camera with the mouse
-		local pos = self.wheelclick_camera_pos + (self.wheelclick_pos - vmath.vector3(action.x, action.y, 0)) / zoom
-		
+		local pos = self.wheelclick_camera_pos + (self.wheelclick_pos - vmath.vector3(action.x, action.y, 0)) --  / game_ref.zoom.state
+		pprint(self.wheelclick_camera_pos)
+		pprint("..")
+		pprint(position_camera)
+		pprint("..........")
 		if pos.x < 1 then
 			pos.x = 1
 		end
@@ -102,64 +105,55 @@ function on_input(self, action_id, action)
 		-- go.set_position(pos)			
 		go.set_position(pos,"/Camera#camera")
 	elseif action_id == hash("Up") and (position_camera.y < galaxie.Taille.Map_Y)  then
-		position.y = position.y + (5 / zoom)
-		position_camera.y = position_camera.y + (5 / zoom)
+		position.y = position.y + (5 / game_ref.zoom.state)
+		position_camera.y = position_camera.y + (5 / game_ref.zoom.state)
 		go.set_position(position)
 		go.set_position(position_camera,"/Camera#camera")
 	elseif action_id == hash("Down") and (position_camera.y > 0) then
-		position.y = position.y - (5 / zoom)
-		position_camera.y = position_camera.y - (5 / zoom)
+		position.y = position.y - (5 / game_ref.zoom.state)
+		position_camera.y = position_camera.y - (5 / game_ref.zoom.state)
 		go.set_position(position)
 		go.set_position(position_camera,"/Camera#camera")
 	elseif action_id == hash("Left") and (position_camera.x > 0) then
-		position.x = position.x - (5 / zoom)
-		position_camera.x = position_camera.x - (5 / zoom)
+		position.x = position.x - (5 / game_ref.zoom.state)
+		position_camera.x = position_camera.x - (5 / game_ref.zoom.state)
 		go.set_position(position)
 		go.set_position(position_camera,"/Camera#camera")
 	elseif action_id == hash("Right") and (position_camera.x < galaxie.Taille.Map_X) then
-		position.x = position.x + (5 / zoom)
-		position_camera.x = position_camera.x + (5 / zoom)
+		position.x = position.x + (5 / game_ref.zoom.state)
+		position_camera.x = position_camera.x + (5 / game_ref.zoom.state)
 		go.set_position(position)
 		go.set_position(position_camera,"/Camera#camera")
 
 		-- zooming
-	elseif action_id == hash("wheelup") and self.wheel < 1 then
+	elseif action_id == hash("wheelup") and self.wheel < 1 and game_ref.zoom.max > game_ref.zoom.state  then
 		self.wheel = 1
 		Wheel_Zoom(1, self)
-		game_ref.zoom_state = game_ref.zoom_state + 1
-		if game_ref.zoom_state > game_ref.zoom_max then
-			game_ref.zoom_state = game_ref.zoom_max
-		end
-		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom_gap, game_ref.zoom_state)))
-		if game_ref.zoom_state > 10 then
+		game_ref.zoom.state = game_ref.zoom.state + 1
+		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
+		if game_ref.zoom.state > game_ref.zoom.proche then
 			for i = 1,galaxie["Nombre_Etoiles"] do 
 				tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
 				local comp_url2 = msg.url(nil, tmp_Etoile, "Etoile_proche")
 				sprite.set_constant(comp_url2, "tint", vmath.vector4(1, 1, 1, 1))
 			end
 		end
-	elseif action_id == hash("wheeldown") and self.wheel < 1 then
+	elseif action_id == hash("wheeldown") and self.wheel < 1 and game_ref.zoom.min < game_ref.zoom.state  then
 		self.wheel = 1
 		Wheel_Zoom(2, self)
-		game_ref.zoom_state = game_ref.zoom_state - 1
-		if game_ref.zoom_state < game_ref.zoom_min then
-			game_ref.zoom_state = game_ref.zoom_min
-		end
-		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom_gap, game_ref.zoom_state)))
-		if game_ref.zoom_state < 11 then
+		game_ref.zoom.state = game_ref.zoom.state - 1
+		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
+		if game_ref.zoom.state < (game_ref.zoom.proche+1) then
 			for i = 1,galaxie["Nombre_Etoiles"] do 
 				tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
 				local comp_url2 = msg.url(nil, tmp_Etoile, "Etoile_proche")
 				sprite.set_constant(comp_url2, "tint", vmath.vector4(1, 1, 1, 0))
 			end
+			print(game_ref.zoom.state)
 		end
 
 		
 	end
 	
 
-end
-
-function Wheel_Zoom(sens, self)
-		self.wheel = 0
 end

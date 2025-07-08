@@ -3,14 +3,12 @@ function init(self)
 	-- Initialize Random generator
 	math.randomseed(os.time())
 
-	-- UI
-	game_ref = {zoom_state = 0, zoom_gap = 1.1, zoom_min = -20, zoom_max = 20}
 	-- Size of the game screen
+	game_ref = {}
 	game_ref.screen_X = sys.get_config_int("display.width")
 	game_ref.screen_Y = sys.get_config_int("display.height")
-	
-
-		
+	game_ref.zoom = {state = 1, gap = 1.1, min = -20, max = 20, proche = 10}
+			
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
@@ -41,13 +39,14 @@ function init(self)
 	galaxie.Ref.NbOrbits = 5
 
 	-- default map characteristics
-	local map_size_tmp = 3
-	local map_density_tmp = 3
+	local map_size_tmp = 6
+	local map_density_tmp = 5
 	local map_X = map_size[map_size_tmp]["map_X"]
 	local map_Y = map_size[map_size_tmp]["map_Y"]
 
 	-- galaxy stats
 	galaxie.Nombre_Etoiles = ((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"]
+	pprint("Normal star Systems number : "..galaxie.Nombre_Etoiles)
 	galaxie.Taille = {}
 	galaxie.Taille.Map_X = map_X
 	galaxie.Taille.Map_Y = map_Y
@@ -62,15 +61,15 @@ function init(self)
 
 	-- Size of Objects orbiting a Star
 	local liste_orbitals = {}
-	table.insert(liste_orbitals, 1, {chance = 40, nom = "Espace",           genre = {"Vide"}})
+	table.insert(liste_orbitals, 1, {chance = 40, nom = "Espace",           genre = {"Vide"}, moon_nb={0}})
 	-- Rock planets
-	table.insert(liste_orbitals, 2, {chance = 25 ,nom = "Planète rocheuse", genre={"minuscule", "petite", "medium", "grande", "enorme"}})
+	table.insert(liste_orbitals, 2, {chance = 25 ,nom = "Planète rocheuse", genre={"minuscule", "petite", "medium", "grande", "enorme"}, moon_nb={1,1,2,2,3}})
 	-- Giant Ice planets
-	table.insert(liste_orbitals, 3, {chance = 12 ,nom = "Géante glacée",    genre={"subgéante glacée", "géante glacée", "supergéante glacée"}})
+	table.insert(liste_orbitals, 3, {chance = 12 ,nom = "Géante glacée",    genre={"subgéante glacée", "géante glacée", "supergéante glacée"}, moon_nb={2,3,4}})
 	-- Giant Gaz planets
-	table.insert(liste_orbitals, 4, {chance = 12 ,nom = "Géante gazeuse",   genre={"subgéante gazeuse", "géante gazeuze", "supergéante gazeuse"}})
+	table.insert(liste_orbitals, 4, {chance = 12 ,nom = "Géante gazeuse",   genre={"subgéante gazeuse", "géante gazeuze", "supergéante gazeuse"}, moon_nb={2,3,5}})
 	-- Asteroids
-	table.insert(liste_orbitals, 5, {chance = 11 ,nom = "Astéroïdes",       genre={"groupe d'astéroïdes", "multiple groupes d'astéroïdes", "Ceinture clairsemée d'astéroïdes", "ceinture d'astéroïdes", "large ceinture d'astéroïdes"}})
+	table.insert(liste_orbitals, 5, {chance = 11 ,nom = "Astéroïdes",       genre={"groupe d'astéroïdes", "multiple groupes d'astéroïdes", "Ceinture clairsemée d'astéroïdes", "ceinture d'astéroïdes", "large ceinture d'astéroïdes"}, moon_nb={0}})
 
 	galaxie.Ref.Orbitals_Types = liste_orbitals
 
