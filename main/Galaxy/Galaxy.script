@@ -7,7 +7,7 @@ function init(self)
 	game_ref = {}
 	game_ref.screen_X = sys.get_config_int("display.width")
 	game_ref.screen_Y = sys.get_config_int("display.height")
-	game_ref.zoom = {state = 1, gap = 1.1, min = -20, max = 20, proche = 8}
+	game_ref.zoom = {state = 1, gap = 1.1, min = -20, max = 20, proche = 8, show_label = -5}
 			
 	-- Creating general Galaxy array
 	galaxie = {}
@@ -16,9 +16,15 @@ function init(self)
 	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
 	
 	local Number_Orbits = {}
+
+	-- Galaxy form
+	local map_form = {
+		{nom = "square"},
+		{nom = "disq"}
+	}
 	
 	-- Number of star Systems
-	local map_size = {
+	local map_size = { 
 		{nom = "minuscule", map_X = 1000, map_Y = 1000},
 		{nom = "petite", map_X = 1500, map_Y = 1500},
 		{nom = "medium", map_X = 2000, map_Y = 2000},

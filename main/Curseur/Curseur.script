@@ -21,6 +21,7 @@ local function Wheel_Zoom(sens, self)
 end
 
 local function Wheel_Zoom_Elements(tint1)
+	pprint(game_ref.zoom.state)
 	for i = 1,galaxie["Nombre_Etoiles"] do 
 		local tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
 		local tmp_Etoile_Label = galaxie.etoiles.id[i]["/StarSystemLabel"]
@@ -30,18 +31,22 @@ local function Wheel_Zoom_Elements(tint1)
 		if tint1 < 2 then
 			sprite.set_constant(proche, "tint", vmath.vector4(1, 1, 1, tint1))
 		end
-		
 		go.set("/Curseur#sprite", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set("/Curseur#sprite", "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(lointaine, "scale.y", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(lointaine, "scale.x", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(proche, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(proche, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-		--go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
-		--go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
 		go.set(tmp_Etoile_Label, "position.y", -32*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+
+		-- Show / Hide stars label
+		if game_ref.zoom.state == game_ref.zoom.show_label+1 then
+			msg.post(tmp_Etoile_Label, "enable")
+		elseif game_ref.zoom.state == game_ref.zoom.show_label then
+			msg.post(tmp_Etoile_Label, "disable")
+		end		
 	end
 end
 
@@ -168,6 +173,4 @@ function on_input(self, action_id, action)
 			Wheel_Zoom_Elements(2)
 		end
 	end
-	
-
 end

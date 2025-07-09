@@ -84,6 +84,7 @@ function init(self)
 	msg.post("#Etoile", "play_animation", {id = hash("etoile_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
 	msg.post("#Etoile_proche", "play_animation", {id = hash("etoile_proche_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
 
+	-- Is NEAR sprite of star is visible at start (depend of the starting zoom state) ?
 	if game_ref.zoom.state > game_ref.zoom.proche+1 then
 		sprite.set_constant("#Etoile_proche", "tint", vmath.vector4(1, 1, 1, 1))
 	else
@@ -92,6 +93,13 @@ function init(self)
 
 	-- Change label_name for the name of the star system
 	label.set_text("StarSystemLabel", galaxie.etoiles.nom[self.Etoile_nb])
+
+	-- Is star label visible at start (depend of the starting zoom state) ?
+	if game_ref.zoom.state > game_ref.zoom.show_label+1 then
+		msg.post("StarSystemLabel", "enable")
+	else
+		msg.post("StarSystemLabel", "disable")
+	end
 
 	pprint("Generation systèmes.")
 	
