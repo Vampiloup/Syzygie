@@ -95,7 +95,7 @@ function init(self)
 	label.set_text("StarSystemLabel", galaxie.etoiles.nom[self.Etoile_nb])
 
 	-- Is star label visible at start (depend of the starting zoom state) ?
-	if game_ref.zoom.state > game_ref.zoom.show_label+1 then
+	if game_ref.zoom.state > game_ref.zoom.show_label then
 		msg.post("StarSystemLabel", "enable")
 	else
 		msg.post("StarSystemLabel", "disable")

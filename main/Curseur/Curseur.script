@@ -21,7 +21,6 @@ local function Wheel_Zoom(sens, self)
 end
 
 local function Wheel_Zoom_Elements(tint1)
-	pprint(game_ref.zoom.state)
 	for i = 1,galaxie["Nombre_Etoiles"] do 
 		local tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
 		local tmp_Etoile_Label = galaxie.etoiles.id[i]["/StarSystemLabel"]
@@ -85,7 +84,8 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-
+	print("...")
+	pprint(game_ref.zoom.state)
 	local position = go.get_position()
 	
 	local position_camera = go.get_position("/Camera#camera")
