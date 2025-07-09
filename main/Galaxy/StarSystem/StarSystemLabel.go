@@ -6,7 +6,11 @@ embedded_components {
   "  y: 32.0\n"
   "}\n"
   "text: \"Label\"\n"
-  "font: \"/builtins/fonts/default.font\"\n"
-  "material: \"/builtins/fonts/label-df.material\"\n"
+  "font: \"/Fonts/font_1.font\"\n"
+  "material: \"/builtins/fonts/label.material\"\n"
   ""
+  scale {
+    x: 0.33
+    y: 0.33
+  }
 }

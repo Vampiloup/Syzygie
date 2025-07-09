@@ -20,13 +20,29 @@ local function Wheel_Zoom(sens, self)
 	self.wheel = 0
 end
 
-local function Wheel_Zoom_Elements(lointaine, proche)
-	go.set("/Curseur#sprite", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set("/Curseur#sprite", "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set(lointaine, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set(lointaine, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set(proche, "scale.y", 0.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set(proche, "scale.x", 0.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+local function Wheel_Zoom_Elements(tint1)
+	for i = 1,galaxie["Nombre_Etoiles"] do 
+		local tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
+		local tmp_Etoile_Label = galaxie.etoiles.id[i]["/StarSystemLabel"]
+		local lointaine = msg.url(nil, tmp_Etoile, "Etoile")
+		local proche = msg.url(nil, tmp_Etoile, "Etoile_proche")
+		local label = msg.url(nil, tmp_Etoile_Label, "label")
+		if tint1 < 2 then
+			sprite.set_constant(proche, "tint", vmath.vector4(1, 1, 1, tint1))
+		end
+		
+		go.set("/Curseur#sprite", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Curseur#sprite", "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(lointaine, "scale.y", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(lointaine, "scale.x", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(proche, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(proche, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		--go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
+		--go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
+		go.set(tmp_Etoile_Label, "position.y", -32*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+	end
 end
 
 function final(self)
@@ -137,28 +153,19 @@ function on_input(self, action_id, action)
 		game_ref.zoom.state = game_ref.zoom.state + 1
 		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
 		if game_ref.zoom.state == game_ref.zoom.proche+1 then
-			for i = 1,galaxie["Nombre_Etoiles"] do 
-				tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
-				local comp_url1 = msg.url(nil, tmp_Etoile, "Etoile")
-				local comp_url2 = msg.url(nil, tmp_Etoile, "Etoile_proche")
-				sprite.set_constant(comp_url2, "tint", vmath.vector4(1, 1, 1, 1))
-				Wheel_Zoom_Elements(comp_url1, comp_url2)
-			end
+			Wheel_Zoom_Elements(1)
+		else
+			Wheel_Zoom_Elements(2)
 		end
-
 	elseif action_id == hash("wheeldown") and self.wheel < 1 and game_ref.zoom.min < game_ref.zoom.state  then
 		self.wheel = 1
 		Wheel_Zoom(2, self)
 		game_ref.zoom.state = game_ref.zoom.state - 1
 		go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
 		if game_ref.zoom.state == game_ref.zoom.proche then
-			for i = 1,galaxie["Nombre_Etoiles"] do 
-				tmp_Etoile = galaxie.etoiles.id[i]["/StarSystem"]
-				local comp_url1 = msg.url(nil, tmp_Etoile, "Etoile")
-				local comp_url2 = msg.url(nil, tmp_Etoile, "Etoile_proche")
-				sprite.set_constant(comp_url2, "tint", vmath.vector4(1, 1, 1, 0))
-				Wheel_Zoom_Elements(comp_url1, comp_url2)
-			end
+			Wheel_Zoom_Elements(0)
+		else
+			Wheel_Zoom_Elements(2)
 		end
 	end
 	

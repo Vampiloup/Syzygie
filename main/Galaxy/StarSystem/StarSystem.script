@@ -1,8 +1,11 @@
 go.property("Etoile_nb", 0)
 go.property("Etoile_Type", 0)
 go.property("Etoile_Taille", 0)
+go.property("Id_Star", 0)
+
 
 function init(self)
+
 	-- require "main.Galaxy.StarSystem"
 
 	-- pprint (" *** " .. galaxie.Ref.Etoiles_Type[self.Etoile_Type] .. " ***")
