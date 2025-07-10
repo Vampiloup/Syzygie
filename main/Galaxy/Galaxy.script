@@ -53,7 +53,7 @@ function init(self)
 	local map_density_tmp = 5
 	local map_X = map_size[map_size_tmp]["map_X"]
 	local map_Y = map_size[map_size_tmp]["map_Y"]
-	local map_form_tmp = 8
+	local map_form_tmp = 3
 
 	-- galaxy stats
 	galaxie.Nombre_Etoiles = math.ceil(((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"])
