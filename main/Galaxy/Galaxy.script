@@ -8,7 +8,6 @@ function init(self)
 	game_ref.screen_X = sys.get_config_int("display.width")
 	game_ref.screen_Y = sys.get_config_int("display.height")
 	game_ref.zoom = {state = 7, gap = 1.1, min = -20, max = 20, proche = 8, show_label = -5}
-	pprint(game_ref.zoom.state)
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
@@ -20,7 +19,12 @@ function init(self)
 	-- Galaxy form
 	local map_form = {
 		{nom = "square"},
-		{nom = "disc"}
+		{nom = "disc with dense center"},
+		{nom = "disc with uniform density"},
+		{nom = "Ring very large"},
+		{nom = "Ring large"},
+		{nom = "Ring thin"},
+		{nom = "Ring very thin"}
 	}
 	
 	-- Number of star Systems
@@ -45,22 +49,21 @@ function init(self)
 	galaxie.Ref.NbOrbits = 5
 
 	-- default map characteristics
-	local map_size_tmp = 3
-	local map_density_tmp = 3
+	local map_size_tmp = 6
+	local map_density_tmp = 5
 	local map_X = map_size[map_size_tmp]["map_X"]
 	local map_Y = map_size[map_size_tmp]["map_Y"]
-	local map_form_tmp = 1
+	local map_form_tmp = 8
 
 	-- galaxy stats
-	galaxie.Nombre_Etoiles = ((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"]
-	pprint("Normal star Systems number : "..galaxie.Nombre_Etoiles)
+	galaxie.Nombre_Etoiles = math.ceil(((map_X * map_Y) / 4000000) * 100 * map_density[map_density_tmp]["density"])
 	galaxie.Taille = {}
 	galaxie.Taille.Map_form = map_form_tmp
 	if galaxie.Taille.Map_form == 1 then 
 		galaxie.Taille.Map_X = map_X
 		galaxie.Taille.Map_Y = map_Y
-	else
-		galaxie.Taille.Map_X = ((Map_X+Map_Y)/2)/math.sqrt(math.pi)
+	elseif galaxie.Taille.Map_form > 1 or galaxie.Taille.Map_form < 5 then
+		galaxie.Taille.Map_X = (((map_X + map_Y)/2)/math.sqrt(math.pi))*2
 		galaxie.Taille.Map_Y = galaxie.Taille.Map_X
 	end
 
@@ -105,9 +108,10 @@ function init(self)
 
 	-- Wetness (!) of orbit (planet)
 	galaxie.Ref.Orbitals_wet = {nom = {"sec","aride","humide","aquatique"}, nb_zones_water = {{1,1,1},{2,1,1},{2,2,1},{2,2,2}}}
-
+		local RealStarsNumber = 0
 	-- Creation Star System
 	for i = 1, galaxie["Nombre_Etoiles"] do
+		
 		-- Creating system : Star type
 		local number = math.random(1,#type_etoiles)
 		local number2 = math.random(1,#type_etoiles_taille)
@@ -152,9 +156,49 @@ function init(self)
 		repeat
 			Essayer = ""
 			Essayer2 = Essayer2 + 1
-			local x1 = math.random(100, map_X-100)
-			local y1 = math.random(100, map_Y-100)
+
+			local x1 = 0
+			local y1 = 0
 			
+			if galaxie.Taille.Map_form == 1 then 
+				x1 = math.random(0, map_X)
+				y1 = math.random(0, map_Y)
+			elseif galaxie.Taille.Map_form == 2 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.random()
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 3 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random())
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 4 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random(2000,10000) / 10000)
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 5 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random(4000,10000) / 10000)
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 6 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random(6000,10000) / 10000)
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 7 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random(8000,10000) / 10000)
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			elseif galaxie.Taille.Map_form == 8 then
+				theta = 2 * math.pi * math.random()
+				r = ((galaxie.Taille.Map_X)/2) * math.sqrt(math.random(10000,10000) / 10000)
+				x1 = r * math.cos(theta) + galaxie.Taille.Map_X / 2
+				y1 = r * math.sin(theta) + galaxie.Taille.Map_X / 2
+			end
 			local distance = true
 			galaxie.etoiles.position[i] = vmath.vector3(x1, y1, 1)
 			if i > 1 then
@@ -170,6 +214,7 @@ function init(self)
 				Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
 				break
 			end
+			RealStarsNumber = i
 
 		until (distance == true)
 		if Essayer ~= "" then
@@ -185,6 +230,12 @@ function init(self)
 		
 	end
 
+	-- pprint("star Systems number : ".. galaxie.Nombre_Etoiles)
+	if RealStarsNumber < galaxie["Nombre_Etoiles"] then
+		pprint("Only ".. RealStarsNumber .. " stars on " .. galaxie["Nombre_Etoiles"] .. " could be generated")
+		galaxie["Nombre_Etoiles"] = RealStarsNumber - 1
+	end
+
 	print (Essayer)
 	
 	-- pprint(galaxie.etoiles.position)
@@ -194,9 +245,9 @@ function init(self)
 	-- pprint(galaxie.etoiles)
 
 	-- Put camera at the center of the map
-	local pos_X = galaxie.Taille.Map_X/2
-	local pos_Y = galaxie.Taille.Map_Y/2
-	local pos = vmath.vector3(pos_X, pos_Y, 10)
+		local pos_X = galaxie.Taille.Map_X/2
+		local pos_Y = galaxie.Taille.Map_Y/2
+		local pos = vmath.vector3(pos_X, pos_Y, 10)
 	go.set_position(pos ,"Camera")
 	go.set("/Camera#camera", "orthographic_zoom", 1*(math.pow(game_ref.zoom.gap, game_ref.zoom.state)))
 
@@ -204,8 +255,7 @@ function init(self)
 	--local action_x, action_y = screen_to_world(pos.x, pos.y, 9)
 	-- go.set_position(pos ,"Curseur")
 
-	pprint(game_ref.zoom.state)
-	
+
 end
 
 
