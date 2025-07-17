@@ -7,20 +7,23 @@ function init(self)
 	game_ref = {}
 	game_ref.screen_X = sys.get_config_int("display.width")
 	game_ref.screen_Y = sys.get_config_int("display.height")
-	game_ref.zoom = {state = 7, gap = 1.1, min = -20, max = 20, proche = 8, show_label = -5}
+	game_ref.zoom = {state = 7, gap = 1.1, min = -20, max = 30, proche = 8, show_label = -5, show_orbitals = 20}
+	game_ref.twopi = 2 * math.pi
 	-- Creating general Galaxy array
 	galaxie = {}
 	galaxie.Ref = {}
 	galaxie.etoiles = {id = {}, nom = {}, position = {}}
+	galaxie.orbitals = {id = {}, etoile = {}, orbite = {}}
 	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
+
 	
 	local Number_Orbits = {}
 
 	-- Galaxy form
 	local map_form = {
-		{nom = "square"},
-		{nom = "disc with dense center"},
-		{nom = "disc with uniform density"},
+		{nom = "Square"},
+		{nom = "Disc with dense center"},
+		{nom = "Disc with uniform density"},
 		{nom = "Ring very large"},
 		{nom = "Ring large"},
 		{nom = "Ring thin"},
@@ -49,8 +52,8 @@ function init(self)
 	galaxie.Ref.NbOrbits = 5
 
 	-- default map characteristics
-	local map_size_tmp = 6
-	local map_density_tmp = 5
+	local map_size_tmp = 3
+	local map_density_tmp = 3
 	local map_X = map_size[map_size_tmp]["map_X"]
 	local map_Y = map_size[map_size_tmp]["map_Y"]
 	local map_form_tmp = 3
@@ -108,7 +111,8 @@ function init(self)
 
 	-- Wetness (!) of orbit (planet)
 	galaxie.Ref.Orbitals_wet = {nom = {"sec","aride","humide","aquatique"}, nb_zones_water = {{1,1,1},{2,1,1},{2,2,1},{2,2,2}}}
-		local RealStarsNumber = 0
+	local RealStarsNumber = 0
+
 	-- Creation Star System
 	for i = 1, galaxie["Nombre_Etoiles"] do
 		
@@ -223,14 +227,14 @@ function init(self)
 			Essayer = "Aucune erreur generation"			
 		end
 		
-		-- Call thefactory to create the new Star System
+		-- Call the factory to create the new Star System
 		local props = {}
 		props[hash("/StarSystem")] = {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}
 		galaxie.etoiles.id[i] = collectionfactory.create("#StarSystem", nil, nil, props , nil)
-		
+
+				
 	end
 
-	-- pprint("star Systems number : ".. galaxie.Nombre_Etoiles)
 	if RealStarsNumber < galaxie["Nombre_Etoiles"] then
 		pprint("Only ".. RealStarsNumber .. " stars on " .. galaxie["Nombre_Etoiles"] .. " could be generated")
 		galaxie["Nombre_Etoiles"] = RealStarsNumber - 1

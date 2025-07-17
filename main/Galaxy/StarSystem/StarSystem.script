@@ -1,7 +1,8 @@
 go.property("Etoile_nb", 0)
 go.property("Etoile_Type", 0)
 go.property("Etoile_Taille", 0)
-go.property("Id_Star", 0)
+go.property("Orbitals",{})
+-- go.property("Id_Star", 0)
 
 
 function init(self)
@@ -67,11 +68,23 @@ function init(self)
 			local k = math.random(3)
 			w[j], w[k] = w[k], w[j]
 		end
-
-		-- Moons ?
 				
 		self.orbitals[i]["moon_nb"] = math.random(0, #galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"])
-		
+
+		for j = 0, self.orbitals[i]["moon_nb"] do
+			-- type of moon
+		end
+
+
+		-- Call the factory to create the planets (& company) around the stars
+		if self.orbitals[i]["type"] < 2 then
+
+		else
+			local props = {}
+			props[hash("/Orbital")] = {etoile = self.Etoile_nb, orbite = i}
+			galaxie.orbitals.id[self.Etoile_nb] = collectionfactory.create("/Galaxy#Orbital", nil, nil, props , nil)
+			go.set_parent(galaxie.orbitals.id[self.Etoile_nb][hash("/Orbital")], go.get_id(), true)
+		end
 	--		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
 	--		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))
 	--		pprint(tostring(galaxie.Ref.Orbitals_temp.nom[self.orbitals[i]["temp_zone"]]))
@@ -80,6 +93,7 @@ function init(self)
 	-- position on the map
 	go.set_position(galaxie.etoiles.position[self.Etoile_nb], ".")
 
+	
 	-- color of star on the map
 	msg.post("#Etoile", "play_animation", {id = hash("etoile_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
 	msg.post("#Etoile_proche", "play_animation", {id = hash("etoile_proche_"..galaxie.Ref.Etoiles_Type[self.Etoile_Type])})
@@ -100,6 +114,9 @@ function init(self)
 	else
 		msg.post("StarSystemLabel", "disable")
 	end
+
+	-- Show planets
+	
 
 	pprint("Generation systèmes.")
 	
@@ -129,10 +146,12 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("trigger_response") then
 		if message.enter then
 			-- take action for entry
+			pprint ("étoile entree")
 		--	go.set_scale(2)
 			msg.post("/Curseur", "etoile_click", {click = true, id = self.Etoile_nb})
 		else
 			-- take action for exit
+			pprint ("étoile sortie")
 		--	go.set_scale(1)
 			msg.post("/Curseur", "etoile_click", {click = false, id = self.Etoile_nb})
 		end
@@ -142,10 +161,6 @@ end
 
 function on_input(self, action_id, action)
 
-	if action_id == hash("Touch") and action.pressed then
-		print ("dsgfsdgfsdgg")
-	end
-	
 end
 
 function on_reload(self)

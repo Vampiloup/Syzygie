@@ -1,0 +1,4 @@
+images {
+  image: "/Images/galaxie/planete_sterile.png"
+}
+extrude_borders: 2

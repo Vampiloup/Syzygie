@@ -11,6 +11,7 @@ embedded_components {
   "restitution: 0.5\n"
   "group: \"Curseur\"\n"
   "mask: \"StarSystem\"\n"
+  "mask: \"Orbital\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_SPHERE\n"
@@ -35,4 +36,7 @@ embedded_components {
   "  texture: \"/Images/GUI/GUI.atlas\"\n"
   "}\n"
   ""
+  position {
+    z: 8.0
+  }
 }

@@ -1,4 +1,4 @@
-font: "/Fonts/Roboto/Roboto-Bold.ttf"
+font: "/Fonts/Roboto/Roboto-Medium.ttf"
 material: "/builtins/fonts/label-df.material"
 size: 48
 antialias: 0
