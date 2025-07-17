@@ -84,6 +84,16 @@ function init(self)
 			props[hash("/Orbital")] = {etoile = self.Etoile_nb, orbite = i}
 			galaxie.orbitals.id[self.Etoile_nb] = collectionfactory.create("/Galaxy#Orbital", nil, nil, props , nil)
 			go.set_parent(galaxie.orbitals.id[self.Etoile_nb][hash("/Orbital")], go.get_id(), true)
+			if self.orbitals[i]["type"] < 3 then 
+			elseif self.orbitals[i]["type"] < 4 then 
+				msg.post(galaxie.orbitals.id[self.Etoile_nb][hash("/Orbital")], "play_animation", {id = hash("geante_glacee")})
+			elseif self.orbitals[i]["type"] < 5 then 
+				msg.post(galaxie.orbitals.id[self.Etoile_nb][hash("/Orbital")], "play_animation", {id = hash("geante_gazeuse")})
+				
+			else
+			end
+			-- self.orbitals[i]["type"]
+			
 		end
 	--		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
 	--		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))
