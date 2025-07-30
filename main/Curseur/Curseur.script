@@ -38,10 +38,14 @@ local function Wheel_Zoom_Elements(tint1)
 		
 		go.set("/Curseur#sprite", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set("/Curseur#sprite", "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+
 		go.set(lointaine, "scale.y", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(lointaine, "scale.x", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+
 		go.set(proche, "scale.y", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(proche, "scale.x", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+				
+		
 		go.set(tmp_Etoile_Label, "position.y", -32*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
@@ -133,7 +137,6 @@ function on_input(self, action_id, action)
 		self.wheelclick_camera_pos = position_camera
 	end
 	
-		
 	if self.wheelclick == true then
 		-- moving camera with the mouse
 		local pos = self.wheelclick_camera_pos + (self.wheelclick_pos - vmath.vector3(action.x, action.y, 0)) *(math.pow(game_ref.zoom.gap, -game_ref.zoom.state))

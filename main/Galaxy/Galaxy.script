@@ -14,7 +14,7 @@ function init(self)
 	galaxie.Ref = {}
 	galaxie.etoiles = {id = {}, nom = {}, position = {}}
 	galaxie.orbitals = {id = {}, etoile = {}, orbite = {}}
-	galaxie.Ref.distmini = 64  -- distance mini entre étoiles
+	galaxie.Ref.distmini = 80  -- distance mini entre étoiles
 
 	
 	local Number_Orbits = {}
@@ -32,12 +32,12 @@ function init(self)
 	
 	-- Number of star Systems
 	local map_size = { 
-		{nom = "minuscule", map_X = 1000, map_Y = 1000},
-		{nom = "petite", map_X = 1500, map_Y = 1500},
-		{nom = "medium", map_X = 2000, map_Y = 2000},
-		{nom = "grande", map_X = 2500, map_Y = 2500},
-		{nom = "geante", map_X = 3500, map_Y = 3500},
-		{nom = "immense", map_X = 5000, map_Y = 5000}
+		{nom = "minuscule", map_X = 1250, map_Y = 1250},
+		{nom = "petite", map_X = 1875, map_Y = 1875},
+		{nom = "medium", map_X = 2500, map_Y = 2500},
+		{nom = "grande", map_X = 3125, map_Y = 3125},
+		{nom = "geante", map_X = 4375, map_Y = 4375},
+		{nom = "immense", map_X = 6250, map_Y = 6250}
 	}
 
 	local map_density = {
