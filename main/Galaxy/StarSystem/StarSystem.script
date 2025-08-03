@@ -40,16 +40,12 @@ function init(self)
 		self.orbitals[i]["genre"] = math.random(#galaxie["Ref"]["Orbitals_Types"][b2]["genre"])
 		
 		-- orbital temp zones
-		temp_planetes = {chaud = 0, tempere = 0, froid = 0}
 		if i <= (temp_chaud) then
 			temp_counter = 1
-			temp_planetes.chaud = temp_planetes.chaud + 1
 		elseif i <= (temp_froid) then
 			temp_counter = 2
-			temp_planetes.tempere = temp_planetes.tempere + 1
 		else
 			temp_counter = 3
-			temp_planetes.froid = temp_planetes.froid + 1
 		end
 		self.orbitals[i]["temp_zone"] = temp_counter
 		
@@ -92,13 +88,8 @@ function init(self)
 				
 			else
 			end
-			-- self.orbitals[i]["type"]
-			
+		
 		end
-	--		pprint(i .. " " .. tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["nom"]))
-	--		pprint(tostring(galaxie["Ref"]["Orbitals_Types"][self.orbitals[i]["type"]]["genre"][self.orbitals[i]["genre"]]))
-	--		pprint(tostring(galaxie.Ref.Orbitals_temp.nom[self.orbitals[i]["temp_zone"]]))
-	--		pprint(tostring(galaxie.Ref.Orbitals_wet.nom[self.orbitals[i]["wet_zone"]]))
 	end
 	-- position on the map
 	go.set_position(galaxie.etoiles.position[self.Etoile_nb], ".")
@@ -156,12 +147,12 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("trigger_response") then
 		if message.enter then
 			-- take action for entry
-			pprint ("étoile entree")
+			--pprint ("étoile entree")
 		--	go.set_scale(2)
 			msg.post("/Curseur", "etoile_click", {click = true, id = self.Etoile_nb})
 		else
 			-- take action for exit
-			pprint ("étoile sortie")
+			--pprint ("étoile sortie")
 		--	go.set_scale(1)
 			msg.post("/Curseur", "etoile_click", {click = false, id = self.Etoile_nb})
 		end

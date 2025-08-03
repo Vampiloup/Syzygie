@@ -9,12 +9,20 @@ go.property("wheelclick_camera_pos", 0) --
 -- Last time click
 go.property("pressed_time", socket.gettime())
 go.property("wheel", 0) -- Allow the wheel function to accept inputs.
+-- Gui
+go.property("gui", 0)
 
 
 function init(self)
 	
 	msg.post(".", "acquire_input_focus")
 	self.collision_id = nil  -- The cursor activate no collision on start.
+
+	-- Disable not shown Gui elements
+
+	msg.post("/Star_Screen/Star_Screen", "disable")
+	msg.post("/Star_Screen/Label_Star_Name", "disable")
+	
 	
 end
 
@@ -28,7 +36,7 @@ local function Wheel_Zoom_Elements(tint1)
 		local tmp_Etoile_Label = galaxie.etoiles.id[i]["/StarSystemLabel"]
 		local lointaine = msg.url(nil, tmp_Etoile, "Etoile")
 		local proche = msg.url(nil, tmp_Etoile, "Etoile_proche")
-		local label = msg.url(nil, tmp_Etoile_Label, "label")
+		-- local label = msg.url(nil, tmp_Etoile_Label, "label")
 		if tint1 < 2 then
 			sprite.set_constant(proche, "tint", vmath.vector4(1, 1, 1, tint1))
 		end
@@ -44,12 +52,23 @@ local function Wheel_Zoom_Elements(tint1)
 
 		go.set(proche, "scale.y", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 		go.set(proche, "scale.x", 1.5*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-				
 		
 		go.set(tmp_Etoile_Label, "position.y", -32*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-		go.set(tmp_Etoile_Label, "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-		go.set(tmp_Etoile_Label, "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(tmp_Etoile_Label, "scale.y", 2*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set(tmp_Etoile_Label, "scale.x", 2*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
 
+		-- Star System screen - general box
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_1", "scale.y", 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_1", "scale.x", 320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_2", "scale.y", 1070*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_2", "scale.x", 310*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_3", "scale.y", 1064*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Star_Screen#Fond_pixel_3", "scale.x", 306*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		-- Star System screen - Star name Label
+		go.set("/Star_Screen/Label_Star_Name", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Label_Star_Name", "scale.y",  1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		go.set("/Star_Screen/Label_Star_Name", "position.y", 500*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+		
 		-- set sphere shape data
 		--local sphere_data = {
 		--	type = physics.SHAPE_TYPE_SPHERE,
@@ -90,7 +109,13 @@ end
 
 function on_message(self, message_id, message, sender)
 
-	if message_id == hash("orbital_click") then
+	if message_id == hash("Gui_Star_Screen") then
+		if message.entree == true then
+			self.gui = "gui_star_screen"
+		else
+			self.gui = 0
+		end
+	elseif message_id == hash("orbital_click") then
 		if message.click == true then
 			self.orbital_click = message
 		else
@@ -120,12 +145,20 @@ function on_input(self, action_id, action)
 	end
 		
 	if action_id == hash("Touch") and action.pressed then
-		if self.orbital_click ~= 0 then
-			pprint(galaxie.etoiles.nom[self.orbital_click.etoile] .. " - " .. self.orbital_click.orbite)
+		if self.gui ~= 0 then
+			
+		elseif self.orbital_click ~= 0 then
+			msg.post("/Star_Screen/Label_Star_Name", "enable")
+			msg.post("/Star_Screen/Star_Screen", "enable")
+			msg.post("/Star_Screen/Star_Screen", "orbital_click", {click = true, etoile = self.orbital_click.etoile, orbital = self.orbital_click.orbite})
 		elseif self.etoile_click ~= 0 then
-			pprint(galaxie.etoiles.nom[self.etoile_click])
+			msg.post("/Star_Screen/Label_Star_Name", "enable")
+			msg.post("/Star_Screen/Star_Screen", "enable")
+			msg.post("/Star_Screen/Star_Screen", "etoile_click", {click = true, etoile = self.etoile_click})
 		else
-			pprint("*** CLICK ! ***")
+			msg.post("/Star_Screen/Star_Screen", "disable")
+			msg.post("/Star_Screen/Label_Star_Name", "disable")
+						pprint("*** CLICK ! ***")
 		end
 	end
 
@@ -197,4 +230,5 @@ function on_input(self, action_id, action)
 			Wheel_Zoom_Elements(2)
 		end
 	end
+	
 end

@@ -10,7 +10,7 @@ embedded_components {
   "material: \"/builtins/fonts/label.material\"\n"
   ""
   scale {
-    x: 0.33
-    y: 0.33
+    x: 0.2
+    y: 0.2
   }
 }

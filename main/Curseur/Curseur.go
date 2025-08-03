@@ -12,6 +12,7 @@ embedded_components {
   "group: \"Curseur\"\n"
   "mask: \"StarSystem\"\n"
   "mask: \"Orbital\"\n"
+  "mask: \"Gui\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_SPHERE\n"
