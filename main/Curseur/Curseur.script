@@ -116,11 +116,24 @@ function on_input(self, action_id, action)
 				max_id = id
 			end
 		end
-
 		if max_id ~= nil then
-			pprint("----------------"..galaxie.etoiles.nom[max_id])
 			msg.post("/Screen_Star/Screen_Star", "click", {orbital = false, etoile = max_id})
+		else -- Click orbital
+			local max_id = nil
+			local max_orbital = nil
+			local max_time = -math.huge
+			for etoile, data in pairs(collision_global_orbital) do
+				if data.time > max_time then
+					max_time = data.time
+					max_id = etoile
+					max_orbital = data.orbital
+				end
+			end
+			if max_id ~= nil then
+				msg.post("/Screen_Star/Screen_Star", "click", {orbital = max_orbital, etoile = max_id})
+			end
 		end
+	
 	end
 
 	if action.released then

@@ -56,7 +56,7 @@ function on_message(self, message_id, message, sender)
 				collision_global_orbital[self.etoile] = {}
 			end
 			collision_global_orbital[self.etoile]["time"] = socket.gettime()
-			collision_global_orbital[self.etoile]["orbital"] = socket.gettime()
+			collision_global_orbital[self.etoile]["orbital"] = self.orbite
 		else
 			--pprint ("Orbital sortie" .. tostring(self.orbite))
 			-- take action for exit
