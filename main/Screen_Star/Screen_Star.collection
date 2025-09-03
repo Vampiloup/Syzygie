@@ -1,0 +1,6 @@
+name: "Screen_Star"
+instances {
+  id: "Screen_Star"
+  prototype: "/main/Screen_Star/Screen_Star.go"
+}
+scale_along_z: 0

@@ -8,11 +8,8 @@ instances {
   prototype: "/main/Curseur/Curseur.go"
 }
 collection_instances {
-  id: "Star_Screen"
-  collection: "/main/Star_Screen/Star_Screen.collection"
-  position {
-    z: 10.0
-  }
+  id: "Screen_Star"
+  collection: "/main/Screen_Star/Screen_Star.collection"
 }
 scale_along_z: 0
 embedded_instances {

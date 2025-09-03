@@ -16,6 +16,9 @@ function init(self)
 	galaxie.orbitals = {id = {}, etoile = {}, orbite = {}}
 	galaxie.Ref.distmini = 80  -- distance mini entre étoiles
 
+	-- Creating global collision table
+	collision_global_etoile = {}
+	collision_global_orbital = {}
 	
 	local Number_Orbits = {}
 
@@ -231,7 +234,6 @@ function init(self)
 		local props = {}
 		props[hash("/StarSystem")] = {Etoile_nb = i, Etoile_Type = number, Etoile_Taille = number2}
 		galaxie.etoiles.id[i] = collectionfactory.create("#StarSystem", nil, nil, props , nil)
-
 				
 	end
 

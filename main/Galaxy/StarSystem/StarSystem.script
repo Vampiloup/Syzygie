@@ -1,7 +1,6 @@
 go.property("Etoile_nb", 0)
 go.property("Etoile_Type", 0)
 go.property("Etoile_Taille", 0)
-go.property("Orbitals",{})
 -- go.property("Id_Star", 0)
 
 
@@ -147,14 +146,12 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("trigger_response") then
 		if message.enter then
 			-- take action for entry
-			--pprint ("étoile entree")
-		--	go.set_scale(2)
-			msg.post("/Curseur", "etoile_click", {click = true, id = self.Etoile_nb})
+			collision_global_etoile[self.Etoile_nb] = socket.gettime()
+			-- pprint ("étoile entree : ".. galaxie.etoiles.nom[self.Etoile_nb])
 		else
 			-- take action for exit
-			--pprint ("étoile sortie")
-		--	go.set_scale(1)
-			msg.post("/Curseur", "etoile_click", {click = false, id = self.Etoile_nb})
+			collision_global_etoile[self.Etoile_nb] = nil
+			-- pprint ("étoile sortie : ".. galaxie.etoiles.nom[self.Etoile_nb])
 		end
 	end
 	

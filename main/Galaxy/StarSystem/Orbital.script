@@ -48,20 +48,19 @@ end
 
 function on_message(self, message_id, message, sender)
 
-	go.property("etoile", 0)
-	go.property("orbite", 0)
-	
 	if message_id == hash("trigger_response") then
 		if message.enter then
 			--pprint ("Orbital entree" .. tostring(self.orbite))
 			-- take action for entry
-			--	go.set_scale(2)
-			msg.post("/Curseur", "orbital_click", {click = true, etoile = self.etoile, orbite = self.orbite})
+			if not collision_global_orbital[self.etoile] then
+				collision_global_orbital[self.etoile] = {}
+			end
+			collision_global_orbital[self.etoile]["time"] = socket.gettime()
+			collision_global_orbital[self.etoile]["orbital"] = socket.gettime()
 		else
 			--pprint ("Orbital sortie" .. tostring(self.orbite))
 			-- take action for exit
-			--	go.set_scale(1)
-			msg.post("/Curseur", "orbital_click", {click = false, etoile = self.etoile, orbite = self.orbite})
+			collision_global_orbital[self.etoile] = nil
 		end
 	end
 	
