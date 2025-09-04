@@ -9,6 +9,38 @@ go.property("wheel", 0) -- Allow the wheel function to accept inputs.
 go.property("gui", 0)
 
 
+local function CollisionOrbital()
+	local max_id = nil
+	local max_orbital = nil
+	local max_time = -math.huge
+	for etoile, data in pairs(collision_global_orbital) do
+		if data.time > max_time then
+			max_time = data.time
+			max_id = etoile
+			max_orbital = data.orbital
+		end
+	end
+	if max_id ~= nil then
+		reponse = {type = "orbitale", etoile = max_id, orbitale = max_orbital}
+		return reponse
+	end
+end
+
+local function CollisionEtoile()
+	local max_id = nil
+	local max_value = -math.huge
+	for id, value in pairs(collision_global_etoile) do
+		if value > max_value then
+			max_value = value
+			max_id = id
+		end
+	end
+	if max_id ~= nil then
+		reponse = {type = "etoile", etoile = max_id}
+		return reponse
+	end
+end
+
 function init(self)
 
 	-- State of the different GUI elements (enabled true, disabled false)
@@ -97,6 +129,8 @@ function on_input(self, action_id, action)
 	local position = go.get_position()
 	
 	local position_camera = go.get_position("/Camera#camera")
+
+	local reponse = nil
 	
 	if action.x and action.y then
 		local action_x, action_y = screen_to_world(action.x, action.y, 9)
@@ -106,33 +140,30 @@ function on_input(self, action_id, action)
 	
 	if action_id == hash("Touch") and action.pressed then
 
-		-- Collision Object.
-		-- Click star (etoile)
-		local max_id = nil
-		local max_value = -math.huge
-		for id, value in pairs(collision_global_etoile) do
-			if value > max_value then
-				max_value = value
-				max_id = id
+		local attempts = {CollisionOrbital, CollisionEtoile}
+		local value = nil
+		for _, attempt in ipairs(attempts) do
+			value = attempt()
+			if value ~= nil then
+				break
 			end
 		end
-		if max_id ~= nil then
-			msg.post("/Screen_Star/Screen_Star", "click", {orbital = false, etoile = max_id})
-		else -- Click orbital
-			local max_id = nil
-			local max_orbital = nil
-			local max_time = -math.huge
-			for etoile, data in pairs(collision_global_orbital) do
-				if data.time > max_time then
-					max_time = data.time
-					max_id = etoile
-					max_orbital = data.orbital
-				end
+		if value ~= nil then
+			if value.type == "orbitale" then
+				print("Etoile and Orbital: " .. value.etoile .." - "..value.orbitale)
+			elseif  value.type == "etoile" then
+				print("Etoile: " .. value.etoile)
 			end
-			if max_id ~= nil then
-				msg.post("/Screen_Star/Screen_Star", "click", {orbital = max_orbital, etoile = max_id})
-			end
+		else
+			print("All attempts failed")
 		end
+
+
+		--	msg.post("/Screen_Star/Screen_Star", "click", {orbital = false, etoile = max_id})
+
+			
+		--	msg.post("/Screen_Star/Screen_Star", "click", {orbital = max_orbital, etoile = max_id})
+
 	
 	end
 
