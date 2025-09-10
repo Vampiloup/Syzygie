@@ -1,7 +1,34 @@
 function init(self)
-	-- Add initialization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	msg.post(".", "disable")
+	
+	-- Adapt the pixel image of background
+	go.set("#Fond_pixel", "scale.y", 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+	go.set("#Fond_pixel", "scale.x",  320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+
+	-- Adapt the Collision shape size
+
+	self.collision_url = msg.url("#collisionobject")
+	local coll_shape = {}
+	coll_shape.type = physics.SHAPE_TYPE_BOX
+	coll_shape.dimensions = vmath.vector3(320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 0)
+	physics.set_shape("#collisionobject", "Collision", coll_shape)
+	
+	
+	local world_x, world_y  = screen_to_world(160, game_ref.screen_Y/2,1)
+	go.set_position(vmath.vector3(world_x, world_y, 4), ".")
+
+
+--	local box = physics.get_shape("#collisionobject", "my_box")
+--	box.dimensions = vmath.vector3(320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)),1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)),15)
+--	physics.set_shape("#collisionobject", "my_box", box)
+--
+--	-- Label : Star name
+--
+--	go.set("Label_Star_Name", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+--	go.set("Label_Star_Name", "scale.y", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+--	go.set("Label_Star_Name", "position.y", 500*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
+
+	
 end
 
 function final(self)
@@ -11,9 +38,8 @@ function final(self)
 end
 
 function update(self, dt)
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	local world_x, world_y  = screen_to_world(160, game_ref.screen_Y/2,1)
+	go.set_position(vmath.vector3(world_x, world_y, 4), ".")
 end
 
 function fixed_update(self, dt)
@@ -26,10 +52,24 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("click") and message.orbital then
-		pprint("Orbital : I'm clicked ! " .. message.orbital .. " -- " .. galaxie.etoiles.nom[message.etoile])
-	else
-		pprint("Star : I'm clicked ! ".. galaxie.etoiles.nom[message.etoile])
+	if message_id == hash("click") then
+		if message.orbital then
+			pprint("Orbital : I'm clicked ! " .. message.orbital .. " -- " .. galaxie.etoiles.nom[message.etoile])
+		elseif message.etoile then
+			pprint("Star : I'm clicked ! ".. galaxie.etoiles.nom[message.etoile])
+		else
+			pprint("Screen_Star : What has been clicked ? -- line 61")
+			pprint(message)
+		end
+	elseif message_id == hash("trigger_response") then
+		-- If cursor enter the local Collision box
+		if message.enter then
+			-- take action for entry
+			msg.post("/Curseur", "GUI_entree", {gui = "Screen_Star", entree = true})
+		elseif message.enter == false then
+			-- take action for exit
+			msg.post("/Curseur", "GUI_entree", {gui = "Screen_Star", entree = false})
+		end	
 	end
 end
 

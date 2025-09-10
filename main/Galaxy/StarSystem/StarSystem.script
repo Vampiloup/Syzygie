@@ -147,11 +147,11 @@ function on_message(self, message_id, message, sender)
 		if message.enter then
 			-- take action for entry
 			collision_global_etoile[self.Etoile_nb] = socket.gettime()
-			-- pprint ("étoile entree : ".. galaxie.etoiles.nom[self.Etoile_nb])
-		else
+		--	pprint ("étoile entree : ".. galaxie.etoiles.nom[self.Etoile_nb])
+		elseif message.enter == false then
 			-- take action for exit
 			collision_global_etoile[self.Etoile_nb] = nil
-			-- pprint ("étoile sortie : ".. galaxie.etoiles.nom[self.Etoile_nb])
+		--	pprint ("étoile sortie : ".. galaxie.etoiles.nom[self.Etoile_nb])
 		end
 	end
 	

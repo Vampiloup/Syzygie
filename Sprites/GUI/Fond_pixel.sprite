@@ -1,5 +1,10 @@
 default_animation: "pixel_anthracite_4d4d4d"
 material: "/builtins/materials/sprite.material"
+size {
+  x: 1.0
+  y: 1.0
+}
+size_mode: SIZE_MODE_MANUAL
 textures {
   sampler: "texture_sampler"
   texture: "/Images/GUI/GUI.atlas"
