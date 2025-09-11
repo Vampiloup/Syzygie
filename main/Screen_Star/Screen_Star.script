@@ -1,12 +1,16 @@
+function afficher_etoile_bar(self, message)
+
+	pprint("Star : I'm clicked ! ".. galaxie.etoiles.nom[message.etoile])
+	label.set_text("Label_Star", galaxie.etoiles.nom[message.etoile])
+
+end
+
 function init(self)
 	msg.post(".", "disable")
 	
-	-- Adapt the pixel image of background
-	go.set("#Fond_pixel", "scale.y", 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-	go.set("#Fond_pixel", "scale.x",  320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-
-	-- Adapt the Collision shape size
-
+	-- Adapt the Bar to the Screen Size
+	go.set(".", "scale", vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0))
+	
 	self.collision_url = msg.url("#collisionobject")
 	local coll_shape = {}
 	coll_shape.type = physics.SHAPE_TYPE_BOX
@@ -52,11 +56,16 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("click") then
+	print(go.get_position("Label_Star"))
+	if message_id == hash("unclick") then
+		msg.post(".", "disable")
+		msg.post("Label_Star", "disable")
+	elseif message_id == hash("click") then
+		msg.post("Label_Star", "enable")
 		if message.orbital then
-			pprint("Orbital : I'm clicked ! " .. message.orbital .. " -- " .. galaxie.etoiles.nom[message.etoile])
+			afficher_etoile_bar(self, message)
 		elseif message.etoile then
-			pprint("Star : I'm clicked ! ".. galaxie.etoiles.nom[message.etoile])
+			afficher_etoile_bar(self, message)
 		else
 			pprint("Screen_Star : What has been clicked ? -- line 61")
 			pprint(message)

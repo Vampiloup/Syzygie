@@ -1,10 +1,4 @@
 images {
   image: "/Images/GUI/cursorImg.png"
 }
-images {
-  image: "/Images/GUI/pixel_anthracite_4d4d4d.png"
-}
-images {
-  image: "/Images/GUI/pixel_rouge_ff0000.png"
-}
 extrude_borders: 2

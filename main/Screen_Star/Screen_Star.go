@@ -3,8 +3,8 @@ components {
   component: "/main/Screen_Star/Screen_Star.script"
 }
 components {
-  id: "Fond_pixel"
-  component: "/Sprites/GUI/Fond_pixel.sprite"
+  id: "Barre_Etoile"
+  component: "/Sprites/GUI/Barre_Etoile.sprite"
 }
 embedded_components {
   id: "collisionobject"
@@ -26,9 +26,9 @@ embedded_components {
   "    count: 3\n"
   "    id: \"Collision\"\n"
   "  }\n"
-  "  data: 0.5\n"
-  "  data: 0.5\n"
-  "  data: 10.0\n"
+  "  data: 2.4102\n"
+  "  data: 2.4102\n"
+  "  data: 48.204\n"
   "}\n"
   ""
 }
