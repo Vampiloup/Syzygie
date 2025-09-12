@@ -126,20 +126,13 @@ local function Wheel_Zoom_Elements(tint1, self)
 			msg.post(tmp_Etoile_Label, "disable")
 		end		
 
-		-- Star System screen - general box
-		--if self.gui["Screen_Star"]["etat"] then
-			go.set("/Screen_Star/Screen_Star", "scale", vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0))
-		--	go.set("#my_label", "scale", new_scale)
-		--	go.set("/Screen_Star/Screen_Star#Fond_pixel", "scale.y", 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-		--	go.set("/Screen_Star/Screen_Star#Fond_pixel", "scale.x", 320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
-			-- Star System screen - collision box
-			local coll_shape = {}
-			coll_shape.type = physics.SHAPE_TYPE_BOX
-			coll_shape.dimensions = vmath.vector3(320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 0)
-			physics.set_shape("/Screen_Star/Screen_Star#collisionobject", "Collision", coll_shape)
-			
-		--end
+
 	end
+
+	-- Star System screen - general box
+	--if self.gui["Screen_Star"]["etat"] then
+	msg.post(self.gui["Screen_Star"]["url"], "zoom")
+	
 end
 
 

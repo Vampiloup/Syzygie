@@ -6,26 +6,14 @@ function afficher_etoile_bar(self, message)
 end
 
 function init(self)
-	msg.post(".", "disable")
-	
 	-- Adapt the Bar to the Screen Size
-	go.set(".", "scale", vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0))
-	
-	self.collision_url = msg.url("#collisionobject")
-	local coll_shape = {}
-	coll_shape.type = physics.SHAPE_TYPE_BOX
-	coll_shape.dimensions = vmath.vector3(320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 0)
-	physics.set_shape("#collisionobject", "Collision", coll_shape)
-	
-	
-	local world_x, world_y  = screen_to_world(160, game_ref.screen_Y/2,1)
-	go.set_position(vmath.vector3(world_x, world_y, 4), ".")
+	local vector = 	vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0)
+	-- go.set(".", "scale", vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0))
+	go.set_scale(vector, ".")
+	msg.post(".", "disable")
+	msg.post("CollisionObject", "disable")
+	msg.post("Label_Star", "disable")
 
-
---	local box = physics.get_shape("#collisionobject", "my_box")
---	box.dimensions = vmath.vector3(320*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)),1080*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)),15)
---	physics.set_shape("#collisionobject", "my_box", box)
---
 --	-- Label : Star name
 --
 --	go.set("Label_Star_Name", "scale.x", 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)))
@@ -56,12 +44,14 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	print(go.get_position("Label_Star"))
+
 	if message_id == hash("unclick") then
 		msg.post(".", "disable")
+		msg.post("CollisionObject", "disable")
 		msg.post("Label_Star", "disable")
 	elseif message_id == hash("click") then
 		msg.post("Label_Star", "enable")
+		msg.post("CollisionObject", "enable")
 		if message.orbital then
 			afficher_etoile_bar(self, message)
 		elseif message.etoile then
@@ -70,16 +60,21 @@ function on_message(self, message_id, message, sender)
 			pprint("Screen_Star : What has been clicked ? -- line 61")
 			pprint(message)
 		end
-	elseif message_id == hash("trigger_response") then
-		-- If cursor enter the local Collision box
-		if message.enter then
-			-- take action for entry
+	elseif message_id == hash("on_collision") then
+		-- If cursor enter or exit the local Collision box
+		if message.collision_message then
+			pprint("Gui Entrée")
 			msg.post("/Curseur", "GUI_entree", {gui = "Screen_Star", entree = true})
-		elseif message.enter == false then
-			-- take action for exit
+		elseif message.collision_message == false then
+			pprint("Gui Sortie")
 			msg.post("/Curseur", "GUI_entree", {gui = "Screen_Star", entree = false})
 		end	
+	elseif message_id == hash("zoom") then
+		local vector = 	vmath.vector3(1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1*(math.pow(game_ref.zoom.gap, -game_ref.zoom.state)), 1.0)
+		go.set_scale(vector, ".")
+
 	end
+		
 end
 
 function on_input(self, action_id, action)

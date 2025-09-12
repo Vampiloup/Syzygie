@@ -2,7 +2,12 @@ name: "Screen_Star"
 instances {
   id: "Screen_Star"
   prototype: "/main/Screen_Star/Screen_Star.go"
+  children: "CollisionObject"
   children: "Label_Star"
+}
+instances {
+  id: "CollisionObject"
+  prototype: "/main/UI/CollisionObject.go"
 }
 scale_along_z: 0
 embedded_instances {
@@ -25,6 +30,7 @@ embedded_instances {
   "}\n"
   ""
   position {
+    x: 45.0
     y: 475.0
   }
 }
