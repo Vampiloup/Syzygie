@@ -1,0 +1,49 @@
+local game_prep = {
+            default = {                                                         -- Defaults
+                map_form = 3,
+                map_size = 3,
+                map_density = 3
+            },
+            map_form = {                                                        -- Form of the starfield (game world)
+                {nom = "Square"},
+                {nom = "Disc with dense center"},
+                {nom = "Disc with uniform density"},
+                {nom = "Ring very large"},
+                {nom = "Ring large"},
+                {nom = "Ring thin"},
+                {nom = "Ring very thin"}
+            },
+            map_size = {                                                        -- Size of the starfield
+                {nom = "minuscule", map_X = 1250, map_Y = 1250},
+                {nom = "petite", map_X = 1875, map_Y = 1875},
+                {nom = "medium", map_X = 2500, map_Y = 2500},
+                {nom = "grande", map_X = 3125, map_Y = 3125},
+                {nom = "geante", map_X = 4375, map_Y = 4375},
+                {nom = "immense", map_X = 6250, map_Y = 6250}
+            },
+            map_density = {                                                     -- Density of Systems
+                {nom = "épars", density = 0.5},
+                {nom = "clairsemé", density = 0.75},
+                {nom = "medium", density = 1},
+                {nom = "dense", density = 1.5},
+                {nom = "compact", density = 1.2}
+            }
+
+
+
+}
+
+
+function game_prep.load()
+
+end
+
+function game_prep.update(dt)
+
+end
+
+function game_prep.draw()
+
+end
+
+return game_prep
