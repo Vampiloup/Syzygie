@@ -27,6 +27,9 @@ local game_prep = {
                 {nom = "medium", density = 1},
                 {nom = "dense", density = 1.5},
                 {nom = "compact", density = 1.2}
+            },
+            starfield = {
+                type_etoile = {"rouge","orange","jaune", "blanc", "cyan", "bleu", "violet"}
             }
 
 

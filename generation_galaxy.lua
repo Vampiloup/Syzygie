@@ -10,6 +10,7 @@ local Galaxy = {
     size_Y = 0,
     star_system = {
         nom = {},                           -- Name of the system
+        type = {},
         position_x = {},                    -- Position by X
         position_y = {},                    -- Position by X
         orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
@@ -96,6 +97,13 @@ function Galaxy.load()
                     end
                 end
             end
+
+            -- Type of central star :
+            	-- Stars types
+
+           Galaxy.star_system.type = love.math.random(1, #game_prep.starfield.type_etoile)
+
+
             if Essayer2 > 1000 then
                 Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
                 break

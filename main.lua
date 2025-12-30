@@ -19,6 +19,8 @@ local DOUBLE_CLICK_TIME = 0.3     -- en secondes (0.25 à 0.4 est le plus nature
 local DOUBLE_CLICK_DISTANCE = 20  -- tolérance en pixels (évite les micro-déplacements)
 
 local starImg = nil
+local starsBatch = nil
+local orbitsBatch = nil
 
 
 function love.load()
@@ -27,16 +29,50 @@ function love.load()
     game_ref.load(game_prep)
     galaxy.load(game_ref)
 
-    img = love.graphics.newImage("etoile_blanc.png")
-    planetImg = love.graphics.newImage("geante_glacee.png")
 
 
-    starsBatch = love.graphics.newSpriteBatch(img, galaxy.number_of_systems, "static")
+
+
+        --[[
+            local textureAtlas = require("libs.TA")   -- assure-toi que le chemin est exact
+    -- Création atlas dynamic size
+    local TA = textureAtlas.newDynamicSize(2,0, 0)
+    TA:setFilter("nearest")
+
+    -- Récupère les fichiers (ton helper)
+    -- local png_files = getFilesWithExtension("/assets/syzygie/images/galaxy", ".png")
+    -- Ou mieux, pour cohérence avec game_ref :
+    local png_files = getFilesWithExtension("assets/" .. game_ref.path.default .. "/images/galaxy", ".png")
+
+    print("Nombre de PNG trouvés : " .. #png_files)   -- debug crucial
+
+    local added_count = 0
+
+    -- Étape 1 : AJOUTER toutes les images
+    for _, filename in ipairs(png_files) do
+        local path = "assets/" .. game_ref.path.default .. "/images/galaxy/" .. filename
+
+        local success, imgage = pcall(love.graphics.newImage, path)
+        if success then
+            -- ID simple : nom du fichier sans .png
+            local id = filename:gsub("%.png$", "")
+ --           TA:add(imgage, id)
+            added_count = added_count + 1
+            print("Ajoutée : " .. id)
+            print("Échec chargement : " .. path .. " → " .. tostring(imgage))  -- img contient l'erreur
+        end
+    end
+
+  ]]
+
+    img = love.graphics.newImage("assets/" .. game_ref.path.default .. "/images/galaxy/etoile_blanc.png")
+    planetImg = love.graphics.newImage("assets/" .. game_ref.path.default .. "/images/galaxy/geante_glacee.png")
+
+    starsBatch = love.graphics.newSpriteBatch(img, galaxy.number_of_systems, "dynamic")
     for i = 1, galaxy.number_of_systems do
         local x = galaxy.star_system.position_x[i]  -- Position X du système i
         local y = galaxy.star_system.position_y[i]  -- Position Y du système i
         starsBatch:add(x, y, 0, 1, 1, img:getWidth()/2, img:getHeight()/2)
-
     end
 
     local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
@@ -59,6 +95,8 @@ function love.load()
 
     -- Si zoom not by default :
     -- game_ref.zoom.state = math.ceil( -math.log(fit_zoom) / math.log(game_ref.zoom.gap) )
+
+
 
 end
 
@@ -150,7 +188,7 @@ function love.mousepressed(x, y, button)
 
             if distance <= DOUBLE_CLICK_DISTANCE then
                 isDoubleClick = true
-                -- → ici tu fais l'action du double-clic
+                -- Double_click action.
                 print("Double-clic détecté à " .. x .. "," .. y)
                 local screen_center_x = love.graphics.getWidth() / 2
                 local screen_center_y = love.graphics.getHeight() / 2
@@ -189,17 +227,28 @@ function love.mousemoved(x, y, dx, dy)
     end
 end
 
-local clickTracker = {
-    time = 0,
-    x = 0,
-    y = 0,
-    DOUBLE_TIME = 0.32,
-    DOUBLE_DIST = 25,
-}
 
+function getFilesWithExtension(path, extension)
+    local files = {}
+    -- Récupère tous les éléments du dossier
+    local items = love.filesystem.getDirectoryItems(path or "")
 
+    -- Filtre sur l'extension voulue
+    for _, filename in ipairs(items) do
+        -- Vérifie que c'est bien un fichier (pas un dossier)
+        local info = love.filesystem.getInfo((path or "") .. "/" .. filename)
+        if info and info.type == "file" then
+            -- Deux façons d'obtenir l'extension (la 2e est plus robuste)
+            -- local ext = filename:match("%.([^%.]+)$")   -- version 1
+            local ext = filename:sub(-#extension):lower()   -- version 2 (plus rapide)
 
-
+            if ext == extension:lower() then
+                table.insert(files, filename)
+            end
+        end
+    end
+    return files
+end
 
 function refill_batch_orbits()
 
@@ -221,3 +270,5 @@ function refill_batch_orbits()
        end
 
 end
+
+

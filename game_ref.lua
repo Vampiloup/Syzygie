@@ -10,8 +10,10 @@ local game_ref = {
                 show_label = -5,                            -- Equal or more that state to show System label on the world map
                 show_orbitals = 20                          -- Equal or more that state to show Orbitals on the World map
             },
-            current_global_scale = 1,                       -- Global Zoom (zoom modified by gap. Calculated in game in love.update)
-            twopi = 2 * math.pi                     -- The twopi stat.
+            current_global_scale = 1,               -- Global Zoom (zoom modified by gap. Calculated in game in love.update)
+            path = {                                -- paths of assets used in the game
+                default = "syzygie"                     -- Default mod
+            }
     }
 
 
