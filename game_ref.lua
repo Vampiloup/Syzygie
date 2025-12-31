@@ -13,6 +13,9 @@ local game_ref = {
             current_global_scale = 1,               -- Global Zoom (zoom modified by gap. Calculated in game in love.update)
             path = {                                -- paths of assets used in the game
                 default = "syzygie"                     -- Default mod
+            },
+            ui = {
+                doubleClickThreshold = 0.2
             }
     }
 

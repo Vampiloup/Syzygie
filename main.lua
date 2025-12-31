@@ -12,11 +12,8 @@ local camStartX, camStartY = 0, 0       -- position caméra au moment du clic
 
 
 -- Double clicks
-local lastClickTime = 0
-local lastClickX = 0
-local lastClickY = 0
-local DOUBLE_CLICK_TIME = 0.3     -- en secondes (0.25 à 0.4 est le plus naturel)
-local DOUBLE_CLICK_DISTANCE = 20  -- tolérance en pixels (évite les micro-déplacements)
+local clickCount = 0
+local clickTime = 0
 
 local starImg = nil
 local starsBatch = nil
@@ -76,7 +73,7 @@ function love.load()
     end
 
     local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
-    orbitsBatch = love.graphics.newSpriteBatch(planetImg, totalOrbits, "dynamic")
+ --   orbitsBatch = love.graphics.newSpriteBatch(planetImg, totalOrbits, "dynamic")
 
     -- Caméra exactement au milieu du monde
     camX = galaxy.size_X / 2
@@ -103,7 +100,7 @@ end
 function love.update(dt)
 
     game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
-    refill_batch_orbits()
+  --  refill_batch_orbits()
 
     -- move camera with keys
     local camSpeed     = 300 * dt / math.max(game_ref.current_global_scale, 0.05)
@@ -113,8 +110,52 @@ function love.update(dt)
     if love.keyboard.isDown("right") then camX = camX + camSpeed end
  --   print (" zoom : " .. game_ref.zoom.state .. " " )
 
+    -- clicking simple or double-click
+    if clickCount > 0 then
+         clickTime = clickTime + dt
+         if clickTime > game_ref.ui.doubleClickThreshold then
+             if clickCount == 1 then
+                 print("Simple click")
+             else
+                 print("Double click")
+             end
+             clickCount = 0
+             clickTime = 0
+         end
+    end
+
 end
 
+
+--[[
+
+    if button == 1 then -- left click
+
+        local currentTime = love.timer.getTime()
+        local timeSinceLast = currentTime - lastClickTime
+        local isDoubleClick = false
+        if timeSinceLast <= DOUBLE_CLICK_TIME then
+            local dx = x - lastClickX
+            local dy = y - lastClickY
+            local distance = math.sqrt(dx*dx + dy*dy)
+
+            if distance <= DOUBLE_CLICK_DISTANCE then
+                isDoubleClick = true
+                -- Double_click action.
+                print("Double-clic détecté à " .. x .. "," .. y)
+                local screen_center_x = love.graphics.getWidth() / 2
+                local screen_center_y = love.graphics.getHeight() / 2
+                local world_x = camX + (x - screen_center_x) / game_ref.current_global_scale
+                local world_y = camY + (y - screen_center_y) / game_ref.current_global_scale
+
+                -- Option : centrer immédiatement
+                -- game_ref.zoom.state = game_ref.zoom.state - 2   -- zoom in de 2 crans
+            end
+        elseif not isDoubleClick then
+            print("Simple clic")
+        end
+
+]]
 
 
 function love.draw()
@@ -136,7 +177,7 @@ function love.draw()
     love.graphics.draw(starsBatch)
 
     -- Draw orbitals
-    love.graphics.draw(orbitsBatch)
+--    love.graphics.draw(orbitsBatch)
 
     -- restaure graphic state (for unzoomed stuff)
     love.graphics.pop()
@@ -176,39 +217,14 @@ function love.mousepressed(x, y, button)
             camStartX, camStartY = camX, camY
     end
 
-    if button == 1 then -- left click
+   -- game_ref.ui.doubleClickThreshold
 
-        local currentTime = love.timer.getTime()
-        local timeSinceLast = currentTime - lastClickTime
-        local isDoubleClick = false
-        if timeSinceLast <= DOUBLE_CLICK_TIME then
-            local dx = x - lastClickX
-            local dy = y - lastClickY
-            local distance = math.sqrt(dx*dx + dy*dy)
-
-            if distance <= DOUBLE_CLICK_DISTANCE then
-                isDoubleClick = true
-                -- Double_click action.
-                print("Double-clic détecté à " .. x .. "," .. y)
-                local screen_center_x = love.graphics.getWidth() / 2
-                local screen_center_y = love.graphics.getHeight() / 2
-                local world_x = camX + (x - screen_center_x) / game_ref.current_global_scale
-                local world_y = camY + (y - screen_center_y) / game_ref.current_global_scale
-
-                -- Option : centrer immédiatement
-                -- game_ref.zoom.state = game_ref.zoom.state - 2   -- zoom in de 2 crans
-            end
-        end
-        -- Update for the next time.
-        lastClickTime = currentTime
-        lastClickX = x
-        lastClickY = y
-
-        if not isDoubleClick then
-            print("Simple clic")
-        end
-
+    if button == 1 then  -- Bouton gauche de la souris
+        clickCount = clickCount + 1
+        clickTime = 0  -- Réinitialise le minuteur
     end
+
+
 
 end
 
