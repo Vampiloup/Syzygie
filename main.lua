@@ -1,5 +1,12 @@
 love.math.setRandomSeed(os.time())
 
+-- Librairies
+inspect = require("libs.inspect.inspect")
+colors = require "libs.ansicolors.ansicolors"
+textureAtlas = require("libs.TA")
+
+-- print(colors(inspect(myTable, { newline = "\n", indent = "  " })))
+
 game_prep = require "game_prep"
 game_ref = require "game_ref"
 galaxy = require "generation_galaxy"
@@ -15,7 +22,7 @@ local camStartX, camStartY = 0, 0       -- position caméra au moment du clic
 local clickCount = 0
 local clickTime = 0
 
-local starImg = nil
+local png_files = nil
 local starsBatch = nil
 local orbitsBatch = nil
 
@@ -25,52 +32,42 @@ function love.load()
     love.window.setMode(1920, 1080, {resizable=true, fullscreen = false, vsync = true})
     game_ref.load(game_prep)
     galaxy.load(game_ref)
+    game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 
+    -- Loading objets : Galaxy Starfield
+    atlas_galaxy = textureAtlas.newDynamicSize()
+    atlas_galaxy:setFilter("nearest")
 
-
-
-
-        --[[
-            local textureAtlas = require("libs.TA")   -- assure-toi que le chemin est exact
-    -- Création atlas dynamic size
-    local TA = textureAtlas.newDynamicSize(2,0, 0)
-    TA:setFilter("nearest")
-
-    -- Récupère les fichiers (ton helper)
-    -- local png_files = getFilesWithExtension("/assets/syzygie/images/galaxy", ".png")
-    -- Ou mieux, pour cohérence avec game_ref :
     local png_files = getFilesWithExtension("assets/" .. game_ref.path.default .. "/images/galaxy", ".png")
-
-    print("Nombre de PNG trouvés : " .. #png_files)   -- debug crucial
-
-    local added_count = 0
-
-    -- Étape 1 : AJOUTER toutes les images
+    print("Nombre de PNG trouvés : " .. #png_files)   -- debug
     for _, filename in ipairs(png_files) do
         local path = "assets/" .. game_ref.path.default .. "/images/galaxy/" .. filename
-
-        local success, imgage = pcall(love.graphics.newImage, path)
+        local success, image = pcall(love.graphics.newImage, path)
         if success then
-            -- ID simple : nom du fichier sans .png
             local id = filename:gsub("%.png$", "")
- --           TA:add(imgage, id)
-            added_count = added_count + 1
-            print("Ajoutée : " .. id)
-            print("Échec chargement : " .. path .. " → " .. tostring(imgage))  -- img contient l'erreur
+            print(path .. " - " .. id)
+            atlas_galaxy:add(love.graphics.newImage(path), id)
+
+        else
+            print("Échec chargement : " .. path .. " → " .. tostring(image))  -- img contient l'erreur
         end
     end
+    atlas_galaxy:hardBake("height")
+    collectgarbage("collect")
 
-  ]]
+    -- Stabatch : Galaxy starfield
 
-    img = love.graphics.newImage("assets/" .. game_ref.path.default .. "/images/galaxy/etoile_blanc.png")
-    planetImg = love.graphics.newImage("assets/" .. game_ref.path.default .. "/images/galaxy/geante_glacee.png")
-
-    starsBatch = love.graphics.newSpriteBatch(img, galaxy.number_of_systems, "dynamic")
+    starsBatch = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do
         local x = galaxy.star_system.position_x[i]  -- Position X du système i
         local y = galaxy.star_system.position_y[i]  -- Position Y du système i
-        starsBatch:add(x, y, 0, 1, 1, img:getWidth()/2, img:getHeight()/2)
+        local type_etoile = game_prep.starfield.type_etoile[galaxy.star_system.type[i]]
+        local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
+        local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
+        starsBatch:add(quad, x, y, 0, 1, 1, vw/2, vh/2)
     end
+
+
 
     local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
  --   orbitsBatch = love.graphics.newSpriteBatch(planetImg, totalOrbits, "dynamic")
@@ -97,10 +94,10 @@ function love.load()
 
 end
 
+
 function love.update(dt)
 
-    game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
-  --  refill_batch_orbits()
+--  refill_batch_orbits()
 
     -- move camera with keys
     local camSpeed     = 300 * dt / math.max(game_ref.current_global_scale, 0.05)
@@ -124,41 +121,12 @@ function love.update(dt)
          end
     end
 
+
 end
 
-
---[[
-
-    if button == 1 then -- left click
-
-        local currentTime = love.timer.getTime()
-        local timeSinceLast = currentTime - lastClickTime
-        local isDoubleClick = false
-        if timeSinceLast <= DOUBLE_CLICK_TIME then
-            local dx = x - lastClickX
-            local dy = y - lastClickY
-            local distance = math.sqrt(dx*dx + dy*dy)
-
-            if distance <= DOUBLE_CLICK_DISTANCE then
-                isDoubleClick = true
-                -- Double_click action.
-                print("Double-clic détecté à " .. x .. "," .. y)
-                local screen_center_x = love.graphics.getWidth() / 2
-                local screen_center_y = love.graphics.getHeight() / 2
-                local world_x = camX + (x - screen_center_x) / game_ref.current_global_scale
-                local world_y = camY + (y - screen_center_y) / game_ref.current_global_scale
-
-                -- Option : centrer immédiatement
-                -- game_ref.zoom.state = game_ref.zoom.state - 2   -- zoom in de 2 crans
-            end
-        elseif not isDoubleClick then
-            print("Simple clic")
-        end
-
-]]
-
-
 function love.draw()
+
+    atlas_galaxy:draw("etoile_rouge", 50,50)
 
     -- Save graphic state
     love.graphics.push()
@@ -188,7 +156,9 @@ function love.draw()
 end
 
 
-
+--
+--
+--
 
 
 function love.wheelmoved(x, y)
@@ -197,11 +167,14 @@ function love.wheelmoved(x, y)
 
     if y > 0 then       -- molette haut → zoom in → state diminue
         game_ref.zoom.state = math.max(game_ref.zoom.min, game_ref.zoom.state - 1)
+        game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
     elseif y < 0 then   -- molette bas → zoom out → state augmente
         game_ref.zoom.state = math.min(game_ref.zoom.max, game_ref.zoom.state + 1)
+        game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
     end
 
 end
+
 
 function love.keypressed(key, scancode, isrepeat)
 
@@ -224,9 +197,8 @@ function love.mousepressed(x, y, button)
         clickTime = 0  -- Réinitialise le minuteur
     end
 
-
-
 end
+
 
 function love.mousereleased(x, y, button)
     if button == 3 then
@@ -244,6 +216,12 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 
+--
+--
+--
+
+
+
 function getFilesWithExtension(path, extension)
     local files = {}
     -- Récupère tous les éléments du dossier
@@ -254,8 +232,7 @@ function getFilesWithExtension(path, extension)
         -- Vérifie que c'est bien un fichier (pas un dossier)
         local info = love.filesystem.getInfo((path or "") .. "/" .. filename)
         if info and info.type == "file" then
-            -- Deux façons d'obtenir l'extension (la 2e est plus robuste)
-            -- local ext = filename:match("%.([^%.]+)$")   -- version 1
+            -- take the file extension
             local ext = filename:sub(-#extension):lower()   -- version 2 (plus rapide)
 
             if ext == extension:lower() then
@@ -265,6 +242,12 @@ function getFilesWithExtension(path, extension)
     end
     return files
 end
+
+
+--
+--
+--
+
 
 function refill_batch_orbits()
 

@@ -101,7 +101,7 @@ function Galaxy.load()
             -- Type of central star :
             	-- Stars types
 
-           Galaxy.star_system.type = love.math.random(1, #game_prep.starfield.type_etoile)
+           Galaxy.star_system.type[i] = love.math.random(1, #game_prep.starfield.type_etoile)
 
 
             if Essayer2 > 1000 then

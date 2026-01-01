@@ -29,7 +29,7 @@ local game_prep = {
                 {nom = "compact", density = 1.2}
             },
             starfield = {
-                type_etoile = {"rouge","orange","jaune", "blanc", "cyan", "bleu", "violet"}
+                type_etoile = {"etoile_rouge","etoile_orange","etoile_jaune", "etoile_blanc", "etoile_cyan", "etoile_bleu", "etoile_violet"}
             }
 
 
