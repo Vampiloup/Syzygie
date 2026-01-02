@@ -2,7 +2,7 @@ local game_ref = {
             screen_X = 0,                           -- Size X of the game screen
             screen_Y = 0,                           -- Size Y of the game screen
             zoom = {                                -- Zoom state
-                state = 7,                                  -- Zoom level (particularly at start)
+                state = 4,                                  -- Zoom level (particularly at start)
                 gap = 1.1,                                  -- difference of visible zoom between each level (1 stat more = x1.1)
                 min = -20,                                  -- Minimal zoom
                 max = 30,                                   -- Maximal zoom

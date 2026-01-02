@@ -54,6 +54,7 @@ function love.load()
     end
     atlas_galaxy:hardBake("height")
     collectgarbage("collect")
+    -- atlas_galaxy:setFilter("linear", "linear")
 
     -- Stabatch : Galaxy starfield
 
@@ -64,7 +65,7 @@ function love.load()
         local type_etoile = game_prep.starfield.type_etoile[galaxy.star_system.type[i]]
         local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
         local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
-        starsBatch:add(quad, x, y, 0, 1, 1, vw/2, vh/2)
+        starsBatch:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
     end
 
 
@@ -126,7 +127,8 @@ end
 
 function love.draw()
 
-    atlas_galaxy:draw("etoile_rouge", 50,50)
+    atlas_galaxy:draw("geante_glacee", 50,50)
+    atlas_galaxy:draw("geante_gazeuse", 114,50)
 
     -- Save graphic state
     love.graphics.push()
