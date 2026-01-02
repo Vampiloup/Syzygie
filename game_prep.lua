@@ -29,7 +29,9 @@ local game_prep = {
                 {nom = "compact", density = 1.2}
             },
             starfield = {
-                type_etoile = {"etoile_rouge","etoile_orange","etoile_jaune", "etoile_blanc", "etoile_cyan", "etoile_bleu", "etoile_violet"}
+      --          type_etoile = {"etoile_rouge","etoile_orange","etoile_jaune", "etoile_blanc", "etoile_cyan", "etoile_bleu", "etoile_violet"}
+            type_etoile_lointain = {"etoile_lointain_rouge","etoile_lointain_orange","etoile_lointain_jaune", "etoile_lointain_blanc", "etoile_lointain_cyan"},
+            type_etoile_proche = {"etoile_proche_rouge","etoile_proche_orange","etoile_proche_jaune", "etoile_proche_blanc", "etoile_proche_cyan"}
             }
 
 

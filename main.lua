@@ -45,7 +45,6 @@ function love.load()
         local success, image = pcall(love.graphics.newImage, path)
         if success then
             local id = filename:gsub("%.png$", "")
-            print(path .. " - " .. id)
             atlas_galaxy:add(love.graphics.newImage(path), id)
 
         else
@@ -58,16 +57,24 @@ function love.load()
 
     -- Stabatch : Galaxy starfield
 
-    starsBatch = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
-    for i = 1, galaxy.number_of_systems do
+    starsBatch_proche = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
+    for i = 1, galaxy.number_of_systems do          -- stars near (zoom in)
         local x = galaxy.star_system.position_x[i]  -- Position X du système i
         local y = galaxy.star_system.position_y[i]  -- Position Y du système i
-        local type_etoile = game_prep.starfield.type_etoile[galaxy.star_system.type[i]]
+        local type_etoile = game_prep.starfield.type_etoile_proche[galaxy.star_system.type[i]]
         local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
         local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
-        starsBatch:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
+        starsBatch_proche:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
     end
-
+    starsBatch_lointain = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
+    for i = 1, galaxy.number_of_systems do          -- stars far (zoom out)
+        local x = galaxy.star_system.position_x[i]  -- Position X du système i
+        local y = galaxy.star_system.position_y[i]  -- Position Y du système i
+        local type_etoile = game_prep.starfield.type_etoile_lointain[galaxy.star_system.type[i]]
+        local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
+        local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
+        starsBatch_lointain:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
+    end
 
 
     local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
@@ -92,7 +99,7 @@ function love.load()
     -- game_ref.zoom.state = math.ceil( -math.log(fit_zoom) / math.log(game_ref.zoom.gap) )
 
 
-
+    zoom_state()
 end
 
 
@@ -144,7 +151,8 @@ function love.draw()
     -- love.graphics.translate(galaxy.size_X / 2 , galaxy.size_Y / 2)
 
     -- Draw stars
-    love.graphics.draw(starsBatch)
+    zoom_state()
+   --  love.graphics.draw(starsBatch_proche)
 
     -- Draw orbitals
 --    love.graphics.draw(orbitsBatch)
@@ -162,6 +170,15 @@ end
 --
 --
 
+-- What's changing at zoom state X ?
+function zoom_state()
+	if game_ref.zoom.state <= game_ref.zoom.proche then
+		love.graphics.draw(starsBatch_proche)
+	else
+		love.graphics.draw(starsBatch_lointain)
+        end
+end
+
 
 function love.wheelmoved(x, y)
 
@@ -170,9 +187,11 @@ function love.wheelmoved(x, y)
     if y > 0 then       -- molette haut → zoom in → state diminue
         game_ref.zoom.state = math.max(game_ref.zoom.min, game_ref.zoom.state - 1)
         game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
+      --  zoom_state()
     elseif y < 0 then   -- molette bas → zoom out → state augmente
         game_ref.zoom.state = math.min(game_ref.zoom.max, game_ref.zoom.state + 1)
         game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
+     --   zoom_state()
     end
 
 end

@@ -101,9 +101,7 @@ function Galaxy.load()
             -- Type of central star :
             	-- Stars types
 
-           Galaxy.star_system.type[i] = love.math.random(1, #game_prep.starfield.type_etoile)
-
-
+           Galaxy.star_system.type[i] = love.math.random(1, #game_prep.starfield.type_etoile_lointain)
             if Essayer2 > 1000 then
                 Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
                 break
