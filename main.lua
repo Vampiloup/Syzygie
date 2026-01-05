@@ -32,9 +32,10 @@ function love.load()
     love.window.setMode(1920, 1080, {resizable=true, fullscreen = false, vsync = true})
     game_ref.load(game_prep)
     galaxy.load(game_ref)
+
     game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 
-    -- Loading objets : Galaxy Starfield
+        -- Loading objets : Galaxy Starfield
     atlas_galaxy = textureAtlas.newDynamicSize()
     atlas_galaxy:setFilter("nearest")
 
@@ -64,7 +65,8 @@ function love.load()
         local type_etoile = game_prep.starfield.type_etoile_proche[galaxy.star_system.type[i]]
         local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
         local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
-        starsBatch_proche:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
+        starsBatch_proche:add(quad, x, y, 0, (0.25 * game_ref.current_global_scale), sx, vw/2, vh/2)
+
     end
     starsBatch_lointain = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do          -- stars far (zoom out)
@@ -129,7 +131,6 @@ function love.update(dt)
          end
     end
 
-
 end
 
 function love.draw()
@@ -155,7 +156,7 @@ function love.draw()
    --  love.graphics.draw(starsBatch_proche)
 
     -- Draw orbitals
---    love.graphics.draw(orbitsBatch)
+ --   love.graphics.draw(orbitsBatch)
 
     -- restaure graphic state (for unzoomed stuff)
     love.graphics.pop()
@@ -172,25 +173,23 @@ end
 
 -- What's changing at zoom state X ?
 function zoom_state()
+    game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 	if game_ref.zoom.state <= game_ref.zoom.proche then
 		love.graphics.draw(starsBatch_proche)
 	else
 		love.graphics.draw(starsBatch_lointain)
-        end
+    end
 end
 
 
 function love.wheelmoved(x, y)
 
     local old_state = game_ref.zoom.state
-
     if y > 0 then       -- molette haut → zoom in → state diminue
         game_ref.zoom.state = math.max(game_ref.zoom.min, game_ref.zoom.state - 1)
-        game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
       --  zoom_state()
     elseif y < 0 then   -- molette bas → zoom out → state augmente
         game_ref.zoom.state = math.min(game_ref.zoom.max, game_ref.zoom.state + 1)
-        game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
      --   zoom_state()
     end
 
