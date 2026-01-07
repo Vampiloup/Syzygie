@@ -11,12 +11,18 @@ game_prep = require "game_prep"
 game_ref = require "game_ref"
 galaxy = require "generation_galaxy"
 
-local camX, camY = 0, 0  -- position caméra initiale
-
 local isDragging = false
 local dragStartX, dragStartY = 0, 0     -- position souris quand on clique
 local camStartX, camStartY = 0, 0       -- position caméra au moment du clic
 
+
+-- Clicks
+local click = {
+    x = 0,      -- screen x
+    y = 0,      -- screen y
+    wx = 0,     -- world x
+    wy = 0      -- world y
+}
 
 -- Double clicks
 local clickCount = 0
@@ -49,15 +55,13 @@ function love.load()
             atlas_galaxy:add(love.graphics.newImage(path), id)
 
         else
-            print("Échec chargement : " .. path .. " → " .. tostring(image))  -- img contient l'erreur
+            print("Échec chargement : " .. path .. " → " .. tostring(image))  -- Error is in "image"
         end
     end
     atlas_galaxy:hardBake("height")
     collectgarbage("collect")
-    -- atlas_galaxy:setFilter("linear", "linear")
 
     -- Stabatch : Galaxy starfield
-
     starsBatch_proche = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do          -- stars near (zoom in)
         local x = galaxy.star_system.position_x[i]  -- Position X du système i
@@ -80,26 +84,11 @@ function love.load()
 
 
     local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
- --   orbitsBatch = love.graphics.newSpriteBatch(planetImg, totalOrbits, "dynamic")
-
-    -- Caméra exactement au milieu du monde
-    camX = galaxy.size_X / 2
-    camY = galaxy.size_Y / 2
 
     -- Centrage sur système :
     -- camX = galaxy.star_system.position_x[start_sys]
     -- camY = galaxy.star_system.position_y[start_sys]
     -- game_ref.zoom.state = 4
-
-    -- Option : zoom initial pour voir une bonne partie de la galaxie
-    -- local margin = 0.9
-    -- local fit_x = love.graphics.getWidth()  / galaxy.size_X * margin
-    -- local fit_y = love.graphics.getHeight() / galaxy.size_Y * margin
-    -- local fit_zoom = math.min(fit_x, fit_y)
-
-    -- Si zoom not by default :
-    -- game_ref.zoom.state = math.ceil( -math.log(fit_zoom) / math.log(game_ref.zoom.gap) )
-
 
     zoom_state()
 end
@@ -111,10 +100,10 @@ function love.update(dt)
 
     -- move camera with keys
     local camSpeed     = 300 * dt / math.max(game_ref.current_global_scale, 0.05)
-    if love.keyboard.isDown("up") then camY = camY - camSpeed end
-    if love.keyboard.isDown("down") then camY = camY + camSpeed end
-    if love.keyboard.isDown("left") then camX = camX - camSpeed end
-    if love.keyboard.isDown("right") then camX = camX + camSpeed end
+    if love.keyboard.isDown("up") then game_ref.camera.Y = game_ref.camera.Y - camSpeed end
+    if love.keyboard.isDown("down") then game_ref.camera.Y = game_ref.camera.Y + camSpeed end
+    if love.keyboard.isDown("left") then game_ref.camera.X = game_ref.camera.X - camSpeed end
+    if love.keyboard.isDown("right") then game_ref.camera.X = game_ref.camera.X + camSpeed end
  --   print (" zoom : " .. game_ref.zoom.state .. " " )
 
     -- clicking simple or double-click
@@ -122,12 +111,14 @@ function love.update(dt)
          clickTime = clickTime + dt
          if clickTime > game_ref.ui.doubleClickThreshold then
              if clickCount == 1 then
-                 print("Simple click")
+          --       print("Simple click")
              else
-                 print("Double click")
+          --       print("Double click")
              end
              clickCount = 0
              clickTime = 0
+             print (click.x)
+             print (click.y)
          end
     end
 
@@ -135,45 +126,49 @@ end
 
 function love.draw()
 
-    atlas_galaxy:draw("geante_glacee", 50,50)
-    atlas_galaxy:draw("geante_gazeuse", 114,50)
+    game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 
-    -- Save graphic state
-    love.graphics.push()
-
-    -- Center the screen
-    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-
-    -- Zoom global (inverse car state grand = zoom out)
+   love.graphics.push()
+-- 1. Déplacer l'origine au centre de l'écran (point fixe autour duquel on va zoomer)
+    love.graphics.translate(
+        love.graphics.getWidth()  / 2,
+        love.graphics.getHeight() / 2
+    )
+    -- 2. Appliquer le zoom (scale > 1 = zoom in, scale < 1 = zoom out)
     love.graphics.scale(game_ref.current_global_scale, game_ref.current_global_scale)
+    -- 3. Déplacer le monde en sens inverse de la caméra
+    love.graphics.translate(-game_ref.camera.X, -game_ref.camera.Y)
 
-    -- Apply cam new pos (-cam reverse sens)
-    love.graphics.translate(-camX, -camY)
-    -- love.graphics.translate(galaxy.size_X / 2 , galaxy.size_Y / 2)
+    -- debug (line around galaxy)
+    local half = galaxy.size_X / 2
+    love.graphics.rectangle("line", -half, -half, galaxy.size_X, galaxy.size_Y)
+    -- love.graphics.print("Camera world pos: " .. string.format("%.0f", game_ref.camera.X) .. ", " .. string.format("%.0f", game_ref.camera.Y), -love.graphics.getWidth()/2 + 20, -love.graphics.getHeight()/2 + 20)
 
     -- Draw stars
-    zoom_state()
-   --  love.graphics.draw(starsBatch_proche)
-
+   zoom_state()
     -- Draw orbitals
- --   love.graphics.draw(orbitsBatch)
+                    --   love.graphics.draw(orbitsBatch)
 
-    -- restaure graphic state (for unzoomed stuff)
+
+    -- Graphic cursor
+    local mx, my = love.mouse.getPosition()
+    local wx, wy = game_ref:screenToWorld(mx, my)
+    love.graphics.setColor(1, 0, 0, 0.6)
+    love.graphics.circle("fill", wx, wy, 8)
+    love.graphics.setColor(1,1,1)
+
     love.graphics.pop()
 
     -- HUD
-    love.graphics.print("Zoom: x" .. game_ref.zoom.state, 10, 10)
 
+
+    love.graphics.print("Zoom state: " .. game_ref.zoom.state, 10, 10)
+    love.graphics.print("Scale: " .. string.format("%.3f", game_ref.current_global_scale), 10, 30)
+    love.graphics.print("Camera: " .. math.floor(game_ref.camera.X) .. ", " .. math.floor(game_ref.camera.Y), 10, 50)
 end
-
-
---
---
---
 
 -- What's changing at zoom state X ?
 function zoom_state()
-    game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 	if game_ref.zoom.state <= game_ref.zoom.proche then
 		love.graphics.draw(starsBatch_proche)
 	else
@@ -187,10 +182,8 @@ function love.wheelmoved(x, y)
     local old_state = game_ref.zoom.state
     if y > 0 then       -- molette haut → zoom in → state diminue
         game_ref.zoom.state = math.max(game_ref.zoom.min, game_ref.zoom.state - 1)
-      --  zoom_state()
     elseif y < 0 then   -- molette bas → zoom out → state augmente
         game_ref.zoom.state = math.min(game_ref.zoom.max, game_ref.zoom.state + 1)
-     --   zoom_state()
     end
 
 end
@@ -207,14 +200,17 @@ function love.mousepressed(x, y, button)
     if button == 3 then -- middle click
             isDragging = true
             dragStartX, dragStartY = x, y
-            camStartX, camStartY = camX, camY
+            camStartX, camStartY = game_ref.camera.X, game_ref.camera.Y
     end
-
-   -- game_ref.ui.doubleClickThreshold
 
     if button == 1 then  -- Bouton gauche de la souris
         clickCount = clickCount + 1
         clickTime = 0  -- Réinitialise le minuteur
+        click.x = x
+        click.y = y
+
+        local wx, wy = game_ref:screenToWorld(x, y)
+        print(string.format("Clic world : %.1f , %.1f", wx, wy))
     end
 
 end
@@ -230,13 +226,30 @@ function love.mousemoved(x, y, dx, dy)
     if isDragging then
         -- Inverse the move.
         local divisor = math.max(game_ref.current_global_scale, 0.05)
-        camX = camStartX - (x - dragStartX) / divisor
-        camY = camStartY - (y - dragStartY) / divisor
+        game_ref.camera.X = camStartX - (x - dragStartX) / divisor
+        game_ref.camera.Y = camStartY - (y - dragStartY) / divisor
     end
 end
 
 
---
+function game_ref:screenToWorld(sx, sy)
+
+    local wx = (sx - love.graphics.getWidth()/2) / game_ref.current_global_scale + game_ref.camera.X
+    local wy = (sy - love.graphics.getHeight()/2) / game_ref.current_global_scale + game_ref.camera.Y
+
+    return wx, wy
+end
+
+function worldToScreen(wx, wy)
+    local halfW = love.graphics.getWidth()  / 2
+    local halfH = love.graphics.getHeight() / 2
+    local scale = game_ref.current_global_scale
+
+    local sx = (wx - game_ref.camera.X) * scale + halfW
+    local sy = (wy - game_ref.camera.Y) * scale + halfH
+
+    return sx, sy
+end
 --
 --
 
@@ -253,7 +266,7 @@ function getFilesWithExtension(path, extension)
         local info = love.filesystem.getInfo((path or "") .. "/" .. filename)
         if info and info.type == "file" then
             -- take the file extension
-            local ext = filename:sub(-#extension):lower()   -- version 2 (plus rapide)
+            local ext = filename:sub(-#extension):lower()
 
             if ext == extension:lower() then
                 table.insert(files, filename)

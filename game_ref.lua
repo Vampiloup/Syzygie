@@ -16,6 +16,10 @@ local game_ref = {
             },
             ui = {
                 doubleClickThreshold = 0.3
+            },
+            camera = {
+                X = 0,
+                Y = 0
             }
     }
 

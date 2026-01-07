@@ -121,12 +121,21 @@ function Galaxy.load()
 
 
     end
+
 	if RealStarsNumber < Galaxy.number_of_systems then
 		print("Only ".. RealStarsNumber .. " stars on " .. Galaxy.number_of_systems .. " could be generated")
 		Galaxy.number_of_systems = RealStarsNumber - 1
     else
         print ( Galaxy.number_of_systems .. " generated")
 	end
+
+    -- moving the coordinates 0 to the center of the galaxy
+    local center_X = Galaxy.size_X / 2
+    local center_Y = Galaxy.size_Y / 2
+	for i = 1, Galaxy.number_of_systems do
+        Galaxy.star_system.position_x[i] = Galaxy.star_system.position_x[i] - center_X
+        Galaxy.star_system.position_y[i] = Galaxy.star_system.position_y[i] - center_Y
+    end
 
 	print (Essayer)
 
