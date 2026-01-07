@@ -191,8 +191,6 @@ function love.keypressed(key, scancode, isrepeat)
 
 end
 
-
-
 function love.mousepressed(x, y, button)
 
     if button == 3 then -- middle click
@@ -206,13 +204,13 @@ function love.mousepressed(x, y, button)
         clickTime = 0  -- Réinitialise le minuteur
         click.x = x
         click.y = y
-
         local wx, wy = game_ref:screenToWorld(x, y)
         print(string.format("Clic world : %.1f , %.1f", wx, wy))
-    end
+        a, b = findSystemNear(wx, wy, 16)
+        print (galaxy.star_system.nom[a])
+        end
 
 end
-
 
 function love.mousereleased(x, y, button)
     if button == 3 then
@@ -248,9 +246,30 @@ function worldToScreen(wx, wy)
 
     return sx, sy
 end
---
---
 
+
+function findSystemNear(tx, ty, max_distance)
+    max_distance = max_distance or 10       -- pixels ou unités selon ton échelle
+    local sys = galaxy.star_system
+    local best_index = nil
+    local best_dist_sq = max_distance * max_distance
+
+    for i = 1, galaxy.number_of_systems do
+        local dx = sys.position_x[i] - tx
+        local dy = sys.position_y[i] - ty
+        local dist_sq = dx*dx + dy*dy
+
+        if dist_sq < best_dist_sq then
+            best_dist_sq = dist_sq
+            best_index = i
+        end
+    end
+
+    if best_index then
+        return best_index, galaxy.star_system.nom[best_index]
+    end
+    return nil, nil
+end
 
 
 function getFilesWithExtension(path, extension)

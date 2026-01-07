@@ -16,7 +16,6 @@ local Galaxy = {
         orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
             phase = {}                      -- starting angle of orbitals
         },
-        name = "",                          -- Name of the galaxy
         NbOrbits = 5                        -- Number of orbits by system
     },
     distmini = 80,                          -- distance mini between Systems
@@ -128,7 +127,7 @@ function Galaxy.load()
 		local Derniere = {
 			"a", "ae", "am", "an", "as", "ate", "ble", "bus", "ca", "ce", "cus", "cris", "ctae", "cto", "cus", "cut", "des", "do", "dos", "dus", "e", "ent", "er", "est", "hil", "git", "go", "gno", "ia", "io", "ion", "ior", "is", "it", "ius", "la", "le", "lo", "lus", "ma", "ment", "mnes", "mu", "mus", "na", "ne", "no", "num", "nus", "o", "ory", "ous", "que", "quis", "ra", "re", "rem", "ro", "ros", "sa", "sis","sit", "sor", "sti", "sto", "stris", "strum", "sul", "sum", "tae", "tem", "to", "ter", "tes", "tius", "to", "tor", "tur", "tus", "ty", "um" ,"us", "va"
 		}
-		nom_choisi = ""
+		local nom_choisi = ""
 		repeat
 			local nom_disponible = true
 			nom_choisi = StartNameGeneration (Premiere, Medium, Derniere)
@@ -143,7 +142,6 @@ function Galaxy.load()
 			end
 		until (nom_disponible == true)
 		Galaxy.star_system.nom[i] = nom_choisi
-		print (Galaxy.star_system.nom[i])
 
 
     Essayer = "Aucune erreur generation"
