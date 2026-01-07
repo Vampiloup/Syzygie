@@ -117,8 +117,6 @@ function love.update(dt)
              end
              clickCount = 0
              clickTime = 0
-             print (click.x)
-             print (click.y)
          end
     end
 

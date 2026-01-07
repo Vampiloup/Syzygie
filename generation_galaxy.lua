@@ -113,11 +113,40 @@ function Galaxy.load()
             break
         end
 
-      Galaxy.star_system.orbital.phase[i] = {}
-      for j = 1, galaxy.star_system.NbOrbits do
+        Galaxy.star_system.orbital.phase[i] = {}
+        for j = 1, galaxy.star_system.NbOrbits do
         Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
         end
-            Essayer = "Aucune erreur generation"
+
+    -- Name creation
+		local Premiere = {
+			"a", "ab", "ac", "ad", "ae", "aes", "am", "an", "ante", "au", "be","car", "clau", "cen", "circum", "co", "con", "dan", "de", "den", "di", "dic", "dis", "do","duo", "e", "est", "ex", "fe", "fi", "foe", "gra", "in", "inter", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni", "no", "non", "o", "ob", "pa", "pe", "per", "plu", "post", "prae", "pre", "pro", "pu", "qua", "quam", "quasi", "re", "rem", "res", "retro", "ro", "sa", "san", "sax", "si", "su", "sub", "super", "tan","ter", "tol", "tra", "trans", "tri", "ui", "ver","vi", "vo"
+		}
+		local Medium = {
+			"a", "an", "ant", "at", "bi", "bus", "ci", "di", "cer", "clu", "de", "e", "el", "en", "ent", "er", "ere", "es", "et", "fa", "fe", "in", "is", "it", "iu", "la", "le", "li", "ma", "mi", "mit", "mo", "mu", "na", "ne", "ni", "nt", "ob", "phan", "qu", "que", "qui", "ra", "re", "ri", "rum", "per", "ta", "te", "ter", "ti", "tin", "tu", "tur", "um", "us", "vi", "zen"
+		}
+		local Derniere = {
+			"a", "ae", "am", "an", "as", "ate", "ble", "bus", "ca", "ce", "cus", "cris", "ctae", "cto", "cus", "cut", "des", "do", "dos", "dus", "e", "ent", "er", "est", "hil", "git", "go", "gno", "ia", "io", "ion", "ior", "is", "it", "ius", "la", "le", "lo", "lus", "ma", "ment", "mnes", "mu", "mus", "na", "ne", "no", "num", "nus", "o", "ory", "ous", "que", "quis", "ra", "re", "rem", "ro", "ros", "sa", "sis","sit", "sor", "sti", "sto", "stris", "strum", "sul", "sum", "tae", "tem", "to", "ter", "tes", "tius", "to", "tor", "tur", "tus", "ty", "um" ,"us", "va"
+		}
+		nom_choisi = ""
+		repeat
+			local nom_disponible = true
+			nom_choisi = StartNameGeneration (Premiere, Medium, Derniere)
+			-- check if the newly created name is already taken by another star
+			if i > 1 then
+				for j = 1, i-1 do
+					nomJ = Galaxy.star_system.nom[j]
+					if nomJ == nom_choisi then
+						nom_disponible = false
+					end
+				end
+			end
+		until (nom_disponible == true)
+		Galaxy.star_system.nom[i] = nom_choisi
+		print (Galaxy.star_system.nom[i])
+
+
+    Essayer = "Aucune erreur generation"
 
 
     end
@@ -155,6 +184,21 @@ end
 
 function Galaxy.draw()
 
+end
+
+function StartNameGeneration (Premiere, Medium, Derniere)
+	local number2 = Premiere[math.random(1,#Premiere)]
+
+	-- choose number of middle syllages (can be 0 to 2)
+	local number = math.random(0,2)
+	-- Choose "number" middle syllabes
+	for i = 1, number do
+		number2 = number2 .. Medium[math.random(1,#Medium)]
+	end
+
+	-- Choose last syllabe
+	number2 = number2 .. Derniere[math.random(1,#Derniere)]
+	return number2
 end
 
 return Galaxy
