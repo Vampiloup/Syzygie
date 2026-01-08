@@ -11,8 +11,8 @@ local Galaxy = {
     star_system = {
         nom = {},                           -- Name of the system
         type = {},
-        position_x = {},                    -- Position by X
-        position_y = {},                    -- Position by X
+        position_X = {},                    -- Position by X
+        position_Y = {},                    -- Position by X
         orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
             phase = {}                      -- starting angle of orbitals
         },
@@ -85,11 +85,11 @@ function Galaxy.load()
                 y1 = r * math.sin(theta) + Galaxy.size_X / 2
             end
             local distance = true
-            Galaxy.star_system.position_x[i] = x1
-            Galaxy.star_system.position_y[i] = y1
+            Galaxy.star_system.position_X[i] = x1
+            Galaxy.star_system.position_Y[i] = y1
             if i > 1 then
                 for j = 1, i-1 do
-                    ecart = math.sqrt((Galaxy.star_system.position_x[j] - x1)^2 + (Galaxy.star_system.position_y[j] - y1)^2)
+                    ecart = math.sqrt((Galaxy.star_system.position_X[j] - x1)^2 + (Galaxy.star_system.position_Y[j] - y1)^2)
                     if ecart < Galaxy.distmini then
                         distance = false
                         break
@@ -160,8 +160,8 @@ function Galaxy.load()
     local center_X = Galaxy.size_X / 2
     local center_Y = Galaxy.size_Y / 2
 	for i = 1, Galaxy.number_of_systems do
-        Galaxy.star_system.position_x[i] = Galaxy.star_system.position_x[i] - center_X
-        Galaxy.star_system.position_y[i] = Galaxy.star_system.position_y[i] - center_Y
+        Galaxy.star_system.position_X[i] = Galaxy.star_system.position_X[i] - center_X
+        Galaxy.star_system.position_Y[i] = Galaxy.star_system.position_Y[i] - center_Y
     end
 
 	print (Essayer)

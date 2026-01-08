@@ -21,7 +21,12 @@ local click = {
     x = 0,      -- screen x
     y = 0,      -- screen y
     wx = 0,     -- world x
-    wy = 0      -- world y
+    wy = 0,      -- world y
+    object_galaxy       = false,    -- Is an object on the map clicked ?
+    object_type         = "",       -- type of clicked object (star, orbital...)
+    object_id           = 0,        -- ID of the object
+    object_X            = 0,        -- X coordinate of object origin
+    object_Y            = 0         -- Y coordinate of object origin
 }
 
 -- Double clicks
@@ -64,8 +69,8 @@ function love.load()
     -- Stabatch : Galaxy starfield
     starsBatch_proche = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do          -- stars near (zoom in)
-        local x = galaxy.star_system.position_x[i]  -- Position X du système i
-        local y = galaxy.star_system.position_y[i]  -- Position Y du système i
+        local x = galaxy.star_system.position_X[i]  -- Position X du système i
+        local y = galaxy.star_system.position_Y[i]  -- Position Y du système i
         local type_etoile = game_prep.starfield.type_etoile_proche[galaxy.star_system.type[i]]
         local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
         local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
@@ -74,8 +79,8 @@ function love.load()
     end
     starsBatch_lointain = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do          -- stars far (zoom out)
-        local x = galaxy.star_system.position_x[i]  -- Position X du système i
-        local y = galaxy.star_system.position_y[i]  -- Position Y du système i
+        local x = galaxy.star_system.position_X[i]  -- Position X du système i
+        local y = galaxy.star_system.position_Y[i]  -- Position Y du système i
         local type_etoile = game_prep.starfield.type_etoile_lointain[galaxy.star_system.type[i]]
         local vx, vy, vw, vh = atlas_galaxy:getViewport(type_etoile)
         local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
@@ -127,33 +132,42 @@ function love.draw()
     game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
 
    love.graphics.push()
--- 1. Déplacer l'origine au centre de l'écran (point fixe autour duquel on va zoomer)
-    love.graphics.translate(
-        love.graphics.getWidth()  / 2,
-        love.graphics.getHeight() / 2
-    )
-    -- 2. Appliquer le zoom (scale > 1 = zoom in, scale < 1 = zoom out)
-    love.graphics.scale(game_ref.current_global_scale, game_ref.current_global_scale)
-    -- 3. Déplacer le monde en sens inverse de la caméra
-    love.graphics.translate(-game_ref.camera.X, -game_ref.camera.Y)
+        love.graphics.translate(                                                                    -- moving camera at screen center
+            love.graphics.getWidth()  / 2,
+            love.graphics.getHeight() / 2
+        )
+        love.graphics.scale(game_ref.current_global_scale, game_ref.current_global_scale)           -- zoom scale
+        love.graphics.translate(-game_ref.camera.X, -game_ref.camera.Y)                             -- Moving camera
 
-    -- debug (line around galaxy)
-    local half = galaxy.size_X / 2
-    love.graphics.rectangle("line", -half, -half, galaxy.size_X, galaxy.size_Y)
-    -- love.graphics.print("Camera world pos: " .. string.format("%.0f", game_ref.camera.X) .. ", " .. string.format("%.0f", game_ref.camera.Y), -love.graphics.getWidth()/2 + 20, -love.graphics.getHeight()/2 + 20)
+        -- debug (line around galaxy)
+        local half = galaxy.size_X / 2
+        love.graphics.rectangle("line", -half, -half, galaxy.size_X, galaxy.size_Y)
+        -- love.graphics.print("Camera world pos: " .. string.format("%.0f", game_ref.camera.X) .. ", " .. string.format("%.0f", game_ref.camera.Y), -love.graphics.getWidth()/2 + 20, -love.graphics.getHeight()/2 + 20)
 
-    -- Draw stars
-   zoom_state()
-    -- Draw orbitals
-                    --   love.graphics.draw(orbitsBatch)
+        -- Draw stars
+        zoom_state()
+        -- Draw orbitals
+                        --   love.graphics.draw(orbitsBatch)
+
+        if click.object_galaxy then
+            print (a)
+            print (galaxy.star_system.nom[a])
+            love.graphics.push()                      -- Niveau 2 : effet local
+                love.graphics.translate(click.object_X, click.object_Y)
+                love.graphics.rotate(love.timer.getTime())   -- rotation animée
+                love.graphics.setColor(1, 1, 0, 1)
+                love.graphics.setLineWidth(16)
+                love.graphics.circle("line", 0, 0, 64, 16)
+            love.graphics.pop()
+        end
 
 
-    -- Graphic cursor
-    local mx, my = love.mouse.getPosition()
-    local wx, wy = game_ref:screenToWorld(mx, my)
-    love.graphics.setColor(1, 0, 0, 0.6)
-    love.graphics.circle("fill", wx, wy, 8)
-    love.graphics.setColor(1,1,1)
+        -- Graphic cursor
+        local mx, my = love.mouse.getPosition()
+        local wx, wy = game_ref:screenToWorld(mx, my)
+        love.graphics.setColor(1, 0, 0, 0.6)
+        love.graphics.circle("fill", wx, wy, 8)
+        love.graphics.setColor(1,1,1)
 
     love.graphics.pop()
 
@@ -205,10 +219,18 @@ function love.mousepressed(x, y, button)
         click.x = x
         click.y = y
         local wx, wy = game_ref:screenToWorld(x, y)
-        print(string.format("Clic world : %.1f , %.1f", wx, wy))
+     --   print(string.format("Clic world : %.1f , %.1f", wx, wy))
         a, b = findSystemNear(wx, wy, 16)
-        print (galaxy.star_system.nom[a])
+        if a ~= nil then
+            click.object_galaxy       = true
+            click.object_type         = "star"
+            click.object_id           = a
+            click.object_X            = galaxy.star_system.position_X[a]
+            click.object_Y            = galaxy.star_system.position_Y[a]
+        else
+            click.object_galaxy       = false
         end
+    end
 
 end
 
@@ -249,14 +271,14 @@ end
 
 
 function findSystemNear(tx, ty, max_distance)
-    max_distance = max_distance or 10       -- pixels ou unités selon ton échelle
+    max_distance = max_distance or 32       -- Pixels or units.
     local sys = galaxy.star_system
     local best_index = nil
     local best_dist_sq = max_distance * max_distance
 
     for i = 1, galaxy.number_of_systems do
-        local dx = sys.position_x[i] - tx
-        local dy = sys.position_y[i] - ty
+        local dx = sys.position_X[i] - tx
+        local dy = sys.position_Y[i] - ty
         local dist_sq = dx*dx + dy*dy
 
         if dist_sq < best_dist_sq then
@@ -303,8 +325,8 @@ function refill_batch_orbits()
 
      orbitsBatch:clear()
        for sys = 1, galaxy.number_of_systems do
-           local centerX = galaxy.star_system.position_x[sys]
-           local centerY = galaxy.star_system.position_y[sys]
+           local centerX = galaxy.star_system.position_X[sys]
+           local centerY = galaxy.star_system.position_Y[sys]
         -- For each orbit around this system
            for orbit = 1, galaxy.star_system.NbOrbits do
                local radius = (orbit * 6 + 4)
