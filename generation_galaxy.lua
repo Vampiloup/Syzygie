@@ -8,15 +8,16 @@ local Galaxy = {
     number_of_systems = 0,
     size_X = 0,
     size_Y = 0,
+    nbOrbits = 5,                           -- Number of orbits by system
     star_system = {
         nom = {},                           -- Name of the system
         type = {},
         position_X = {},                    -- Position by X
         position_Y = {},                    -- Position by X
         orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
-            phase = {}                      -- starting angle of orbitals
+            phase = {},                     -- starting angle of orbitals
+            type = {}                       -- Type of orbital (rock planet, gaz giant, asteroids, etc.)
         },
-        NbOrbits = 5                        -- Number of orbits by system
     },
     distmini = 80,                          -- distance mini between Systems
     name = "Name of the galaxy"             -- Name of the galaxy (the save name, basically)
@@ -113,9 +114,12 @@ function Galaxy.load()
         end
 
         Galaxy.star_system.orbital.phase[i] = {}
-        for j = 1, galaxy.star_system.NbOrbits do
+        Galaxy.star_system.orbital.type[i] = {}
+        for j = 1, galaxy.nbOrbits do
         Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
+        Galaxy.star_system.orbital.type[i][j] = love.math.random(1, #game_prep.starfield.orbitals.chance)
         end
+
 
     -- Name creation
 		local Premiere = {
@@ -143,9 +147,7 @@ function Galaxy.load()
 		until (nom_disponible == true)
 		Galaxy.star_system.nom[i] = nom_choisi
 
-
     Essayer = "Aucune erreur generation"
-
 
     end
 

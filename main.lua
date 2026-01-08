@@ -66,7 +66,7 @@ function love.load()
     atlas_galaxy:hardBake("height")
     collectgarbage("collect")
 
-    -- Stabatch : Galaxy starfield
+    -- Starbatch : Galaxy starfield
     starsBatch_proche = love.graphics.newSpriteBatch(atlas_galaxy.image, galaxy.number_of_systems, "stream")
     for i = 1, galaxy.number_of_systems do          -- stars near (zoom in)
         local x = galaxy.star_system.position_X[i]  -- Position X du système i
@@ -88,20 +88,26 @@ function love.load()
     end
 
 
-    local totalOrbits = galaxy.number_of_systems * galaxy.star_system.NbOrbits
+    local totalOrbits = galaxy.number_of_systems * galaxy.nbOrbits
 
+    orbitalsBatch = love.graphics.newSpriteBatch(atlas_galaxy.image, totalOrbits, "stream")
+    refill_batch_orbits()
+
+ --[[
     -- Centrage sur système :
     -- camX = galaxy.star_system.position_x[start_sys]
     -- camY = galaxy.star_system.position_y[start_sys]
     -- game_ref.zoom.state = 4
 
     zoom_state()
+    ]]
+
 end
 
 
 function love.update(dt)
 
---  refill_batch_orbits()
+
 
     -- move camera with keys
     local camSpeed     = 300 * dt / math.max(game_ref.current_global_scale, 0.05)
@@ -125,6 +131,8 @@ function love.update(dt)
          end
     end
 
+    refill_batch_orbits()
+
 end
 
 function love.draw()
@@ -147,7 +155,7 @@ function love.draw()
         -- Draw stars
         zoom_state()
         -- Draw orbitals
-                        --   love.graphics.draw(orbitsBatch)
+
 
         if click.object_galaxy then
             print (a)
@@ -166,7 +174,7 @@ function love.draw()
         local mx, my = love.mouse.getPosition()
         local wx, wy = game_ref:screenToWorld(mx, my)
         love.graphics.setColor(1, 0, 0, 0.6)
-        love.graphics.circle("fill", wx, wy, 8)
+        love.graphics.circle("fill", wx, wy, 10 / game_ref.current_global_scale)
         love.graphics.setColor(1,1,1)
 
     love.graphics.pop()
@@ -182,8 +190,10 @@ end
 -- What's changing at zoom state X ?
 function zoom_state()
 	if game_ref.zoom.state <= game_ref.zoom.proche then
+        love.graphics.draw(orbitalsBatch)
 		love.graphics.draw(starsBatch_proche)
 	else
+        love.graphics.draw(orbitalsBatch)
 		love.graphics.draw(starsBatch_lointain)
     end
 end
@@ -242,7 +252,7 @@ end
 
 function love.mousemoved(x, y, dx, dy)
     if isDragging then
-        -- Inverse the move.
+        -- inverse the move
         local divisor = math.max(game_ref.current_global_scale, 0.05)
         game_ref.camera.X = camStartX - (x - dragStartX) / divisor
         game_ref.camera.Y = camStartY - (y - dragStartY) / divisor
@@ -307,7 +317,9 @@ function getFilesWithExtension(path, extension)
             -- take the file extension
             local ext = filename:sub(-#extension):lower()
 
-            if ext == extension:lower() then
+            if ext == extension:lower() then   for sys = 1, galaxy.number_of_systems do
+
+    end
                 table.insert(files, filename)
             end
         end
@@ -323,22 +335,27 @@ end
 
 function refill_batch_orbits()
 
-     orbitsBatch:clear()
-       for sys = 1, galaxy.number_of_systems do
-           local centerX = galaxy.star_system.position_X[sys]
-           local centerY = galaxy.star_system.position_Y[sys]
-        -- For each orbit around this system
-           for orbit = 1, galaxy.star_system.NbOrbits do
-               local radius = (orbit * 6 + 4)
-               local angularSpeed = 0.8 / orbit
-               local angle = galaxy.star_system.orbital.phase[sys][orbit] +  (love.timer.getTime() * angularSpeed)
-               local px = centerX + math.cos(angle) * radius
-               local py = centerY + math.sin(angle) * radius
-               local size = game_ref.current_global_scale * 0.6
-    --           print (size)
-               orbitsBatch:add(px, py, 0, size, size, (planetImg:getWidth()/2), planetImg:getHeight()/2)
-           end
-       end
+    orbitalsBatch:clear()
+    for sys = 1, galaxy.number_of_systems do
+        local centerX = galaxy.star_system.position_X[sys]
+        local centerY = galaxy.star_system.position_Y[sys]
+        for orbit = 1, galaxy.nbOrbits do
+            local radius = (orbit * 6 + 4)
+            local angularSpeed = 0.8 / orbit
+            local angle = galaxy.star_system.orbital.phase[sys][orbit] + (love.timer.getTime() * angularSpeed)
+            local px = centerX + math.cos(angle) * radius
+            local py = centerY + math.sin(angle) * radius
+            local size = game_ref.current_global_scale * 0.6
+            local type_orbital = galaxy.star_system.orbital.type[sys][orbit]
+            if type_orbital > 1 then
+                local type_orbital2 = game_prep.starfield.orbitals.type[type_orbital]
+                print (type_orbital .. " " ..type_orbital2)
+                local vx, vy, vw, vh = atlas_galaxy:getViewport(type_orbital2)
+                local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_galaxy.image:getDimensions())
+                orbitalsBatch:add(quad, px, py, 0, size, size, vw/2, vh/2)
+            end
+        end
+    end
 
 end
 
