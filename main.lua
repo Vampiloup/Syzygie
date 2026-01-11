@@ -149,8 +149,6 @@ function love.update(dt)
 		end
 	end
 
-	refill_batch_orbits()
-
 end
 
 function love.draw()
@@ -170,9 +168,9 @@ love.graphics.push()
 		love.graphics.rectangle("line", -half, -half, galaxy.size_X, galaxy.size_Y)
 		-- love.graphics.print("Camera world pos: " .. string.format("%.0f", game_ref.camera.X) .. ", " .. string.format("%.0f", game_ref.camera.Y), -love.graphics.getWidth()/2 + 20, -love.graphics.getHeight()/2 + 20)
 
-		-- Draw stars
+		-- Draw stars, orbitals
 		zoom_state()
-		-- Draw orbitals
+
 
 
 		if click.object_galaxy then
@@ -208,19 +206,16 @@ end
 -- What's changing at zoom state X ?
 function zoom_state()
 	if game_ref.zoom.state <= game_ref.zoom.proche then
+		refill_batch_orbits()
 		love.graphics.draw(orbitalsBatch)
 		love.graphics.draw(starsBatch_proche)
 	else
-		love.graphics.draw(orbitalsBatch)
+	--	love.graphics.draw(orbitalsBatch)
 		love.graphics.draw(starsBatch_lointain)
 	end
 	if game_ref.zoom.state <= game_ref.zoom.show_label then
-		print("enable_name")
 		love.graphics.draw(labelStarsBatch)
-	else
-		print("disable_name")
 	end
-
 end
 
 
@@ -353,9 +348,8 @@ function getFilesWithExtension(path, extension)
 end
 
 
---
---
---
+
+
 
 
 function refill_batch_orbits()
@@ -364,13 +358,13 @@ function refill_batch_orbits()
 	for sys = 1, galaxy.number_of_systems do
 		local centerX = galaxy.star_system.position_X[sys]
 		local centerY = galaxy.star_system.position_Y[sys]
+		local size = game_ref.current_global_scale * 0.01
 		for orbit = 1, galaxy.nbOrbits do
 			local radius = (orbit * 6 + 4)
 			local angularSpeed = 0.8 / orbit
 			local angle = galaxy.star_system.orbital.phase[sys][orbit] + (love.timer.getTime() * angularSpeed)
 			local px = centerX + math.cos(angle) * radius
 			local py = centerY + math.sin(angle) * radius
-			local size = game_ref.current_global_scale * 0.6
 			local type_orbital = galaxy.star_system.orbital.type[sys][orbit]
 			if type_orbital > 1 then
 				local type_orbital2 = game_prep.starfield.orbitals.type[type_orbital]
