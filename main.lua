@@ -95,6 +95,8 @@ function love.load()
 		starsBatch_lointain:add(quad, x, y, 0, 1, sx, vw/2, vh/2)
 	end
 
+	orbitalsBatch = love.graphics.newSpriteBatch(atlas_galaxy.image, totalOrbits, "stream")
+	refill_batch_orbits()
 
 
 	labelStarsBatch = love.graphics.newText(starLabelFont)
@@ -107,9 +109,39 @@ function love.load()
 
 
 
+	-- guiGameBatch :  Gui standard in the game
+	atlas_guiGame = textureAtlas.newDynamicSize()
+	atlas_guiGame:setFilter("nearest")
+	local png_files = getFilesWithExtension("assets/" .. game_ref.path.default .. "/GUI/gui_1920_1080", ".png")
+	print("Nombre de PNG trouvés : " .. #png_files)   -- debug
+	for _, filename in ipairs(png_files) do
+		local path = "assets/" .. game_ref.path.default .. "/GUI/gui_1920_1080/" .. filename
+		local success, image = pcall(love.graphics.newImage, path)
+		if success then
+			local id = filename:gsub("%.png$", "")
+			atlas_guiGame:add(love.graphics.newImage(path), id)
+		else
+			print("Échec chargement : " .. path .. " → " .. tostring(image))  -- Error is in "image"
+		end
+	end
+	atlas_guiGame:hardBake("height")
+	collectgarbage("collect")
 
-	orbitalsBatch = love.graphics.newSpriteBatch(atlas_galaxy.image, totalOrbits, "stream")
-	refill_batch_orbits()
+	guiGameBatch = love.graphics.newSpriteBatch(atlas_guiGame.image, game_ref.ui.gui_systeme_nb, "stream")
+	for i = 1, game_ref.ui.gui_systeme_nb do
+		local x = game_ref.ui.gui_systeme[i][2]
+		local y = game_ref.ui.gui_systeme[i][3]
+		local type_gui = game_ref.ui.gui_systeme[i][1]
+		local vx, vy, vw, vh = atlas_guiGame:getViewport(type_gui)
+		local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_guiGame.image:getDimensions())
+		guiGameBatch:add(quad, x, y, 0, 1, sx, vw, vh)
+	end
+
+
+
+
+
+
 
 
 
@@ -174,8 +206,6 @@ love.graphics.push()
 
 
 		if click.object_galaxy then
-			print (a)
-			print (galaxy.star_system.nom[a])
 			love.graphics.push()                      -- Niveau 2 : effet local
 				love.graphics.translate(click.object_X, click.object_Y)
 				love.graphics.rotate(love.timer.getTime())   -- rotation animée
@@ -195,12 +225,22 @@ love.graphics.push()
 
 	love.graphics.pop()
 
+	---------------
 	-- HUD
-
+	---------------
 
 	love.graphics.print("Zoom state: " .. game_ref.zoom.state, 10, 10)
 	love.graphics.print("Scale: " .. string.format("%.3f", game_ref.current_global_scale), 10, 30)
 	love.graphics.print("Camera: " .. math.floor(game_ref.camera.X) .. ", " .. math.floor(game_ref.camera.Y), 10, 50)
+
+	-- Calling Star Panel
+
+		if click.object_galaxy then
+		GUI_Star_Bar()
+	end
+
+
+
 end
 
 -- What's changing at zoom state X ?
@@ -331,15 +371,13 @@ function getFilesWithExtension(path, extension)
 
 	-- Filtre sur l'extension voulue
 	for _, filename in ipairs(items) do
-		-- Vérifie que c'est bien un fichier (pas un dossier)
+		-- Vérifie que c'est bien un fichier (pas un dossier)d
 		local info = love.filesystem.getInfo((path or "") .. "/" .. filename)
 		if info and info.type == "file" then
 			-- take the file extension
 			local ext = filename:sub(-#extension):lower()
 
-			if ext == extension:lower() then   for sys = 1, galaxy.number_of_systems do
-
-	end
+			if ext == extension:lower() then
 				table.insert(files, filename)
 			end
 		end
@@ -376,6 +414,13 @@ function refill_batch_orbits()
 		end
 	end
 
+end
+
+
+function GUI_Star_Bar()
+	love.graphics.push()
+	atlas_guiGame:draw("systeme_barre", 0, 0)
+	love.graphics.pop()
 end
 
 

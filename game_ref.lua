@@ -15,7 +15,12 @@ local game_ref = {
 				default = "syzygie"                     -- Default mod
 			},
 			ui = {
-				doubleClickThreshold        = 0.3
+				activated = 0,
+				doubleClickThreshold = 0.3,
+				gui_systeme_nb = 1,
+				gui_systeme = {
+					{"systeme_barre", 0, 0}
+				}
 			},
 			camera = {
 				X = 0,
