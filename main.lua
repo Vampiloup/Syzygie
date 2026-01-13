@@ -139,13 +139,10 @@ function love.load()
 		local y = game_ref.ui.gui_systeme[i][2]
 		local vx, vy, vw, vh = atlas_guiGame:getViewport(i)
 		local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_guiGame.image:getDimensions())
+		game_ref.ui.gui_systeme[i][3] = vw
+		game_ref.ui.gui_systeme[i][4] = vh
 		guiGameBatch:add(quad, x, y, 0, 1, sx, vw, vh)
 	end
-
-
-
-
-
 
 
 --[[
@@ -281,6 +278,7 @@ function love.keypressed(key, scancode, isrepeat)
 
 end
 
+
 function love.mousepressed(x, y, button)
 
 	if button == 3 then -- middle click
@@ -290,21 +288,26 @@ function love.mousepressed(x, y, button)
 	end
 
 	if button == 1 then  -- Bouton gauche de la souris
-		clickCount = clickCount + 1
-		clickTime = 0  -- Réinitialise le minuteur
-		click.x = x
-		click.y = y
-		local wx, wy = game_ref:screenToWorld(x, y)
-	--   print(string.format("Clic world : %.1f , %.1f", wx, wy))
-		a, b = findSystemNear(wx, wy, 16)
-		if a ~= nil then
-			click.object_galaxy       = true
-			click.object_type         = "star"
-			click.object_id           = a
-			click.object_X            = galaxy.star_system.position_X[a]
-			click.object_Y            = galaxy.star_system.position_Y[a]
+		if pointInRect(x, y, game_ref.ui.gui_systeme["systeme_barre"][1], game_ref.ui.gui_systeme["systeme_barre"][2], game_ref.ui.gui_systeme["systeme_barre"][3], game_ref.ui.gui_systeme["systeme_barre"][4]) then
+			-- if the left System panel in clicked.
 		else
-			click.object_galaxy       = false
+			 print("********")
+			clickCount = clickCount + 1
+			clickTime = 0  -- Réinitialise le minuteur
+			click.x = x
+			click.y = y
+			local wx, wy = game_ref:screenToWorld(x, y)
+		--   print(string.format("Clic world : %.1f , %.1f", wx, wy))
+			a, b = findSystemNear(wx, wy, 16)
+			if a ~= nil then
+				click.object_galaxy       = true
+				click.object_type         = "star"
+				click.object_id           = a
+				click.object_X            = galaxy.star_system.position_X[a]
+				click.object_Y            = galaxy.star_system.position_Y[a]
+			else
+				click.object_galaxy       = false
+			end
 		end
 	end
 
@@ -369,6 +372,11 @@ function findSystemNear(tx, ty, max_distance)
 	return nil, nil
 end
 
+function pointInRect(px, py, rx, ry, rw, rh)
+    return px >= rx and px <= rx + rw and
+           py >= ry and py <= ry + rh
+end
+
 
 function getFilesWithExtension(path, extension)
 	local files = {}
@@ -425,7 +433,7 @@ end
 
 function GUI_Star_Bar()
 	love.graphics.push()
-	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2], game_ref.ui.gui_systeme.systeme_barre[3], game_ref.ui.gui_systeme.systeme_barre[4])
+	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2])
 	love.graphics.pop()
 end
 

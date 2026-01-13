@@ -18,7 +18,7 @@ local game_ref = {
 				doubleClickThreshold = 0.3,
 				gui_systeme_nb = 1,
 				gui_systeme = {
-					systeme_barre = {0, 0}
+					systeme_barre = {0, 0, 0, 0}	-- start X, start Y, width, height
 				}
 			},
 			camera = {

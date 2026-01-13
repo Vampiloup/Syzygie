@@ -116,8 +116,8 @@ function Galaxy.load()
         Galaxy.star_system.orbital.phase[i] = {}
         Galaxy.star_system.orbital.type[i] = {}
         for j = 1, galaxy.nbOrbits do
-        Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
-        Galaxy.star_system.orbital.type[i][j] = love.math.random(1, #game_prep.starfield.orbitals.chance)
+            Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
+            Galaxy.star_system.orbital.type[i][j] = love.math.random(1, #game_prep.starfield.orbitals.chance)
         end
 
 
