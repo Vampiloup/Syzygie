@@ -29,6 +29,11 @@ local click = {
 	object_Y            = 0         -- Y coordinate of object origin
 }
 
+-- Panel
+local panel = {
+	level_1 = 0
+}
+
 -- Double clicks
 local clickCount = 0
 local clickTime = 0
@@ -128,16 +133,14 @@ function love.load()
 	collectgarbage("collect")
 
 	guiGameBatch = love.graphics.newSpriteBatch(atlas_guiGame.image, game_ref.ui.gui_systeme_nb, "stream")
-	for i = 1, game_ref.ui.gui_systeme_nb do
-		local x = game_ref.ui.gui_systeme[i][2]
-		local y = game_ref.ui.gui_systeme[i][3]
-		local type_gui = game_ref.ui.gui_systeme[i][1]
-		local vx, vy, vw, vh = atlas_guiGame:getViewport(type_gui)
+
+	for i in pairs(game_ref.ui.gui_systeme) do
+		local x = game_ref.ui.gui_systeme[i][1]
+		local y = game_ref.ui.gui_systeme[i][2]
+		local vx, vy, vw, vh = atlas_guiGame:getViewport(i)
 		local quad = love.graphics.newQuad(vx, vy, vw, vh, atlas_guiGame.image:getDimensions())
 		guiGameBatch:add(quad, x, y, 0, 1, sx, vw, vh)
 	end
-
-
 
 
 
@@ -235,8 +238,11 @@ love.graphics.push()
 
 	-- Calling Star Panel
 
-		if click.object_galaxy then
+	if click.object_galaxy and click.object_type == "star" then
 		GUI_Star_Bar()
+		panel.level_1 = 1
+	else
+		panel.level_1 = 0
 	end
 
 
@@ -419,7 +425,7 @@ end
 
 function GUI_Star_Bar()
 	love.graphics.push()
-	atlas_guiGame:draw("systeme_barre", 0, 0)
+	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2], game_ref.ui.gui_systeme.systeme_barre[3], game_ref.ui.gui_systeme.systeme_barre[4])
 	love.graphics.pop()
 end
 
