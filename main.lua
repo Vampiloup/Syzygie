@@ -21,7 +21,7 @@ local click = {
 	x = 0,      -- screen x
 	y = 0,      -- screen y
 	wx = 0,     -- world x
-	wy = 0,      -- world y
+	wy = 0,     -- world y
 	object_galaxy       = false,    -- Is an object on the map clicked ?
 	object_type         = "",       -- type of clicked object (star, orbital...)
 	object_id           = 0,        -- ID of the object
@@ -46,6 +46,7 @@ local orbitsBatch = nil
 -- fonts
 local normalFont = love.graphics.newFont(16)
 local starLabelFont = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 12)
+local font_roboto_32 = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 32)
 
 
 function love.load()
@@ -186,6 +187,8 @@ end
 function love.draw()
 
 	game_ref.current_global_scale = math.pow(game_ref.zoom.gap, -game_ref.zoom.state)
+	love.graphics.setFont(normalFont)
+
 
 love.graphics.push()
 		love.graphics.translate(                                                                    -- moving camera at screen center
@@ -291,13 +294,12 @@ function love.mousepressed(x, y, button)
 		if pointInRect(x, y, game_ref.ui.gui_systeme["systeme_barre"][1], game_ref.ui.gui_systeme["systeme_barre"][2], game_ref.ui.gui_systeme["systeme_barre"][3], game_ref.ui.gui_systeme["systeme_barre"][4]) then
 			-- if the left System panel in clicked.
 		else
-			 print("********")
 			clickCount = clickCount + 1
 			clickTime = 0  -- Réinitialise le minuteur
 			click.x = x
 			click.y = y
 			local wx, wy = game_ref:screenToWorld(x, y)
-		--   print(string.format("Clic world : %.1f , %.1f", wx, wy))
+		--   print(string.format("Clic world : %.1f , %.1f", wx, wy))	love.graphics.setFont(font_roboto_32)
 			a, b = findSystemNear(wx, wy, 16)
 			if a ~= nil then
 				click.object_galaxy       = true
@@ -430,10 +432,17 @@ function refill_batch_orbits()
 
 end
 
+----------------
+-- GUIs
+----------------
 
 function GUI_Star_Bar()
 	love.graphics.push()
 	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2])
+--	bolt_roboto_Font
+	love.graphics.setFont(font_roboto_32)
+	love.graphics.print(galaxy.star_system.nom[click.object_id], 120, 42)
+	atlas_galaxy:draw(game_prep.starfield.type_etoile_proche[galaxy.star_system.type[click.object_id]],52,25,0.5,0.5)
 	love.graphics.pop()
 end
 
