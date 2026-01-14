@@ -412,10 +412,11 @@ function refill_batch_orbits()
 	for sys = 1, galaxy.number_of_systems do
 		local centerX = galaxy.star_system.position_X[sys]
 		local centerY = galaxy.star_system.position_Y[sys]
-		local size = game_ref.current_global_scale * 0.01
+		local size = game_ref.current_global_scale * 0.015
 		for orbit = 1, galaxy.nbOrbits do
 			local radius = (orbit * 6 + 4)
 			local angularSpeed = 0.8 / orbit
+	--		print(galaxy.star_system.orbital.phase[sys][orbit])
 			local angle = galaxy.star_system.orbital.phase[sys][orbit] + (love.timer.getTime() * angularSpeed)
 			local px = centerX + math.cos(angle) * radius
 			local py = centerY + math.sin(angle) * radius

@@ -33,8 +33,8 @@ local game_prep = {
                 type_etoile_lointain    = {"etoile_lointain_rouge","etoile_lointain_orange","etoile_lointain_jaune", "etoile_lointain_blanc", "etoile_lointain_cyan"},
                 type_etoile_proche      = {"etoile_proche_rouge","etoile_proche_orange","etoile_proche_jaune", "etoile_proche_blanc", "etoile_proche_cyan"},
                 orbitals                = {
-                    chance                  = {40, 25, 12 ,12},
-                    type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant"}
+                    chance                  = {20, 30, 25 ,25, 11},
+                    type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant", "asteroids"}
                 }
             }
 

@@ -5,34 +5,34 @@ love.math.setRandomSeed(os.time())
 -- Creation of the Galaxy
 
 local Galaxy = {
-    number_of_systems = 0,
-    size_X = 0,
-    size_Y = 0,
-    nbOrbits = 5,                           -- Number of orbits by system
-    star_system = {
-        nom = {},                           -- Name of the system
-        type = {},
-        position_X = {},                    -- Position by X
-        position_Y = {},                    -- Position by X
-        orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
-            phase = {},                     -- starting angle of orbitals
-            type = {}                       -- Type of orbital (rock planet, gaz giant, asteroids, etc.)
-        },
-    },
-    distmini = 80,                          -- distance mini between Systems
-    name = "Name of the galaxy"             -- Name of the galaxy (the save name, basically)
+	number_of_systems = 0,
+	size_X = 0,
+	size_Y = 0,
+	nbOrbits = 5,                           -- Number of orbits by system
+	star_system = {
+		nom = {},                           -- Name of the system
+		type = {},
+		position_X = {},                    -- Position by X
+		position_Y = {},                    -- Position by X
+		orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
+			phase = {},                     -- starting angle of orbitals
+			type = {}                       -- Type of orbital (rock planet, gaz giant, asteroids, etc.)
+		},
+	},
+	distmini = 80,                          -- distance mini between Systems
+	name = "Name of the galaxy"             -- Name of the galaxy (the save name, basically)
 }
 
 function Galaxy.load()
 
 	-- default map characteristics
-    local map_X         = game_prep.map_size[game_prep.default.map_size]["map_X"]                        -- take the size of the galaxy, horizontaly
-    local map_Y         = game_prep.map_size[game_prep.default.map_size]["map_Y"]                        -- take the size of the galaxy, Verticaly
-    local map_density   = game_prep.map_density[game_prep.default.map_density]["density"]                -- take the density of the galaxy
-    local map_form      = game_prep.default.map_form
-    Galaxy.number_of_systems    =   math.ceil(((map_X * map_Y) / 4000000) * 100 * map_density)
+	local map_X         = game_prep.map_size[game_prep.default.map_size]["map_X"]                        -- take the size of the galaxy, horizontaly
+	local map_Y         = game_prep.map_size[game_prep.default.map_size]["map_Y"]                        -- take the size of the galaxy, Verticaly
+	local map_density   = game_prep.map_density[game_prep.default.map_density]["density"]                -- take the density of the galaxy
+	local map_form      = game_prep.default.map_form
+	Galaxy.number_of_systems    =   math.ceil(((map_X * map_Y) / 4000000) * 100 * map_density)
 
-    -- Size of the World
+	-- Size of the World
 	if map_form == 1 then
 		Galaxy.size_X = map_X
 		Galaxy.size_Y = map_Y
@@ -42,86 +42,79 @@ function Galaxy.load()
 	end
 
 	local RealStarsNumber = 0
-    for i = 1, Galaxy.number_of_systems do
+	for i = 1, Galaxy.number_of_systems do
 
-        local Essayer2 = 0
-        -- Coordinates of the new system
-        repeat
-            Essayer = ""
-            Essayer2 = Essayer2 + 1
-            local x1 = 0
-            local y1 = 0
-            if map_form == 1 then
-                x1 = love.math.random(0, map_X)
-                y1 = love.math.random(0, map_Y)
-            elseif map_form == 2 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * love.math.random()
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            elseif map_form == 3 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random())
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            elseif map_form == 4 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(2000,10000) / 10000)
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            elseif map_form == 5 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(4000,10000) / 10000)
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            elseif map_form == 6 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(6000,10000) / 10000)
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            elseif map_form == 7 then
-                theta = 2 * math.pi * love.math.random()
-                r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(8000,10000) / 10000)
-                x1 = r * math.cos(theta) + Galaxy.size_X / 2
-                y1 = r * math.sin(theta) + Galaxy.size_X / 2
-            end
-            local distance = true
-            Galaxy.star_system.position_X[i] = x1
-            Galaxy.star_system.position_Y[i] = y1
-            if i > 1 then
-                for j = 1, i-1 do
-                    ecart = math.sqrt((Galaxy.star_system.position_X[j] - x1)^2 + (Galaxy.star_system.position_Y[j] - y1)^2)
-                    if ecart < Galaxy.distmini then
-                        distance = false
-                        break
-                    end
-                end
-            end
+		local Essayer2 = 0
+		-- Coordinates of the new system
+		repeat
+			Essayer = ""
+			Essayer2 = Essayer2 + 1
+			local x1 = 0
+			local y1 = 0
+			if map_form == 1 then
+				x1 = love.math.random(0, map_X)
+				y1 = love.math.random(0, map_Y)
+			elseif map_form == 2 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * love.math.random()
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			elseif map_form == 3 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random())
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			elseif map_form == 4 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(2000,10000) / 10000)
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			elseif map_form == 5 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(4000,10000) / 10000)
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			elseif map_form == 6 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(6000,10000) / 10000)
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			elseif map_form == 7 then
+				theta = 2 * math.pi * love.math.random()
+				r = ((Galaxy.size_X)/2) * math.sqrt(love.math.random(8000,10000) / 10000)
+				x1 = r * math.cos(theta) + Galaxy.size_X / 2
+				y1 = r * math.sin(theta) + Galaxy.size_X / 2
+			end
+			local distance = true
+			Galaxy.star_system.position_X[i] = x1
+			Galaxy.star_system.position_Y[i] = y1
+			if i > 1 then
+				for j = 1, i-1 do
+					ecart = math.sqrt((Galaxy.star_system.position_X[j] - x1)^2 + (Galaxy.star_system.position_Y[j] - y1)^2)
+					if ecart < Galaxy.distmini then
+						distance = false
+						break
+					end
+				end
+			end
 
-            -- Type of central star :
-            	-- Stars types
+			-- Type of central star :
+				-- Stars types
 
-           Galaxy.star_system.type[i] = love.math.random(1, #game_prep.starfield.type_etoile_lointain)
-            if Essayer2 > 1000 then
-                Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
-                break
-            end
-            RealStarsNumber = i
-        until (distance == true)
+		Galaxy.star_system.type[i] = love.math.random(1, #game_prep.starfield.type_etoile_lointain)
+			if Essayer2 > 1000 then
+				Essayer = "GAME GENERATION FUMBLE : GALAXIE SCRIPT - CAN'T FIND FREE PLACE FOR STAR SYSTEM ! - Planète " .. i
+				break
+			end
+			RealStarsNumber = i
+		until (distance == true)
 
-        if Essayer ~= "" then
-            break
-        end
-
-        Galaxy.star_system.orbital.phase[i] = {}
-        Galaxy.star_system.orbital.type[i] = {}
-        for j = 1, galaxy.nbOrbits do
-            Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
-            Galaxy.star_system.orbital.type[i][j] = love.math.random(1, #game_prep.starfield.orbitals.chance)
-        end
+		if Essayer ~= "" then
+			break
+		end
 
 
-    -- Name creation
+	-- Name creation
 		local Premiere = {
 			"a", "ab", "ac", "ad", "ae", "aes", "am", "an", "ante", "au", "be","car", "clau", "cen", "circum", "co", "con", "dan", "de", "den", "di", "dic", "dis", "do","duo", "e", "est", "ex", "fe", "fi", "foe", "gra", "in", "inter", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni", "no", "non", "o", "ob", "pa", "pe", "per", "plu", "post", "prae", "pre", "pro", "pu", "qua", "quam", "quasi", "re", "rem", "res", "retro", "ro", "sa", "san", "sax", "si", "su", "sub", "super", "tan","ter", "tol", "tra", "trans", "tri", "ui", "ver","vi", "vo"
 		}
@@ -147,29 +140,51 @@ function Galaxy.load()
 		until (nom_disponible == true)
 		Galaxy.star_system.nom[i] = nom_choisi
 
-    Essayer = "Aucune erreur generation"
+		-- Total chance to have an Object at a Star's orbit + phase (angular start pos in orbit)
+		local total = 0
+		Galaxy.star_system.orbital.type[i] = {}
+		Galaxy.star_system.orbital.phase[i] = {}
+		for _, temp in ipairs(game_prep.starfield.orbitals.chance) do
+			total = total + temp
+		end
+		for j = 1, Galaxy.nbOrbits do
+			local temp_random = love.math.random(1,total)
+			total = 0
+			for orbital_type, temp in ipairs(game_prep.starfield.orbitals.chance) do
+				total = total + temp
+				if temp_random <= total then
+					Galaxy.star_system.orbital.type[i][j] = orbital_type
+					Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
+					break
+				end
+			end
+		end
 
-    end
+
+
+	Essayer = "Aucune erreur generation"
+
+	end
 
 	if RealStarsNumber < Galaxy.number_of_systems then
 		print("Only ".. RealStarsNumber .. " stars on " .. Galaxy.number_of_systems .. " could be generated")
 		Galaxy.number_of_systems = RealStarsNumber - 1
-    else
-        print ( Galaxy.number_of_systems .. " generated")
+	else
+		print ( Galaxy.number_of_systems .. " generated")
 	end
 
-    -- moving the coordinates 0 to the center of the galaxy
-    local center_X = Galaxy.size_X / 2
-    local center_Y = Galaxy.size_Y / 2
+	-- moving the coordinates 0 to the center of the galaxy
+	local center_X = Galaxy.size_X / 2
+	local center_Y = Galaxy.size_Y / 2
 	for i = 1, Galaxy.number_of_systems do
-        Galaxy.star_system.position_X[i] = Galaxy.star_system.position_X[i] - center_X
-        Galaxy.star_system.position_Y[i] = Galaxy.star_system.position_Y[i] - center_Y
-    end
+		Galaxy.star_system.position_X[i] = Galaxy.star_system.position_X[i] - center_X
+		Galaxy.star_system.position_Y[i] = Galaxy.star_system.position_Y[i] - center_Y
+	end
 
 	print (Essayer)
 
 
-    print("Galaxie initialisée")
+	print("Galaxie initialisée")
 
 
 
