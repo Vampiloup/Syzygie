@@ -29,9 +29,9 @@ local click = {
 	object_Y            = 0         -- Y coordinate of object origin
 }
 
--- Panel
+-- Panels : Generally False / True
 local panel = {
-	level_1 = 0
+	[1] = false		-- Default : Left bar for the Star System
 }
 
 -- Double clicks
@@ -126,6 +126,7 @@ function love.load()
 		if success then
 			local id = filename:gsub("%.png$", "")
 			atlas_guiGame:add(love.graphics.newImage(path), id)
+			print(id)
 		else
 			print("Échec chargement : " .. path .. " → " .. tostring(image))  -- Error is in "image"
 		end
@@ -136,6 +137,7 @@ function love.load()
 	guiGameBatch = love.graphics.newSpriteBatch(atlas_guiGame.image, game_ref.ui.gui_systeme_nb, "stream")
 
 	for i in pairs(game_ref.ui.gui_systeme) do
+print (i)
 		local x = game_ref.ui.gui_systeme[i][1]
 		local y = game_ref.ui.gui_systeme[i][2]
 		local vx, vy, vw, vh = atlas_guiGame:getViewport(i)
@@ -237,12 +239,13 @@ love.graphics.push()
 	love.graphics.print("Camera: " .. math.floor(game_ref.camera.X) .. ", " .. math.floor(game_ref.camera.Y), 10, 50)
 
 	-- Calling Star Panel
+	-- panel.level_1 unused for the moment
 
 	if click.object_galaxy and click.object_type == "star" then
 		GUI_Star_Bar()
-		panel.level_1 = 1
+		panel[1] = true
 	else
-		panel.level_1 = 0
+		panel[1] = false
 	end
 
 
@@ -291,7 +294,7 @@ function love.mousepressed(x, y, button)
 	end
 
 	if button == 1 then  -- Bouton gauche de la souris
-		if click.object_galaxy and click.object_type == "star" and pointInRect(x, y, game_ref.ui.gui_systeme["systeme_barre"][1], game_ref.ui.gui_systeme["systeme_barre"][2], game_ref.ui.gui_systeme["systeme_barre"][3], game_ref.ui.gui_systeme["systeme_barre"][4]) then
+		if panel[1] and pointInRect(x, y, game_ref.ui.gui_systeme.panel_1[1], game_ref.ui.gui_systeme.panel_1[2], game_ref.ui.gui_systeme.panel_1[3], game_ref.ui.gui_systeme.panel_1[4]) then
 			-- if the left System panel in clicked.
 			print(" Panel cliqué")
 		else
@@ -442,7 +445,7 @@ end
 
 function GUI_Star_Bar()
 	love.graphics.push()
-	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2])
+	atlas_guiGame:draw("panel_1", game_ref.ui.gui_systeme.panel_1[1], game_ref.ui.gui_systeme.panel_1[2])
 	--	bolt_roboto_Font
 	love.graphics.setFont(font_roboto_32)
 	love.graphics.print(galaxy.star_system.nom[click.object_id], 120, 42)
