@@ -37,9 +37,12 @@ local game_prep = {
                     type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant", "asteroids"}
                 }
             }
+}
 
-
-
+local langue = {
+        starfield = {
+            orbital = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"}
+        }
 }
 
 

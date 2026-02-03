@@ -47,7 +47,7 @@ local orbitsBatch = nil
 local normalFont = love.graphics.newFont(16)
 local starLabelFont = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 12)
 local font_roboto_32 = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 32)
-
+local font_label_bar_2 = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 16)
 
 function love.load()
 
@@ -291,8 +291,9 @@ function love.mousepressed(x, y, button)
 	end
 
 	if button == 1 then  -- Bouton gauche de la souris
-		if pointInRect(x, y, game_ref.ui.gui_systeme["systeme_barre"][1], game_ref.ui.gui_systeme["systeme_barre"][2], game_ref.ui.gui_systeme["systeme_barre"][3], game_ref.ui.gui_systeme["systeme_barre"][4]) then
+		if click.object_galaxy and click.object_type == "star" and pointInRect(x, y, game_ref.ui.gui_systeme["systeme_barre"][1], game_ref.ui.gui_systeme["systeme_barre"][2], game_ref.ui.gui_systeme["systeme_barre"][3], game_ref.ui.gui_systeme["systeme_barre"][4]) then
 			-- if the left System panel in clicked.
+			print(" Panel cliqué")
 		else
 			clickCount = clickCount + 1
 			clickTime = 0  -- Réinitialise le minuteur
@@ -310,7 +311,9 @@ function love.mousepressed(x, y, button)
 			else
 				click.object_galaxy       = false
 			end
+			print(tostring(click.object_galaxy) .. " " .. click.object_id)
 		end
+
 	end
 
 end
@@ -440,10 +443,14 @@ end
 function GUI_Star_Bar()
 	love.graphics.push()
 	atlas_guiGame:draw("systeme_barre", game_ref.ui.gui_systeme.systeme_barre[1], game_ref.ui.gui_systeme.systeme_barre[2])
---	bolt_roboto_Font
+	--	bolt_roboto_Font
 	love.graphics.setFont(font_roboto_32)
 	love.graphics.print(galaxy.star_system.nom[click.object_id], 120, 42)
 	atlas_galaxy:draw(game_prep.starfield.type_etoile_proche[galaxy.star_system.type[click.object_id]],52,25,0.5,0.5)
+	--
+	love.graphics.setFont(font_label_bar_2)
+
+
 	love.graphics.pop()
 end
 
