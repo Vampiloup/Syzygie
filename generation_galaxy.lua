@@ -141,26 +141,30 @@ function Galaxy.load()
 		Galaxy.star_system.nom[i] = nom_choisi
 
 		-- Total chance to have an Object at a Star's orbit + phase (angular start pos in orbit)
-		local total = 0
+
 		Galaxy.star_system.orbital.type[i] = {}
 		Galaxy.star_system.orbital.phase[i] = {}
-		for _, temp in ipairs(game_prep.starfield.orbitals.chance) do
-			total = total + temp
+
+		local weights = game_prep.starfield.orbitals.chance          -- {20,30,25,25,11}
+		local total_weight = 0
+		for _, w in ipairs(weights) do total_weight = total_weight + w end
+		-- pré-calcul des cumuls
+		local cumuls = {}
+		local sum = 0
+		for k, w in ipairs(weights) do
+			sum = sum + w
+			cumuls[k] = sum
 		end
 		for j = 1, Galaxy.nbOrbits do
-			local temp_random = love.math.random(1,total)
-			total = 0
-			for orbital_type, temp in ipairs(game_prep.starfield.orbitals.chance) do
-				total = total + temp
-				if temp_random <= total then
-					Galaxy.star_system.orbital.type[i][j] = orbital_type
+			local r = love.math.random(1, total_weight)
+			for type_id = 1, #cumuls do
+				if r <= cumuls[type_id] then
+					Galaxy.star_system.orbital.type[i][j]  = type_id
 					Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
-					break
-				end
+				break
 			end
 		end
-
-
+	end
 
 	Essayer = "Aucune erreur generation"
 

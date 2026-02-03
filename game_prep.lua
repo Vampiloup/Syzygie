@@ -39,7 +39,7 @@ local game_prep = {
             }
 }
 
-local langue = {
+langue = {
         starfield = {
             orbital = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"}
         }

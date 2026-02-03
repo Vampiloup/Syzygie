@@ -47,7 +47,7 @@ local orbitsBatch = nil
 local normalFont = love.graphics.newFont(16)
 local starLabelFont = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 12)
 local font_roboto_32 = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 32)
-local font_label_bar_2 = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 16)
+local font_system_bar = love.graphics.newFont("/assets/syzygie/fonts/Roboto/Roboto-Bold.ttf", 16)
 
 function love.load()
 
@@ -65,7 +65,7 @@ function love.load()
 	atlas_galaxy:setFilter("nearest")
 
 	local png_files = getFilesWithExtension("assets/" .. game_ref.path.default .. "/images/galaxy", ".png")
-	print("Nombre de PNG trouvés : " .. #png_files)   -- debug
+	-- dprint("Nombre de PNG trouvés : " .. #png_files)   -- debug
 	for _, filename in ipairs(png_files) do
 		local path = "assets/" .. game_ref.path.default .. "/images/galaxy/" .. filename
 		local success, image = pcall(love.graphics.newImage, path)
@@ -119,14 +119,13 @@ function love.load()
 	atlas_guiGame = textureAtlas.newDynamicSize()
 	atlas_guiGame:setFilter("nearest")
 	local png_files = getFilesWithExtension("assets/" .. game_ref.path.default .. "/GUI/gui_1920_1080", ".png")
-	print("Nombre de PNG trouvés : " .. #png_files)   -- debug
+	-- print("Nombre de PNG trouvés : " .. #png_files)   -- debug
 	for _, filename in ipairs(png_files) do
 		local path = "assets/" .. game_ref.path.default .. "/GUI/gui_1920_1080/" .. filename
 		local success, image = pcall(love.graphics.newImage, path)
 		if success then
 			local id = filename:gsub("%.png$", "")
 			atlas_guiGame:add(love.graphics.newImage(path), id)
-			print(id)
 		else
 			print("Échec chargement : " .. path .. " → " .. tostring(image))  -- Error is in "image"
 		end
@@ -137,7 +136,6 @@ function love.load()
 	guiGameBatch = love.graphics.newSpriteBatch(atlas_guiGame.image, game_ref.ui.gui_systeme_nb, "stream")
 
 	for i in pairs(game_ref.ui.gui_systeme) do
-print (i)
 		local x = game_ref.ui.gui_systeme[i][1]
 		local y = game_ref.ui.gui_systeme[i][2]
 		local vx, vy, vw, vh = atlas_guiGame:getViewport(i)
@@ -296,7 +294,6 @@ function love.mousepressed(x, y, button)
 	if button == 1 then  -- Bouton gauche de la souris
 		if panel[1] and pointInRect(x, y, game_ref.ui.gui_systeme.panel_1[1], game_ref.ui.gui_systeme.panel_1[2], game_ref.ui.gui_systeme.panel_1[3], game_ref.ui.gui_systeme.panel_1[4]) then
 			-- if the left System panel in clicked.
-			print(" Panel cliqué")
 		else
 			clickCount = clickCount + 1
 			clickTime = 0  -- Réinitialise le minuteur
@@ -314,7 +311,6 @@ function love.mousepressed(x, y, button)
 			else
 				click.object_galaxy       = false
 			end
-			print(tostring(click.object_galaxy) .. " " .. click.object_id)
 		end
 
 	end
@@ -450,8 +446,14 @@ function GUI_Star_Bar()
 	love.graphics.setFont(font_roboto_32)
 	love.graphics.print(galaxy.star_system.nom[click.object_id], 120, 42)
 	atlas_galaxy:draw(game_prep.starfield.type_etoile_proche[galaxy.star_system.type[click.object_id]],52,25,0.5,0.5)
-	--
-	love.graphics.setFont(font_label_bar_2)
+	-- Text for Orbits - Type of object
+	love.graphics.setFont(font_system_bar)
+	local posX = 165
+	for i = 1, galaxy.nbOrbits do
+		local posY = 225 + (i-1)*150
+		local texte = langue.starfield.orbital[ galaxy.star_system.orbital.type[click.object_id][i] ]
+		love.graphics.print( texte, posX - font_system_bar:getWidth(texte) / 2, posY )
+	end
 
 
 	love.graphics.pop()
