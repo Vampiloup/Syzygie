@@ -41,7 +41,7 @@ local game_prep = {
 
 langue = {
         starfield = {
-            orbital = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"}
+            orbitals = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"}
         }
 }
 
