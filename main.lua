@@ -451,7 +451,10 @@ function GUI_Star_Bar()
 	local posX = 165
 	for i = 1, galaxy.nbOrbits do
 		local posY = 225 + (i-1)*150
-		local texte = langue.starfield.orbitals[ galaxy.star_system.orbital.type[click.object_id][i] ]
+		local texte = langue.starfield.orbitals.name[ galaxy.star_system.orbital.type[click.object_id][i] ]
+		love.graphics.print( texte, posX - font_system_bar:getWidth(texte) / 2, posY )
+		posY = 255 + (i-1)*150
+		local texte = langue.starfield.orbitals.rock_size.name[ galaxy.star_system.orbital.type[click.object_id][i] ]
 		love.graphics.print( texte, posX - font_system_bar:getWidth(texte) / 2, posY )
 	end
 

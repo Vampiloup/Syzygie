@@ -140,6 +140,12 @@ function Galaxy.load()
 		until (nom_disponible == true)
 		Galaxy.star_system.nom[i] = nom_choisi
 
+
+		------------------------------------------
+				-- Generation of ORBITALS --
+		------------------------------------------
+
+
 		-- Total chance to have an Object at a Star's orbit + phase (angular start pos in orbit)
 
 		Galaxy.star_system.orbital.type[i] = {}
@@ -164,7 +170,14 @@ function Galaxy.load()
 				break
 			end
 		end
-	end
+
+		-- Size of the rock planets
+
+
+
+
+
+	end -- Eng generation star systems
 
 	Essayer = "Aucune erreur generation"
 

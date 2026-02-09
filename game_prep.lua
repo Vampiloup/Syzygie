@@ -34,14 +34,26 @@ local game_prep = {
                 type_etoile_proche      = {"etoile_proche_rouge","etoile_proche_orange","etoile_proche_jaune", "etoile_proche_blanc", "etoile_proche_cyan"},
                 orbitals                = {
                     chance                  = {20, 30, 25 ,25, 11},
-                    type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant", "asteroids"}
+                    type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant", "asteroids"},
+                    rock_size               = {
+                                                {},
+                                                {},
+                                                {},
+                                                {},
+                                                {}
+                    }
                 }
             }
 }
 
 langue = {
         starfield = {
-            orbitals = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"}
+            orbitals = {
+                name = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"},
+                rock_size = {
+                    name = {"minuscule", "petite", "medium" ,"Grande", "énorme"}
+                }
+            }
         }
 }
 
