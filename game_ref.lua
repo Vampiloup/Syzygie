@@ -17,13 +17,17 @@ local game_ref = {
 	ui = {
 		doubleClickThreshold = 0.3,
 		gui_systeme_nb = 1,
-		gui_systeme = {
-			panel_1 = {0, 0, 0, 0}	-- start X, start Y, width, height         -- dafault : Star System bar on the left.
+		gui_systeme = {					-- start X, start Y, width, height
+			panel_1 = {0  , 0, 320, 0},	         -- dafault : Star System bar on the left.
+			panel_2 = {321, 0, 0, 0}	         -- dafault : Star System panel in the right to the bar.
 		}
 	},
 	camera = {
 		X = 0,
 		Y = 0
+	},
+	orbitals = {
+		angular_speed = 0.2
 	}
 }
 

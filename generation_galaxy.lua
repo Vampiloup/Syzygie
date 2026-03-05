@@ -16,7 +16,10 @@ local Galaxy = {
 		position_Y = {},                    -- Position by X
 		orbital = {                         -- Orbits around the "central" star, (planets or asteroids, essentially)
 			phase = {},                     -- starting angle of orbitals
-			type = {}                       -- Type of orbital (rock planet, gaz giant, asteroids, etc.)
+			type = {},                      -- Type of orbital (rock planet, gaz giant, asteroids, etc.)
+			size = {},						-- Size of orbital
+			humidity = {},					-- Humidity of orbital
+			temperature = {}				-- Temperature of orbital
 		},
 	},
 	distmini = 80,                          -- distance mini between Systems
@@ -150,6 +153,9 @@ function Galaxy.load()
 
 		Galaxy.star_system.orbital.type[i] = {}
 		Galaxy.star_system.orbital.phase[i] = {}
+		Galaxy.star_system.orbital.size[i] = {}
+		Galaxy.star_system.orbital.humidity[i] = {}
+		Galaxy.star_system.orbital.temperature[i] = {}
 
 		local weights = game_prep.starfield.orbitals.chance          -- {20,30,25,25,11}
 		local total_weight = 0
@@ -167,12 +173,17 @@ function Galaxy.load()
 				if r <= cumuls[type_id] then
 					Galaxy.star_system.orbital.type[i][j]  = type_id
 					Galaxy.star_system.orbital.phase[i][j] = 2 * math.pi * love.math.random()
+					-- Size of orbital
+					Galaxy.star_system.orbital.size[i][j]  = love.math.random(1, game_prep.starfield.orbitals.size[ Galaxy.star_system.orbital.type[i][j] ])
+					-- Humidity of orbital
+					Galaxy.star_system.orbital.humidity[i][j]  = love.math.random(1, game_prep.starfield.orbitals.humidity[ Galaxy.star_system.orbital.type[i][j] ])
+					-- Temperature of orbital
+					Galaxy.star_system.orbital.temperature[i][j]  = love.math.random(1, game_prep.starfield.orbitals.temperature[ Galaxy.star_system.orbital.type[i][j] ])
 				break
 			end
 		end
 
 		-- Size of the rock planets
-
 
 
 

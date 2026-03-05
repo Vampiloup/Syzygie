@@ -33,15 +33,11 @@ local game_prep = {
                 type_etoile_lointain    = {"etoile_lointain_rouge","etoile_lointain_orange","etoile_lointain_jaune", "etoile_lointain_blanc", "etoile_lointain_cyan"},
                 type_etoile_proche      = {"etoile_proche_rouge","etoile_proche_orange","etoile_proche_jaune", "etoile_proche_blanc", "etoile_proche_cyan"},
                 orbitals                = {
-                    chance                  = {20, 30, 25 ,25, 11},
+                    chance                  = {50, 20, 10 ,10, 10},
                     type                    = {"", "rock_planet", "ice_giant" ,"gaz_giant", "asteroids"},
-                    rock_size               = {
-                                                {},
-                                                {},
-                                                {},
-                                                {},
-                                                {}
-                    }
+                    size                    = { 1, 5, 1, 3, 4 },
+                    humidity                = { 1, 4, 4, 4 },
+                    temperature             = { 4, 4, 4, 4 }
                 }
             }
 }
@@ -50,8 +46,26 @@ langue = {
         starfield = {
             orbitals = {
                 name = {"vide", "planète rocheuse", "géante glacée" ,"géante gazeuse", "asteroides"},
-                rock_size = {
-                    name = {"minuscule", "petite", "medium" ,"Grande", "énorme"}
+                size = {
+                    {""},
+                    {"minuscule", "petite", "medium" ,"grande", "énorme"},
+                    {"medium"},
+                    {"small", "medium","large"},
+                    {"group", "small field", "medium field", "large field"}
+                },
+                humidity = {
+                    {""},
+                    {"dry","aride","wet","aquatic"},
+                    {"dry","aride","wet","aquatic"},
+                    {"dry","aride","wet","aquatic"},
+                    {"dry","aride","wet","aquatic"}
+                },
+                temperature = {
+                    {"hot", "warm", "cool", "cold"},
+                    {"hot", "warm", "cool", "cold"},
+                    {"hot", "warm", "cool", "cold"},
+                    {"hot", "warm", "cool", "cold"},
+                    {"hot", "warm", "cool", "cold"}
                 }
             }
         }

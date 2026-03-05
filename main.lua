@@ -26,7 +26,8 @@ local click = {
 	object_type         = "",       -- type of clicked object (star, orbital...)
 	object_id           = 0,        -- ID of the object
 	object_X            = 0,        -- X coordinate of object origin
-	object_Y            = 0         -- Y coordinate of object origin
+	object_Y            = 0,        -- Y coordinate of object origin
+	panel				= 0			-- If a panel is clicked, its number.
 }
 
 -- Panels : Generally False / True
@@ -190,7 +191,7 @@ function love.draw()
 	love.graphics.setFont(normalFont)
 
 
-love.graphics.push()
+	love.graphics.push()
 		love.graphics.translate(                                                                    -- moving camera at screen center
 			love.graphics.getWidth()  / 2,
 			love.graphics.getHeight() / 2
@@ -240,8 +241,15 @@ love.graphics.push()
 	-- panel.level_1 unused for the moment
 
 	if click.object_galaxy and click.object_type == "star" then
+		print (click.panel)
 		GUI_Star_Bar()
 		panel[1] = true
+		if click.panel == 1 then
+			GUI_Planet_Panel()
+			panel[2] = true
+		else
+			panel[2] = false
+		end
 	else
 		panel[1] = false
 	end
@@ -294,6 +302,7 @@ function love.mousepressed(x, y, button)
 	if button == 1 then  -- Bouton gauche de la souris
 		if panel[1] and pointInRect(x, y, game_ref.ui.gui_systeme.panel_1[1], game_ref.ui.gui_systeme.panel_1[2], game_ref.ui.gui_systeme.panel_1[3], game_ref.ui.gui_systeme.panel_1[4]) then
 			-- if the left System panel in clicked.
+			click.panel = 1
 		else
 			clickCount = clickCount + 1
 			clickTime = 0  -- Réinitialise le minuteur
@@ -308,6 +317,7 @@ function love.mousepressed(x, y, button)
 				click.object_id           = a
 				click.object_X            = galaxy.star_system.position_X[a]
 				click.object_Y            = galaxy.star_system.position_Y[a]
+				print (click.object_type)
 			else
 				click.object_galaxy       = false
 			end
@@ -417,7 +427,7 @@ function refill_batch_orbits()
 		local size = game_ref.current_global_scale * 0.015
 		for orbit = 1, galaxy.nbOrbits do
 			local radius = (orbit * 6 + 4)
-			local angularSpeed = 0.8 / orbit
+			local angularSpeed = game_ref.orbitals.angular_speed / orbit
 	--		print(galaxy.star_system.orbital.phase[sys][orbit])
 			local angle = galaxy.star_system.orbital.phase[sys][orbit] + (love.timer.getTime() * angularSpeed)
 			local px = centerX + math.cos(angle) * radius
@@ -448,18 +458,42 @@ function GUI_Star_Bar()
 	atlas_galaxy:draw(game_prep.starfield.type_etoile_proche[galaxy.star_system.type[click.object_id]],52,25,0.5,0.5)
 	-- Text for Orbits - Type of object
 	love.graphics.setFont(font_system_bar)
-	local posX = 165
 	for i = 1, galaxy.nbOrbits do
-		local posY = 225 + (i-1)*150
+				-- Type
 		local texte = langue.starfield.orbitals.name[ galaxy.star_system.orbital.type[click.object_id][i] ]
+		local posX = 165
+		local posY = 225 + (i-1)*150
 		love.graphics.print( texte, posX - font_system_bar:getWidth(texte) / 2, posY )
+				-- Size
+		local texte = langue.starfield.orbitals.size[ galaxy.star_system.orbital.type[click.object_id][i] ][ galaxy.star_system.orbital.size[click.object_id][i] ]
 		posY = 255 + (i-1)*150
-		local texte = langue.starfield.orbitals.rock_size.name[ galaxy.star_system.orbital.type[click.object_id][i] ]
+		posX = 165
 		love.graphics.print( texte, posX - font_system_bar:getWidth(texte) / 2, posY )
+				-- Temp
+		local texte = langue.starfield.orbitals.temperature[ galaxy.star_system.orbital.type[click.object_id][i] ][ galaxy.star_system.orbital.temperature[click.object_id][i] ]
+		posX = 065
+		posY = 285 + (i-1)*150
+		love.graphics.setColor(1, 1, 0, 1)
+		love.graphics.print( texte, posX, posY )
+				-- Humidity
+		local texte = langue.starfield.orbitals.humidity[ galaxy.star_system.orbital.type[click.object_id][i] ][ galaxy.star_system.orbital.humidity[click.object_id][i] ]
+		posX = 265 - font_system_bar:getWidth(texte)
+		posY = 285 + (i-1)*150
+		love.graphics.setColor(0, 0.4, 1, 1)
+		love.graphics.print( texte, posX, posY )
+				-- Reset text color.
+		love.graphics.setColor(1, 1, 1, 1)
 	end
 
+	love.graphics.pop()
+end
+
+function GUI_Planet_Panel()
+	love.graphics.push()
+	atlas_guiGame:draw("panel_2", game_ref.ui.gui_systeme.panel_2[1], game_ref.ui.gui_systeme.panel_2[2])
 
 	love.graphics.pop()
+
 end
 
 
