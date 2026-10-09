@@ -1,0 +1,53 @@
+Voyons si j'ai compris.
+Donc, un bon point de départ avec évolution simple plus tard vers le regsistre, serait :
+
+
+syzygie/
+-- main.lua
+-- conf.lua
+-- core/
+-- -- events.lua                                   Gestion des évènements.
+-- -- registre.lua                                 Cthulhu
+-- -- sauvegardes.lua                              Sauvegarde et charge les parties.
+-- -- i18n.lua                                     Gère le multilangues (deux au début : français et anglais)
+-- -- mods.lua                                     Charge les mods
+-- affichage/
+-- -- camera.lua                                   zoom, conversions monde/écran, défilement
+-- -- carte.lua                                    affichage galaxie
+-- -- sprites.lua                                  Atlas & spritebatches
+-- sim/
+-- -- generation_galaxie.lua                       Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
+-- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
+-- ui/
+-- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
+-- -- galaxie.lua                                  Effet d'une interaction (clic) sur la galaxie. Pour le moment, un clic sur une étoile ouvre son panneau d'ui "etoile".
+-- -- panneaux/
+-- -- -- etoile.lua                                Affichage du panneau de l'étoile
+-- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
+-- -- ui.lua                                       Effet d'une interaction (clic) sur un élément de l'ui (panneau).
+-- mods/
+-- -- defaut/
+-- -- -- manifeste.lua
+-- -- -- type_etoiles.lua
+-- -- -- type_orbitales.lua                        Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes)
+-- -- -- type_galaxies.lua                         Les possibilités de la galaxie (forme, taille, densité d'étoiles). Liste des possibilités de ces choix.
+-- -- -- langues/
+-- -- -- -- fr/
+-- -- -- -- en/
+-- -- -- sprites/
+-- -- -- -- galaxie/
+-- -- -- -- -- etoiles/
+-- -- -- -- -- -- etoile_proche_rouge.png          les étoiles. Ici quand le zoom est à valeur élevée (vue rapprochée, étoile présentée sous forme d'un globe). Il y en a sept pour le moment.
+-- -- -- -- -- -- etoile_lointain_rouge.png        La même, mais quand l'état du zoom est sous une certaine valeur (aspect classique de "shuriken")
+-- -- -- -- -- orbitales/
+-- -- -- -- -- -- planete_rocheuse.png             Trois sortes de planètes existent pour le moment : rocheuse, gazeuse, astéroïdes.
+-- -- -- -- -- -- asteroides.png                   Je n'ai pas encore vu comment faire apparaître un anneau, amas ou nuage d'astéroïdes, alors ils sont collectivement représentés par un disque rouge à bord gris.
+-- -- -- -- ui/
+-- -- -- -- -- panneau_etoile.png                   Pour le moment, c'est un panneau unique, mais je pense le remplacer par un sprite plus petit multiplié ensuite pour l'affichage.
+-- -- -- -- -- panneau_planete.png
+-- -- -- -- -- planete_terre.png                    S'affiche par dessus une partie de "panneau_planete". Il y en a un par type de sol et climat (pour l'instant seulement "terre", "mer" et "espace", en fait).
+-- -- -- police/
+-- -- -- -- roboto/
+-- -- -- -- -- roboto-bold.ttf                         Et ses soeurs. Je n'ai pas décidé de la police à utilisé, encore, alors pour le moment je prend celle-ci qui est bien lisible.
+-- libs/
+-- -- TA/                                           La bibliothèque "Runtime Texture Atlas (RTA)", qui me sert pour les atlas.
