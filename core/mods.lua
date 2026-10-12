@@ -12,10 +12,12 @@ local function charger_mod(id)
 
   -- 2. Fichiers de données, dans l'ordre du manifeste
   for _, fichier in ipairs(manifeste.donnees) do
-    local chunk_d, err_d = love.filesystem.load(base .. fichier)
-    if not chunk_d then error("Erreur dans " .. base .. fichier .. " : " .. err_d) end
+    local chemin = base .. fichier
 
-    setfenv(chunk_d, {})            -- le fichier de données n'a accès à aucune fonction globale
+    local chunk_d, err_d = love.filesystem.load(chemin)
+    if not chunk_d then error("Erreur de syntaxe dans " .. chemin .. " : " .. err_d) end
+
+    setfenv(chunk_d, {})  -- aucun accès aux globales
     local ok, donnees = pcall(chunk_d)
     if not ok then error("Erreur d'exécution dans " .. chemin .. " : " .. tostring(donnees)) end
     if type(donnees) ~= "table" then
@@ -23,14 +25,14 @@ local function charger_mod(id)
     end
 
     for categorie, liste in pairs(donnees) do
-        if type(liste) ~= "table" then
-            error(chemin .. " : la catégorie '" .. tostring(categorie) .. "' doit être une liste")
+      if type(liste) ~= "table" then
+        error(chemin .. " : la catégorie '" .. tostring(categorie) .. "' doit être une liste")
+      end
+      for i, def in ipairs(liste) do
+        if type(def) ~= "table" or type(def.id) ~= "string" then
+          error(chemin .. " : " .. categorie .. "[" .. i .. "] n'a pas d'id valide")
         end
-        for i, def in ipairs(liste) do
-            if type(def) ~= "table" or type(def.id) ~= "string" then
-                error(chemin .. " : " .. categorie .. "[" .. i .. "] n'a pas d'id valide")
-            end
-            registre.add(categorie, id .. ":" .. def.id, def)
+        registre.add(categorie, id .. ":" .. def.id, def)
       end
     end
   end
