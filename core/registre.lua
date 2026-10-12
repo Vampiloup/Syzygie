@@ -1,7 +1,6 @@
 local M = {}
-local store = {}   -- store["star_type"]["base:red_dwarf"] = { ... }
 
-local store, ordre = {}, {}
+local store, ordre = {}, {}   -- store["star_type"]["base:red_dwarf"] = { ... }
 
 function M.add(category, id, definition)    -- Ajoute une ligne dans une table.
   store[category] = store[category] or {}
@@ -37,16 +36,16 @@ function M.get_field(category, id, field)
     return def2
 end
 
-function M.all(category)                    -- renvoie la liste des tables / catégories
+function M.list(category)                   -- renvoie la liste des tables / catégories
   return store[category] or {}
 end
 
-function M.has(category, id)                -- renvoie une ligne d'une table si existante.
+function M.has(category, id)                -- Indique via boléen si une catégorie est présente ou non.
   return store[category] ~= nil and store[category][id] ~= nil
 end
 
 function M.dump()                           -- renvoie un dump du registre.
-    print ("fonction dump appelée")
+  print ("fonction dump appelée")
   for categorie, ids in pairs(ordre) do
     print("[" .. categorie .. "]")
     for _, id in ipairs(ids) do

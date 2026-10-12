@@ -8,6 +8,7 @@ local registre = require "core.registre"
 function love.load()
 
     mods.charger_defaut()     -- découvre, trie, exécute, remplit le registre
+    mods. verifier_references()
 
 local defauts = registre.get("galaxy_defaults", "defaut:standard")
 
