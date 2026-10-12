@@ -16,11 +16,21 @@ local function charger_mod(id)
     if not chunk_d then error("Erreur dans " .. base .. fichier .. " : " .. err_d) end
 
     setfenv(chunk_d, {})            -- le fichier de données n'a accès à aucune fonction globale
-    local donnees = chunk_d()
+    local ok, donnees = pcall(chunk_d)
+    if not ok then error("Erreur d'exécution dans " .. chemin .. " : " .. tostring(donnees)) end
+    if type(donnees) ~= "table" then
+      error(chemin .. " doit retourner une table")
+    end
 
     for categorie, liste in pairs(donnees) do
-      for _, def in ipairs(liste) do
-        registre.add(categorie, id .. ":" .. def.id, def)
+        if type(liste) ~= "table" then
+            error(chemin .. " : la catégorie '" .. tostring(categorie) .. "' doit être une liste")
+        end
+        for i, def in ipairs(liste) do
+            if type(def) ~= "table" or type(def.id) ~= "string" then
+                error(chemin .. " : " .. categorie .. "[" .. i .. "] n'a pas d'id valide")
+            end
+            registre.add(categorie, id .. ":" .. def.id, def)
       end
     end
   end
