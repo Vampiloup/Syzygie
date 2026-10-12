@@ -36,7 +36,7 @@ function M.get_field(category, id, field)
     return def2
 end
 
-function M.list(category)                   -- renvoie la liste des tables / catégories
+function M.table(category)                   -- renvoie la liste des tables / catégories
   return store[category] or {}
 end
 

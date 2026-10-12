@@ -1,4 +1,5 @@
 local registre = require "core.registre"
+local i18n = require "core.i18n"
 
 local M = {}
 local API_VERSION = 1  -- version du contrat actuellement supportée par le jeu
@@ -62,7 +63,28 @@ local function charger_mod(id)
         if type(def) ~= "table" or type(def.id) ~= "string" then
           error(chemin .. " : " .. categorie .. "[" .. i .. "] n'a pas d'id valide")
         end
-        registre.add(categorie, id .. ":" .. def.id, def)
+        def.id_complet = id .. ":" .. def.id
+        registre.add(categorie, def.id_complet, def)
+      end
+    end
+  end
+
+    -- 3. Textes : mods/<id>/langues/<lang>/*.lua
+  local dossier = base .. "langues/"
+  for _, lang in ipairs(love.filesystem.getDirectoryItems(dossier)) do
+    local dlang = dossier .. lang .. "/"
+    if love.filesystem.getInfo(dlang, "directory") then
+      for _, f in ipairs(love.filesystem.getDirectoryItems(dlang)) do
+        if f:match("%.lua$") then
+          local chemin = dlang .. f
+          local chunk, err = love.filesystem.load(chemin)
+          if not chunk then error("Erreur de syntaxe dans " .. chemin .. " : " .. err) end
+          setfenv(chunk, {})
+          local ok, tbl = pcall(chunk)
+          if not ok then error("Erreur d'exécution dans " .. chemin .. " : " .. tostring(tbl)) end
+          if type(tbl) ~= "table" then error(chemin .. " doit retourner une table") end
+          i18n.ajouter(lang, tbl, chemin)
+        end
       end
     end
   end
