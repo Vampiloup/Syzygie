@@ -1,3 +1,5 @@
+local json = require("libs.dkjson.dkjson")              -- Librairie json
+
 local M = {}
 
 local REPLI    = "en"      -- mettre nil pour désactiver le repli
@@ -6,24 +8,28 @@ local courante = nil       -- langue chargée
 local repli    = nil       -- langue de repli, chargée seulement au premier besoin
 
 local function lire_table(chemin)
-  local chunk, err = love.filesystem.load(chemin)
-  if not chunk then error("[i18n] Erreur de syntaxe dans " .. chemin .. " : " .. err ) end
-  setfenv(chunk, {})
-  local ok, tbl = pcall(chunk)
-  if not ok then error("[i18n] Erreur d'exécution dans " .. chemin .. " : " .. tostring(tbl)) end
-  if type(tbl) ~= "table" then error("[i18n] " .. chemin .. " doit retourner une table.") end
+  local info = love.filesystem.getInfo(chemin)
+  if not info then error("[i18n] Fichier introuvable : " .. chemin, 0) end
+  if info.type ~= "file" then error("[i18n] " .. chemin .. " n'est pas un fichier (type : " .. info.type .. ").", 0) end
+  local src, err = love.filesystem.read(chemin)
+  if not src then error("[i18n] Lecture impossible de " .. chemin .. " : " .. tostring(err), 0) end
+  if src:sub(1, 3) == "\239\187\191" then src = src:sub(4) end    -- Certains éditeurs (Notepad…) ajoutent un BOM UTF-8 que dkjson refuse
+  local tbl, pos, jerr = json.decode(src, 1, nil)
+  if jerr then error("[i18n] JSON invalide dans " .. chemin .. " (position " .. tostring(pos) .. ") : " .. jerr, 0) end
+  if type(tbl) ~= "table" then error("[i18n] " .. chemin .. " doit contenir un objet JSON.", 0) end
+
   for k, v in pairs(tbl) do
-    if type(k) ~= "string" then error("[i18n] " .. chemin .. " : La clé " .. tostring(k) .. " doit être une chaîne.") end
-    if type(v) ~= "string" and type(v) ~= "table" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' : La valeur doit être une chaîne ou une table.") end
+    if type(k) ~= "string" then error("[i18n] " .. chemin .. " : La clé " .. tostring(k) .. " doit être une chaîne.",0) end
+    if type(v) ~= "string" and type(v) ~= "table" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' : La valeur doit être une chaîne ou une table.",0) end
     if v == "" then
       print ("[i18n] " .. chemin .. " : '" .. tostring(k) .. "' : valeur vide ignorée.")
       tbl[k] = nil
     elseif type(v) == "table"  then
-      if next(v) == nil then error("[i18n] " .. chemin .. " : valeur invalide '" .. tostring(k) .. "' : La table ne doit pas être vide.") end
+      if next(v) == nil then error("[i18n] " .. chemin .. " : valeur invalide '" .. tostring(k) .. "' : La table ne doit pas être vide.",0) end
       local vide = false
       for k2, v2 in pairs(v) do
-        if type(k2) ~= "string" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' >> '" .. tostring(k2) .."' : La clef doit être une chaîne.") end
-        if type(v2) ~= "string" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' >> '" .. tostring(k2) .."' : La valeur doit être une chaîne.") end
+        if type(k2) ~= "string" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' >> '" .. tostring(k2) .."' : La clef doit être une chaîne.",0) end
+        if type(v2) ~= "string" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' >> '" .. tostring(k2) .."' : La valeur doit être une chaîne.",0) end
         if v2 == "" then vide = true end
       end
       if vide then
@@ -34,7 +40,7 @@ local function lire_table(chemin)
   end
   return tbl
 end
--- Bonne pratique :  Placez les couples clef/valeur vides parcequ'en attente de remplissage après dans des commentaires (au début de la ligne)
+-- Bonne pratique :  ignorer au chargement toute clé commençant par _ (par exemple "_todo.galaxy_form.carre": "square" pour mettre en attente).
 
 local function nouvelle(lang)             -- charge les fichiers "immédiats" de cette langue
   local l = { lang = lang, eager = {}, lazy = {} }
