@@ -17,8 +17,6 @@ function love.load()
   local defauts = registre.get("galaxy_defaults", "defaut:standard")
 
 
-
-
   local forme   = registre.get("galaxy_form",    defauts.map_form)
   local taille  = registre.get("galaxy_size",    defauts.map_size)
   local densite = registre.get("galaxy_density", defauts.map_density)

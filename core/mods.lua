@@ -10,6 +10,12 @@ local REFERENCES = {
   { "galaxy_defaults", "map_density", "galaxy_density" },
 }
 
+local function tries(dossier)
+  local items = love.filesystem.getDirectoryItems(dossier)
+  table.sort(items)                          -- ordre déterministe
+  return items
+end
+
 local function charger_mod(id)
   if not id:match("^[a-z0-9_]+$") then error("id de mod invalide : " .. id) end
   local base = "mods/" .. id .. "/"
@@ -71,19 +77,17 @@ local function charger_mod(id)
 
     -- 3. Textes : mods/<id>/langues/<lang>/*.lua
   local dossier = base .. "langues/"
-  for _, lang in ipairs(love.filesystem.getDirectoryItems(dossier)) do
+  for _, lang in ipairs(tries(dossier)) do
     local dlang = dossier .. lang .. "/"
     if love.filesystem.getInfo(dlang, "directory") then
-      for _, f in ipairs(love.filesystem.getDirectoryItems(dlang)) do
+      for _, f in ipairs(tries(dlang)) do
+        local chemin = dlang .. f
         if f:match("%.lua$") then
-          local chemin = dlang .. f
-          local chunk, err = love.filesystem.load(chemin)
-          if not chunk then error("Erreur de syntaxe dans " .. chemin .. " : " .. err) end
-          setfenv(chunk, {})
-          local ok, tbl = pcall(chunk)
-          if not ok then error("Erreur d'exécution dans " .. chemin .. " : " .. tostring(tbl)) end
-          if type(tbl) ~= "table" then error(chemin .. " doit retourner une table") end
-          i18n.ajouter(lang, tbl, chemin)
+          i18n.declarer(lang, chemin)
+        elseif love.filesystem.getInfo(chemin, "directory") then
+          for _, g in ipairs(tries(chemin)) do
+            if g:match("%.lua$") then i18n.declarer(lang, chemin .. "/" .. g, f) end
+          end
         end
       end
     end
