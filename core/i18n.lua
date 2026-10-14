@@ -1,4 +1,6 @@
-local json = require("libs.dkjson.dkjson")              -- Librairie json
+-- local json = require("libs.dkjson.dkjson")              -- Librairie json
+local json_io = require "core.json_io"
+
 
 local M = {}
 
@@ -8,16 +10,13 @@ local courante = nil       -- langue chargée
 local repli    = nil       -- langue de repli, chargée seulement au premier besoin
 
 local function lire_table(chemin)
-  local info = love.filesystem.getInfo(chemin)
-  if not info then error("[i18n] Fichier introuvable : " .. chemin, 0) end
-  if info.type ~= "file" then error("[i18n] " .. chemin .. " n'est pas un fichier (type : " .. info.type .. ").", 0) end
-  local src, err = love.filesystem.read(chemin)
-  if not src then error("[i18n] Lecture impossible de " .. chemin .. " : " .. tostring(err), 0) end
-  if src:sub(1, 3) == "\239\187\191" then src = src:sub(4) end    -- Certains éditeurs (Notepad…) ajoutent un BOM UTF-8 que dkjson refuse
-  local tbl, pos, jerr = json.decode(src, 1, nil)
-  if jerr then error("[i18n] JSON invalide dans " .. chemin .. " (position " .. tostring(pos) .. ") : " .. jerr, 0) end
+
+  local tbl = json_io.lire(chemin)
   if type(tbl) ~= "table" then error("[i18n] " .. chemin .. " doit contenir un objet JSON.", 0) end
 
+  for k in pairs(tbl) do
+    if type(k) == "string" and k:sub(1, 1) == "_" then tbl[k] = nil end
+  end
   for k, v in pairs(tbl) do
     if type(k) ~= "string" then error("[i18n] " .. chemin .. " : La clé " .. tostring(k) .. " doit être une chaîne.",0) end
     if type(v) ~= "string" and type(v) ~= "table" then error("[i18n] " .. chemin .. " : Valeur invalide '" .. tostring(k) .. "' : La valeur doit être une chaîne ou une table.",0) end

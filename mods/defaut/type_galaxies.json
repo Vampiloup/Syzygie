@@ -1,0 +1,29 @@
+{
+  "galaxy_form": [
+    { "id": "carre" },
+    { "id": "disque_centre_dense" },
+    { "id": "disque_uniforme" },
+    { "id": "anneau_tres_large" },
+    { "id": "anneau_large" },
+    { "id": "anneau_etroit" },
+    { "id": "anneau_tres_etroit" }
+  ],
+  "galaxy_size": [
+    { "id": "minuscule", "map_X": 1250, "map_Y": 1250 },
+    { "id": "petite",    "map_X": 1875, "map_Y": 1875 },
+    { "id": "medium",    "map_X": 2500, "map_Y": 2500 },
+    { "id": "grande",    "map_X": 3125, "map_Y": 3125 },
+    { "id": "geante",    "map_X": 4375, "map_Y": 4375 },
+    { "id": "immense",   "map_X": 6250, "map_Y": 6250 }
+  ],
+  "galaxy_density": [
+    { "id": "epars",     "density": 0.5 },
+    { "id": "clairseme", "density": 0.75 },
+    { "id": "medium",    "density": 1 },
+    { "id": "dense",     "density": 1.5 },
+    { "id": "compact",   "density": 2 }
+  ],
+  "galaxy_defaults": [
+    { "id": "standard", "map_form": "defaut:disque_uniforme", "map_size": "defaut:medium", "map_density": "defaut:medium" }
+  ]
+}

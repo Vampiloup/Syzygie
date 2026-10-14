@@ -1,0 +1,18 @@
+{
+  "id": "defaut",
+  "nom": "mod.defaut.nom",
+  "description": "mod.defaut.description",
+  "version": "0.1.0",
+  "auteur": "Chocolemur",
+  "licence": "Apache-2.0",
+
+  "api_version": 1,
+  "requiert": [],
+
+  "donnees": [
+    "type_galaxies.json",
+    "type_etoiles.json",
+    "type_orbitales.json"
+  ],
+  "langues": ["fr", "en"]
+}
