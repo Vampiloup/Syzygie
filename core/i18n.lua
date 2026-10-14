@@ -1,7 +1,6 @@
 -- local json = require("libs.dkjson.dkjson")              -- Librairie json
 local json_io = require "core.json_io"
 
-
 local M = {}
 
 local REPLI    = "en"      -- mettre nil pour désactiver le repli

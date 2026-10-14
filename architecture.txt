@@ -1,5 +1,4 @@
-Voyons si j'ai compris.
-Donc, un bon point de départ avec évolution simple plus tard vers le regsistre, serait :
+Architecture du dossier du jeu.
 
 
 syzygie/
@@ -7,7 +6,7 @@ syzygie/
 -- conf.lua
 -- core/
 -- -- events.lua                                   Gestion des évènements.
--- -- registre.lua                                 Cthulhu
+-- -- registre.lua                                 Lit ou écrit dans le registre (les tables contenant les données du jeu)
 -- -- sauvegardes.lua                              Sauvegarde et charge les parties.
 -- -- i18n.lua                                     Gère le multilangues (deux au début : français et anglais)
 -- -- json_io.lua                                  Chargeur json (utilise dkjson).
@@ -49,7 +48,7 @@ syzygie/
 -- -- -- -- -- planete_terre.png                    S'affiche par dessus une partie de "panneau_planete". Il y en a un par type de sol et climat (pour l'instant seulement "terre", "mer" et "espace", en fait).
 -- -- -- police/
 -- -- -- -- roboto/
--- -- -- -- -- roboto-bold.ttf                      Et ses soeurs. Je n'ai pas décidé de la police à utilisé, encore, alors pour le moment je prend celle-ci qui est bien lisible.
+-- -- -- -- -- roboto-bold.ttf                      Et ses soeurs. Je n'ai pas décidé de la police à utiliser, encore, alors pour le moment je prend celle-ci qui est bien lisible.
 -- libs/
 -- -- dkjson /                                      Bibliothèque de décodage de fichiers jsons.
 -- -- TA/                                           La bibliothèque "Runtime Texture Atlas (RTA)", qui me sert pour les atlas.
