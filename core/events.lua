@@ -6,8 +6,26 @@ function M.on(name, fn)
   table.insert(listeners[name], fn)
 end
 
+function M.off(name, fn)
+  local list = listeners[name]
+  if not list then return end
+  for i = #list, 1, -1 do
+    if list[i] == fn then
+      table.remove(list, i)
+      break
+    end
+  end
+end
+
 function M.emit(name, ...)
-  for _, fn in ipairs(listeners[name] or {}) do
+  local list = listeners[name]
+  if not list then return end
+    -- Copie de la table pour éviter les bugs si un listener se désabonne pendant l'émission
+  local currentListeners = {}
+  for _, fn in ipairs(list) do
+    table.insert(currentListeners, fn)
+  end
+  for _, fn in ipairs(currentListeners) do
     fn(...)
   end
 end

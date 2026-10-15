@@ -12,7 +12,7 @@ syzygie/
 -- -- json_io.lua                                  Chargeur json (utilise dkjson).
 -- -- mods.lua                                     Charge les mods
 -- affichage/
--- -- camera.lua                                   zoom, conversions monde/écran, défilement
+-- -- ecran.lua                                   zoom, conversions monde/écran, défilement
 -- -- carte.lua                                    affichage galaxie
 -- -- sprites.lua                                  Atlas & spritebatches
 -- sim/
@@ -23,6 +23,7 @@ syzygie/
 -- -- galaxie.lua                                  Effet d'une interaction (clic) sur la galaxie. Pour le moment, un clic sur une étoile ouvre son panneau d'ui "etoile".
 -- -- panneaux/
 -- -- -- etoile.lua                                Affichage du panneau de l'étoile
+-- -- -- hello.lua                                 Affichage du panneau Hello.
 -- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
 -- -- ui.lua                                       Effet d'une interaction (clic) sur un élément de l'ui (panneau).
 -- mods/

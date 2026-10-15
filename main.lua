@@ -45,9 +45,6 @@ end
 
 function love.draw()
   screen.begin()
-  love.graphics.setColor(0.2, 0.3, 0.2)
-  love.graphics.rectangle("fill", 0, 0, screen.W, screen.H)
-  love.graphics.setColor(1, 1, 1)
   events.emit("draw_world")   -- plus tard : la carte, avec sa caméra
   events.emit("draw_ui")      -- les panneaux, dans le repère 1920x1080
   screen.finish()

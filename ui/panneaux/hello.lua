@@ -9,29 +9,45 @@ local function place(left, top, right, bottom)
   panel.x = right - panel.w - MARGIN
   panel.y = top + MARGIN
 end
+events.on("resize", place)
 
 local function inside(x, y)
   return x >= panel.x and x <= panel.x + panel.w
      and y >= panel.y and y <= panel.y + panel.h
 end
 
-events.on("resize", place)
 
-events.on("draw_ui", function()
+local function onDraw()
   love.graphics.setColor(0.1, 0.1, 0.15, 0.9)
   love.graphics.rectangle("fill", panel.x, panel.y, panel.w, panel.h, 12, 12)
   love.graphics.setColor(1, 1, 1)
   love.graphics.print("Hello", panel.x + 16, panel.y + 16)   -- coordonnées locales au panneau
-end)
+end
+events.on("draw_ui", onDraw)
 
-events.on("mousepressed", function(x, y, button)
+
+
+local function onClick(x, y, button)
   if button == 1 and inside(x, y) then
     print("Clic dans le panneau Hello")
   end
-end)
+end
 
-events.on("keypressed", function(key)
-  if key == "o" then print("Touche 'o' reçue !") end
-end)
+
+local function onKey(key, scancode, isrepeat)
+  if key == "o" then
+    print("Touche 'o' reçue !")
+  end
+  if key == "x" then
+    events.off("mousepressed", onClick)
+    events.off("keypressed", onKey)
+    events.off("draw_ui", onDraw)
+    events.off("resize", place)
+  end
+end
+
+events.on("mousepressed", onClick)
+events.on("keypressed", onKey)
+
 
 return M
