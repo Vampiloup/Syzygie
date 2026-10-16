@@ -1,9 +1,9 @@
 
 -- ui/panneaux/hello.lua
-local events = require("core.events")
-local screen = require("affichage.ecran")
-local couches    = require("core.couches")
-
+local events       = require("core.events")
+local screen       = require("affichage.ecran")
+local couches      = require("core.couches")
+local couches_z    = require("core.couches_z")
 
 local M = {}
 local MARGIN = 24
@@ -45,21 +45,21 @@ local function open()
   ouvert = true
   place(screen.bounds())
   events.on("keypressed", onKey)
-  events.on("draw_ui", onDraw)
   events.on("resize", place)
 
   item = couches.add({
-    z = 100,
+    z = couches_z.PANNEAUX,
     contient = inside,
     onpress = onClick,
+    draw = onDraw,                  -- remplace events.on("draw_ui", onDraw)
   })
+
 end
 
 function close()
   if not ouvert then return end
   ouvert = false
   events.off("keypressed", onKey)
-  events.off("draw_ui", onDraw)
   events.off("resize", place)
   couches.remove(item)
   item = nil

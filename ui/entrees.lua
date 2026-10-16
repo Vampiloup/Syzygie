@@ -5,6 +5,8 @@ local couches    = require("core.couches")
 
 local pressed = {}   -- bouton -> élément qui a reçu le press
 
+local survole = nil
+
 
 function love.keypressed(key, scancode, isrepeat)
   if key == "escape" then
@@ -47,7 +49,11 @@ function love.mousemoved(x, y, dx, dy)
   if captured then
     if captured.onmove then captured.onmove(vx, vy, ddx, ddy) end
   else
-    local target = couches.pick(vx, vy)   -- survol
+    local target = couches.pick(vx, vy)
+    if target ~= survole then
+      if survole and survole.onleave then survole.onleave() end
+      survole = target
+    end
     if target and target.onmove then target.onmove(vx, vy, ddx, ddy) end
   end
 end
@@ -57,6 +63,13 @@ function love.wheelmoved(dx, dy)
   local vx, vy = screen.toVirtual(mx, my)
   local target = couches.pick(vx, vy)
   if target and target.onwheel then target.onwheel(dx, dy) end
+end
+
+function love.mousefocus(focus)
+  if not focus and survole then
+    if survole.onleave then survole.onleave() end
+    survole = nil
+  end
 end
 
 return {}

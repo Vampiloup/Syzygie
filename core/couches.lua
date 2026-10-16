@@ -1,3 +1,5 @@
+local couches_z    = require("core.couches_z")
+
 local M = {}
 local items = {}
 local nextId = 0
@@ -36,8 +38,8 @@ end
 -- Renvoie l'élément le plus haut sous (x, y), ou nil
 function M.pick(x, y)
   for _, it in ipairs(items) do
-    if it.contient(x, y) then return it end
-    if it.modal then return it end      -- un modal avale tout
+    if it.contient and it.contient(x, y) then return it end
+    if it.modal then return it end
   end
   return nil
 end
@@ -48,6 +50,13 @@ function M.raise(item)
   for _, it in ipairs(items) do top = math.max(top, it.z) end
   item.z = top + 1
   M.sort()
+end
+
+function M.draw()
+  for i = #items, 1, -1 do        -- items est trié z décroissant : on parcourt à l'envers
+    local it = items[i]
+    if it.draw then it.draw() end
+  end
 end
 
 return M

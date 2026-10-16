@@ -5,6 +5,9 @@ syzygie/
 -- main.lua
 -- conf.lua
 -- core/
+-- -- couches.lua                                  Gestion de la pile UI
+-- -- couches_z.lua                                Tableau des valeurs de Z, pour les éléments UI
+-- -- events.lua                                   Gestion des évènements.
 -- -- events.lua                                   Gestion des évènements.
 -- -- registre.lua                                 Lit ou écrit dans le registre (les tables contenant les données du jeu)
 -- -- sauvegardes.lua                              Sauvegarde et charge les parties.
@@ -19,12 +22,13 @@ syzygie/
 -- -- generation_galaxie.lua                       Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
--- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
 -- -- panneaux/
 -- -- -- etoile.lua                                Affichage du panneau de l'étoile
 -- -- -- hello.lua                                 Affichage du panneau Hello.
 -- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
--- -- ui.lua                                       Effet d'une interaction (clic) sur un élément de l'ui (panneau).
+-- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
+-- -- etoiles.lua                                  Étoiles en tant qu'objets UI
+-- -- ui.lua                                       Éléments du HUD en tant qu'objets UI.
 -- mods/
 -- -- defaut/
 -- -- -- manifeste.lua

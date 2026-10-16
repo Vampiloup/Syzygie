@@ -9,8 +9,11 @@ local i18n =              require("core.i18n")                       -- Chargeme
 local screen =            require("affichage.ecran")                 -- Chargement du module de gestion de la résolution.
 local entrees =           require("ui.entrees")                      -- Chargement du module d'interception des entrées (souris, clavier)
 local events =            require("core.events")                     -- Chargement du module de gestion des évènements
+local couches =           require("core.couches")                    -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
+
 local hello =             require("ui.panneaux.hello")               -- Chargement du panneau "Hello"
 local etoiles =           require("ui.etoiles")                      -- Chargement du panneau "Hello"
+local hud =               require("ui.hud")                          -- Chargement du HUD
 
 
 
@@ -47,8 +50,7 @@ end
 
 function love.draw()
   screen.begin()
-  events.emit("draw_world")   -- plus tard : la carte, avec sa caméra
-  events.emit("draw_ui")      -- les panneaux, dans le repère 1920x1080
+  couches.draw()
   screen.finish()
 end
 
