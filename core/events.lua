@@ -1,9 +1,17 @@
+-- core.events.lua
 local M = {}
 local listeners = {}
 
 function M.on(name, fn)
   listeners[name] = listeners[name] or {}
+  for _, f in ipairs(listeners[name]) do
+    if f == fn then
+      print("[events] doublon ignoré : " .. name)  -- utile en dev, à retirer ensuite
+      return false
+    end
+  end
   table.insert(listeners[name], fn)
+  return true
 end
 
 function M.off(name, fn)

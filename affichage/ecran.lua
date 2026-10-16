@@ -35,4 +35,6 @@ function M.bounds()
          (h - M.oy) / M.scale      -- bas
 end
 
+
+M.load()
 return M

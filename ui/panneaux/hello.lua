@@ -1,53 +1,72 @@
+
 -- ui/panneaux/hello.lua
 local events = require("core.events")
-local M = {}
+local screen = require("affichage.ecran")
+local couches    = require("core.couches")
 
+
+local M = {}
 local MARGIN = 24
-local panel = { w = 360, h = 220 }   -- ancré en haut à droite
+local panel = { w = 360, h = 220 }
+local ouvert = false
+local item
+
+local close          -- déclaration anticipée : onKey en a besoin avant sa définition
 
 local function place(left, top, right, bottom)
   panel.x = right - panel.w - MARGIN
   panel.y = top + MARGIN
 end
-events.on("resize", place)
 
 local function inside(x, y)
   return x >= panel.x and x <= panel.x + panel.w
      and y >= panel.y and y <= panel.y + panel.h
 end
 
-
 local function onDraw()
   love.graphics.setColor(0.1, 0.1, 0.15, 0.9)
   love.graphics.rectangle("fill", panel.x, panel.y, panel.w, panel.h, 12, 12)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.print("Hello", panel.x + 16, panel.y + 16)   -- coordonnées locales au panneau
+  love.graphics.print("Hello", panel.x + 16, panel.y + 16)
 end
-events.on("draw_ui", onDraw)
-
-
 
 local function onClick(x, y, button)
-  if button == 1 and inside(x, y) then
-    print("Clic dans le panneau Hello")
-  end
+  if button == 1 then print("Clic dans le panneau Hello") end
+  -- inutile de retester inside() : pick l'a déjà fait
 end
-
 
 local function onKey(key, scancode, isrepeat)
-  if key == "o" then
-    print("Touche 'o' reçue !")
-  end
-  if key == "x" then
-    events.off("mousepressed", onClick)
-    events.off("keypressed", onKey)
-    events.off("draw_ui", onDraw)
-    events.off("resize", place)
-  end
+  if key == "o" then print("Touche 'o' reçue !") end
+  if key == "x" then close() end      -- close sera assignée plus bas
 end
 
-events.on("mousepressed", onClick)
-events.on("keypressed", onKey)
+local function open()
+  if ouvert then return end
+  ouvert = true
+  place(screen.bounds())
+  events.on("keypressed", onKey)
+  events.on("draw_ui", onDraw)
+  events.on("resize", place)
 
+  item = couches.add({
+    z = 100,
+    contient = inside,
+    onpress = onClick,
+  })
+end
+
+function close()
+  if not ouvert then return end
+  ouvert = false
+  events.off("keypressed", onKey)
+  events.off("draw_ui", onDraw)
+  events.off("resize", place)
+  couches.remove(item)
+  item = nil
+end
+
+M.open = open
+M.close = close
+M.is_open = function() return ouvert end
 
 return M

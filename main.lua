@@ -6,11 +6,13 @@ local json =              require("libs.dkjson.dkjson")              -- Librairi
 local registre =          require("core.registre")                   -- Création du registre
 local mods =              require("core.mods")                       -- Chargement des mods
 local i18n =              require("core.i18n")                       -- Chargement des langues
+local screen =            require("affichage.ecran")                 -- Chargement du module de gestion de la résolution.
 local entrees =           require("ui.entrees")                      -- Chargement du module d'interception des entrées (souris, clavier)
 local events =            require("core.events")                     -- Chargement du module de gestion des évènements
-local screen =            require("affichage.ecran")                 -- Chargement du module de gestion de la résolution.
-
 local hello =             require("ui.panneaux.hello")               -- Chargement du panneau "Hello"
+local etoiles =           require("ui.etoiles")                      -- Chargement du panneau "Hello"
+
+
 
 
 
@@ -54,3 +56,9 @@ function love.resize(w, h)
   screen.resize(w, h)
   events.emit("resize", screen.bounds())
 end
+
+events.on("keypressed", function(key)
+  if key == "h" then
+    if hello.is_open() then hello.close() else hello.open() end
+  end
+end)

@@ -20,7 +20,6 @@ syzygie/
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
 -- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
--- -- galaxie.lua                                  Effet d'une interaction (clic) sur la galaxie. Pour le moment, un clic sur une étoile ouvre son panneau d'ui "etoile".
 -- -- panneaux/
 -- -- -- etoile.lua                                Affichage du panneau de l'étoile
 -- -- -- hello.lua                                 Affichage du panneau Hello.
