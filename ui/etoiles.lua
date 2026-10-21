@@ -13,14 +13,6 @@ local etoiles = {
   -- ... des milliers d'autres
 }
 
-local function zoneVisible()
-  local l, t, r, b = ecran.bounds()
-  local x1, y1 = cam:toWorld(l, t)
-  local x2, y2 = cam:toWorld(r, b)
-  return x1, y1, x2, y2
-end
-
-
 -- renvoie l'étoile touchée (la plus au-dessus), ou nil
 local function trouver(px, py)
   local tol = TOLERANCE_PX / cam.scale   -- conversion pixels → unités monde
@@ -43,16 +35,19 @@ couches.add({
 
   draw = function()
     love.graphics.setColor(1, 0.9, 0.3)
-  local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
-  for _, s in ipairs(etoiles) do
-  if s.x + s.r >= x1 and s.x - s.r <= x2 and s.y + s.r >= y1 and s.y - s.r <= y2 then
-    love.graphics.circle("fill", s.x, s.y, s.r)
-  end
-end
+    local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
+    local plancher = 2 / cam.scale
+    for _, s in ipairs(etoiles) do
+      local rayon = math.max(s.r, plancher)
+      if s.x + rayon >= x1 and s.x - rayon <= x2 and s.y + rayon >= y1 and s.y - rayon <= y2 then
+        love.graphics.circle("fill", s.x, s.y, rayon)
+      end
+    end
     love.graphics.setColor(1, 1, 1)
-  end,
+end,
 
   onpress = function(x, y, button)
+    if button ~= 1 then return end
     local s = trouver(x, y)
     if s then print("étoile cliquée", s.id, s.x, s.y) end
   end,
