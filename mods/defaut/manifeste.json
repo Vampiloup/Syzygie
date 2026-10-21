@@ -12,7 +12,8 @@
   "donnees": [
     "type_galaxies.json",
     "type_etoiles.json",
-    "type_orbitales.json"
+    "type_orbitales.json",
+    "touches_clavier.json"
   ],
   "langues": ["fr", "en"]
 }

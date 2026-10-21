@@ -1,4 +1,4 @@
--- core.regustre.lua
+-- core.registre.lua
 
 local M = {}
 

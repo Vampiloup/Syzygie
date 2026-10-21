@@ -15,14 +15,18 @@ local etoiles = {
 
 -- renvoie l'étoile touchée (la plus au-dessus), ou nil
 local function trouver(px, py)
-  local tol = TOLERANCE_PX / cam.scale   -- conversion pixels → unités monde
-  for i = #etoiles, 1, -1 do          -- de la dernière dessinée à la première
+  local tol = TOLERANCE_PX / cam.scale
+  local meilleure, meilleureDist = nil, math.huge
+  for i = #etoiles, 1, -1 do
     local s = etoiles[i]
     local r = math.max(s.r, tol)
     local dx, dy = px - s.x, py - s.y
-    if dx*dx + dy*dy <= r * r then return s end
+    local d2 = dx*dx + dy*dy
+    if d2 <= r * r and d2 < meilleureDist then
+      meilleure, meilleureDist = s, d2
+    end
   end
-  return nil
+  return meilleure
 end
 
 couches.add({

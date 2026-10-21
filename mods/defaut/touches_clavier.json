@@ -1,0 +1,7 @@
+{
+  "panneau_hub": [
+    { "id": "empire",     "touche": "f1" },
+    { "id": "science",    "touche": "f2" },
+    { "id": "diplomatie", "touche": "f3" }
+  ]
+}

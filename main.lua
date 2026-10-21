@@ -2,20 +2,24 @@
 love.math.setRandomSeed(os.time())
 
 -- Librairies
-local textureAtlas =      require("libs.TA")                         -- Librairie atlas
-local json =              require("libs.dkjson.dkjson")              -- Librairie json
-local registre =          require("core.registre")                   -- Création du registre
-local mods =              require("core.mods")                       -- Chargement des mods
-local i18n =              require("core.i18n")                       -- Chargement des langues
-local screen =            require("affichage.ecran")                 -- Chargement du module de gestion de la résolution.
-local entrees =           require("ui.entrees")                      -- Chargement du module d'interception des entrées (souris, clavier)
-local events =            require("core.events")                     -- Chargement du module de gestion des évènements
-local couches =           require("core.couches")                    -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
+local textureAtlas =          require("libs.TA")                         -- Librairie atlas
+local json =                  require("libs.dkjson.dkjson")              -- Librairie json
+local registre =              require("core.registre")                   -- Création du registre
+local mods =                  require("core.mods")                       -- Chargement des mods
+local i18n =                  require("core.i18n")                       -- Chargement des langues
+local screen =                require("affichage.ecran")                 -- Chargement du module de gestion de la résolution.
+local entrees =               require("ui.entrees")                      -- Chargement du module d'interception des entrées (souris, clavier)
+local events =                require("core.events")                     -- Chargement du module de gestion des évènements
+local couches =               require("core.couches")                    -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
 
-local hello =             require("ui.panneaux.hello")               -- Chargement du panneau "Hello"
-local fond =              require("ui.fond")                         -- s'enregistre dans couches
-local etoiles =           require("ui.etoiles")                      -- Chargement des étoiles
-local hud =               require("ui.hud")                          -- Chargement du HUD
+local hello =                 require("ui.panneaux.hello")               -- Chargement du panneau "Hello"
+local fond =                  require("ui.fond")                         -- s'enregistre dans couches
+local etoiles =               require("ui.etoiles")                      -- Chargement des étoiles
+local hud =                   require("ui.hud")                          -- Chargement du HUD
+
+local panneau_empire =        require("ui.panneaux.empire")
+local panneau_diplomatie =    require("ui.panneaux.diplomatie")
+local panneau_science =       require("ui.panneaux.science")
 
 
 
@@ -43,6 +47,10 @@ function love.load()
 
   local reponse = i18n.tc("galaxy_form", "defaut:disque_uniforme")
   print (reponse)
+
+  print (registre.get_field("galaxy_density", "defaut:clairseme", "density"))
+
+
 end
 
 function love.update(dt)

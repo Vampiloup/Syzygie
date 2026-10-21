@@ -1,11 +1,12 @@
--- ui/hud.lua
+-- ui.hud.lua
 local events    = require("core.events")
 local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
 
 local boutons = {
-  { id = "options", label = "Options", w = 120, h = 40, action = function() print("options") end },
-  { id = "sauver",  label = "Sauver",  w = 120, h = 40, action = function() print("sauver") end },
+  { id = "empire", label = "Empire", w = 120, h = 40 },
+  { id = "science",  label = "Science",  w = 120, h = 40 },
+  { id = "diplomatie",  label = "Diplomatie",  w = 120, h = 40 },
 }
 
 local MARGIN = 24
@@ -55,7 +56,7 @@ couches.add({
   onrelease = function(x, y, button)
     if button ~= 1 then return end
     local b = trouver(x, y)
-    if b and b == enfonce then b.action() end   -- clic valide : press et release sur le même bouton
+    if b and b == enfonce then events.emit("hud_bouton", b.id) end   -- clic valide : press et release sur le même bouton
     enfonce = nil
   end,
 

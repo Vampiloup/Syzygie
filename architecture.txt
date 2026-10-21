@@ -24,9 +24,12 @@ syzygie/
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
 -- -- panneaux/
+-- -- -- diplomatie.lua                            Affichage du panneau général de la diplomatie (relations avec les autres races)
+-- -- -- empire.lua                                Affichage du panneau général des informations sur l'Empire du joueur.
 -- -- -- etoile.lua                                Affichage du panneau de l'étoile
 -- -- -- hello.lua                                 Affichage du panneau Hello.
 -- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
+-- -- -- science.lua                               Affichage du panneau général de la recherche scientifique
 -- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
 -- -- etoiles.lua                                  Étoiles en tant qu'objets UI
 -- -- fond.lua                                     Crée la couche de fond (Z = 0)
