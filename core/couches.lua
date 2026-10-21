@@ -1,3 +1,5 @@
+-- core.couches.lua
+
 local couches_z    = require("core.couches_z")
 
 local M = {}
@@ -13,10 +15,68 @@ local nextId = 0
 --   onmove          = function(x, y, dx, dy), -- optionnel
 --   onwheel         = function(dx, dy),       -- optionnel
 -- }
+
+local function appliquerCamera(item)
+  local cam = item.camera
+  if not cam then return end
+
+  local contient, onpress, onrelease, onmove, draw =
+    item.contient, item.onpress, item.onrelease, item.onmove, item.draw
+
+  if contient then
+    item.contient = function(x, y)
+      return contient(cam:toWorld(x, y))
+    end
+  end
+
+  if onpress then
+    item.onpress = function(x, y, b)
+      local wx, wy = cam:toWorld(x, y)
+      return onpress(wx, wy, b)
+    end
+  end
+
+  if onrelease then
+    item.onrelease = function(x, y, b)
+      local wx, wy = cam:toWorld(x, y)
+      return onrelease(wx, wy, b)
+    end
+  end
+
+  -- molette : zoom par défaut
+  if not item.onwheel then
+    item.onwheel = function(dx, dy, vx, vy)
+      cam:zoomAt(vx, vy, 1.1 ^ dy)
+    end
+  end
+
+  -- onmove : pan au bouton droit, puis comportement propre à l'item
+  item.onmove = function(x, y, dx, dy)
+    if love.mouse.isDown(2) then
+      cam.x = cam.x - dx / cam.scale
+      cam.y = cam.y - dy / cam.scale
+    end
+    if onmove then
+      local wx, wy = cam:toWorld(x, y)
+      return onmove(wx, wy, dx / cam.scale, dy / cam.scale)
+    end
+  end
+
+  if draw then
+    item.draw = function()
+      cam:attach()
+      draw()
+      cam:detach()
+    end
+  end
+end
+
+
 function M.add(item)
   nextId = nextId + 1
   item._id = nextId           -- départage les z égaux (le plus récent gagne)
   item.z = item.z or 0
+  appliquerCamera(item)
   table.insert(items, item)
   M.sort()
   return item

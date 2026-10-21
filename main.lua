@@ -1,3 +1,4 @@
+-- main.lua
 love.math.setRandomSeed(os.time())
 
 -- Librairies
@@ -12,7 +13,8 @@ local events =            require("core.events")                     -- Chargeme
 local couches =           require("core.couches")                    -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
 
 local hello =             require("ui.panneaux.hello")               -- Chargement du panneau "Hello"
-local etoiles =           require("ui.etoiles")                      -- Chargement du panneau "Hello"
+local fond =              require("ui.fond")                         -- s'enregistre dans couches
+local etoiles =           require("ui.etoiles")                      -- Chargement des étoiles
 local hud =               require("ui.hud")                          -- Chargement du HUD
 
 

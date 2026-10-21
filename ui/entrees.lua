@@ -7,7 +7,6 @@ local pressed = {}   -- bouton -> élément qui a reçu le press
 
 local survole = nil
 
-
 function love.keypressed(key, scancode, isrepeat)
   if key == "escape" then
     love.event.quit()
@@ -45,7 +44,7 @@ function love.mousemoved(x, y, dx, dy)
   local ddx, ddy = dx / screen.scale, dy / screen.scale
 
   -- pendant un drag, l'élément "capturé" reçoit tout, même hors de ses bords
-  local captured = pressed[1]
+  local captured = pressed[1] or pressed[2] or pressed[3]
   if captured then
     if captured.onmove then captured.onmove(vx, vy, ddx, ddy) end
   else
@@ -62,8 +61,8 @@ function love.wheelmoved(dx, dy)
   local mx, my = love.mouse.getPosition()
   local vx, vy = screen.toVirtual(mx, my)
   local target = couches.pick(vx, vy)
-  if target and target.onwheel then target.onwheel(dx, dy) end
-end
+  if target and target.onwheel then target.onwheel(dx, dy, vx, vy) end
+  end
 
 function love.mousefocus(focus)
   if not focus and survole then

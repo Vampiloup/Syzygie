@@ -1,4 +1,4 @@
--- affichage/ecran.lua
+-- affichage.ecran.lua
 local M = { W = 1920, H = 1080 }
 
 function M.resize(w, h)
@@ -34,7 +34,6 @@ function M.bounds()
          (w - M.ox) / M.scale,     -- droite
          (h - M.oy) / M.scale      -- bas
 end
-
 
 M.load()
 return M

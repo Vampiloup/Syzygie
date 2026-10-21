@@ -1,6 +1,10 @@
 -- ui/etoiles.lua
 local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
+local ecran     = require("affichage.ecran")
+local cam       = require("core.camera_monde")   -- une instance partagée
+
+local TOLERANCE_PX = 6   -- rayon minimal cliquable, en pixels virtuels
 
 local etoiles = {
   { id = 1, x = 500,  y = 300, r = 8 },
@@ -9,18 +13,29 @@ local etoiles = {
   -- ... des milliers d'autres
 }
 
+local function zoneVisible()
+  local l, t, r, b = ecran.bounds()
+  local x1, y1 = cam:toWorld(l, t)
+  local x2, y2 = cam:toWorld(r, b)
+  return x1, y1, x2, y2
+end
+
+
 -- renvoie l'étoile touchée (la plus au-dessus), ou nil
 local function trouver(px, py)
+  local tol = TOLERANCE_PX / cam.scale   -- conversion pixels → unités monde
   for i = #etoiles, 1, -1 do          -- de la dernière dessinée à la première
     local s = etoiles[i]
+    local r = math.max(s.r, tol)
     local dx, dy = px - s.x, py - s.y
-    if dx*dx + dy*dy <= s.r * s.r then return s end
+    if dx*dx + dy*dy <= r * r then return s end
   end
   return nil
 end
 
 couches.add({
   z = couches_z.ETOILES,
+  camera = cam,
 
   contient = function(px, py)
     return trouver(px, py) ~= nil
@@ -28,9 +43,12 @@ couches.add({
 
   draw = function()
     love.graphics.setColor(1, 0.9, 0.3)
-    for _, s in ipairs(etoiles) do
-      love.graphics.circle("fill", s.x, s.y, s.r)
-    end
+  local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
+  for _, s in ipairs(etoiles) do
+  if s.x + s.r >= x1 and s.x - s.r <= x2 and s.y + s.r >= y1 and s.y - s.r <= y2 then
+    love.graphics.circle("fill", s.x, s.y, s.r)
+  end
+end
     love.graphics.setColor(1, 1, 1)
   end,
 

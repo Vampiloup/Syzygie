@@ -1,3 +1,5 @@
+-- core.regustre.lua
+
 local M = {}
 
 local store, ordre = {}, {}   -- store["star_type"]["base:red_dwarf"] = { ... }

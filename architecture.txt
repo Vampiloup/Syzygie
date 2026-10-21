@@ -5,18 +5,19 @@ syzygie/
 -- main.lua
 -- conf.lua
 -- core/
--- -- couches.lua                                  Gestion de la pile UI
--- -- couches_z.lua                                Tableau des valeurs de Z, pour les éléments UI
+-- -- camera.lua                                   Crée la classe de camera (zoom & co).
+-- -- camera_monde                                 Crée une instance partagées par tous les modules "monde"..
+-- -- couches.lua                                  Gestion de la pile UI.
+-- -- couches_z.lua                                Tableau des valeurs de Z, pour les éléments UI.
 -- -- events.lua                                   Gestion des évènements.
--- -- events.lua                                   Gestion des évènements.
+-- -- exclusif.lua                                 Permet d'imposer qu'un seul élément d'un même groupe soit ouvert.
 -- -- registre.lua                                 Lit ou écrit dans le registre (les tables contenant les données du jeu)
 -- -- sauvegardes.lua                              Sauvegarde et charge les parties.
 -- -- i18n.lua                                     Gère le multilangues (deux au début : français et anglais)
 -- -- json_io.lua                                  Chargeur json (utilise dkjson).
 -- -- mods.lua                                     Charge les mods
 -- affichage/
--- -- ecran.lua                                   zoom, conversions monde/écran, défilement
--- -- carte.lua                                    affichage galaxie
+-- -- ecran.lua                                    Résolution virtuelle et conversion réel <=> virtuel
 -- -- sprites.lua                                  Atlas & spritebatches
 -- sim/
 -- -- generation_galaxie.lua                       Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
@@ -28,13 +29,14 @@ syzygie/
 -- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
 -- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
 -- -- etoiles.lua                                  Étoiles en tant qu'objets UI
--- -- ui.lua                                       Éléments du HUD en tant qu'objets UI.
+-- -- fond.lua                                     Crée la couche de fond (Z = 0)
+-- -- hud.lua                                      Éléments du HUD en tant qu'objets UI.
 -- mods/
 -- -- defaut/
--- -- -- manifeste.lua
--- -- -- type_etoiles.lua
--- -- -- type_orbitales.lua                        Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes)
--- -- -- type_galaxies.lua                         Les possibilités de la galaxie (forme, taille, densité d'étoiles). Liste des possibilités de ces choix.
+-- -- -- manifeste.json                            Manifeste du mod.
+-- -- -- type_etoiles.json                         Liste les types d'étoiles
+-- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes)
+-- -- -- type_galaxies.json                        Les possibilités de la galaxie (forme, taille, densité d'étoiles). Liste des possibilités de ces choix.
 -- -- -- langues/
 -- -- -- -- fr/
 -- -- -- -- en/
@@ -56,4 +58,3 @@ syzygie/
 -- libs/
 -- -- dkjson /                                      Bibliothèque de décodage de fichiers jsons.
 -- -- TA/                                           La bibliothèque "Runtime Texture Atlas (RTA)", qui me sert pour les atlas.
--- --
