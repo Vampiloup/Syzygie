@@ -85,7 +85,7 @@ end
 events.on("hud_bouton", onHud)
 
 local function onToucheGlobale(key)
-  touche_open = touche_open or registre.get_field("panneau_hub", "defaut:" .. ID, "touche")
+  touche_open = touche_open or registre.get_field("panneau_hub", ID, "touche")
   if key == (touche_open) then basculer() end
 end
 events.on("keypressed", onToucheGlobale)

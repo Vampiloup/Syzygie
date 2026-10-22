@@ -1,3 +1,5 @@
+-- core.json_io.lua
+
 local json = require("libs.dkjson.dkjson")              -- Librairie json
 
 local M = {}

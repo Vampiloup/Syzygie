@@ -27,29 +27,39 @@ local panneau_science =       require("ui.panneaux.science")
 
 function love.load()
 
-  mods.charger_defaut()                                              -- découvre, trie, exécute, remplit le registre
-  mods.verifier_references()
-  i18n.definir("fr")                                                 -- une fois, au démarrage
+  -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
+  -- mods.charger({ "defaut", "test" })
+  mods.charger({ "defaut" })
+  i18n.definir("fr")                                                         -- une fois, au démarrage
   screen.load()
-  events.emit("resize", screen.bounds())                             -- placement initial des panneaux
+  events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
 
 
-  local defauts = registre.get("galaxy_defaults", "defaut:standard")
 
+-- local reponse = i18n.tc("table", "id")
+-- => Renvoit le nom à afficher de l'entrée "id" de la catégorie "table"
 
-  local forme   = registre.get("galaxy_form",    defauts.map_form)
-  local taille  = registre.get("galaxy_size",    defauts.map_size)
-  local densite = registre.get("galaxy_density", defauts.map_density)
+ -- local reponse = registre.get("table", "entree")
+-- => Renvoit une table constituée des champs de l'entrée "id" = "entree" de la catégorie "table"
 
-  -- print(i18n.t("ui.defaut:forme"))                                -- Disc with uniform density
-  print(taille.map_X, taille.map_Y)                                  -- 2500  2500
-  print(densite.density)                                             -- 1
+-- local reponse = registre.get_field("table", "id", "champs")
+-- => renvoit la valeur du champs "champs", de l'entrée "id", de la catégorie "table".
 
-  local reponse = i18n.tc("galaxy_form", "defaut:disque_uniforme")
-  print (reponse)
+-- Utilisation :
 
-  print (registre.get_field("galaxy_density", "defaut:clairseme", "density"))
+local reponse = i18n.tc("galaxy_form", "disque_uniforme")
+print (reponse)
 
+local r = registre.get("galaxy_defaults", "standard")
+ print(r.map_size, r.map_form, r.source)
+
+local preset  = registre.get("galaxy_defaults", "standard")
+local densite = registre.get_field("galaxy_density", preset.map_density, "density")
+print(densite)   -- 1 (ou la valeur imposée par un mod)
+
+local preset  = registre.get("galaxy_defaults", "standard")
+local taille  = registre.get("galaxy_size",    preset.map_size)
+print(taille.map_X, taille.map_Y)
 
 end
 

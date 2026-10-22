@@ -1,0 +1,22 @@
+{
+  "galaxy_form.carre":                                       "square",
+  "galaxy_form.disque_centre_dense":                         "disc with dense center",
+  "galaxy_form.disque_uniforme":                             "disc with uniform density",
+  "galaxy_form.anneau_tres_large":                           "ring very large",
+  "galaxy_form.anneau_large":                                "ring large",
+  "galaxy_form.anneau_etroit":                               "ring thin",
+  "galaxy_form.anneau_tres_etroit":                          "ring very thin",
+
+  "galaxy_size.minuscule":                                   "tiny",
+  "galaxy_size.petite":                                      "small",
+  "galaxy_size.medium":                                      "medium",
+  "galaxy_size.grande":                                      "big",
+  "galaxy_size.geante":                                      "giant",
+  "galaxy_size.immense":                                     "immense",
+
+  "galaxy_density.epars":                                    "scattered",
+  "galaxy_density.clairseme":                                "sparse",
+  "galaxy_density.medium":                                   "medium",
+  "galaxy_density.dense":                                    "dense",
+  "galaxy_density.compact":                                  "compact"
+}

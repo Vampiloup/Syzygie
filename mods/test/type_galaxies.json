@@ -1,0 +1,5 @@
+{
+  "galaxy_defaults": [
+    { "id": "standard", "map_size": "grande"}
+  ]
+}

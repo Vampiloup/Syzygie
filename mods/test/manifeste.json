@@ -1,0 +1,16 @@
+{
+  "id": "test",
+  "nom": "mod.test.nom",
+  "description": "mod.test.description",
+  "version": "0.1.0",
+  "auteur": "Chocolemur",
+  "licence": "Apache-2.0",
+
+  "api_version": 1,
+  "requiert": ["defaut"],
+
+  "donnees": [
+    "type_galaxies.json"
+  ],
+  "langues": ["fr", "en"]
+}

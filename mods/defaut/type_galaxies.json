@@ -24,6 +24,6 @@
     { "id": "compact",   "density": 2 }
   ],
   "galaxy_defaults": [
-    { "id": "standard", "map_form": "defaut:disque_uniforme", "map_size": "defaut:medium", "map_density": "defaut:medium" }
+    { "id": "standard", "map_form": "disque_uniforme", "map_size": "medium", "map_density": "medium" }
   ]
 }

@@ -2,7 +2,8 @@
 
 local M = {}
 
-local store, ordre = {}, {}   -- store["star_type"]["base:red_dwarf"] = { ... }
+local store, ordre = {}, {}   -- store["star_type"]["red_dwarf"] = { ... }
+-- [MODIF] Les id ne sont plus préfixés par le mod ("red_dwarf" et non "red_dwarf").
 
 function M.add(category, id, definition)    -- Ajoute une ligne dans une table.
   store[category] = store[category] or {}
@@ -10,6 +11,24 @@ function M.add(category, id, definition)    -- Ajoute une ligne dans une table.
   if store[category][id] then error("Doublon : " .. category .. " " .. id) end
   store[category][id] = definition
   ordre[category][#ordre[category] + 1] = id
+end
+
+-- [MODIF] NOUVEAU. Crée l'entrée si elle n'existe pas, sinon fusionne champ par champ.
+--   - fusion SUPERFICIELLE : un champ qui est lui-même une table est remplacé en entier.
+--   - 'source' mémorise le dernier mod ayant touché l'entrée (utile au débogage).
+--   - une entrée surchargée garde sa position d'origine dans l'ordre (list()).
+function M.merge(category, id, definition, source)
+  store[category] = store[category] or {}
+  ordre[category] = ordre[category] or {}
+  local existant = store[category][id]
+  if existant then
+    for champ, valeur in pairs(definition) do existant[champ] = valeur end
+    existant.source = source
+  else
+    definition.source = source
+    store[category][id] = definition
+    ordre[category][#ordre[category] + 1] = id
+  end
 end
 
 function M.list(category)                   -- renvoie les définitions dans l'ordre d'enregistrement
@@ -58,27 +77,11 @@ end
 
 return M
 
-
 -- local registre = require "core.registre"
 --
--- registre.add("galaxy_form",    "defaut:square",
---             { nom = "Square" })
+-- local defauts = registre.get("galaxy_defaults", "standard")
+-- local forme   = registre.get("galaxy_form",    map_form)
+-- local taille  = registre.get("galaxy_size",    map_size)
+-- local densite = registre.get("galaxy_density", map_density)
 --
--- registre.add("galaxy_size",    "defaut:minuscule",
---             { nom = "minuscule", map_X = 1250, map_Y = 1250 })
---
--- registre.add("galaxy_density", "defaut:epars",
---             { nom = "épars", density = 0.5 })
-
--- local defauts = registre.get("galaxy_defaults", "defaut:standard")
--- local forme   = registre.get("galaxy_form",    defauts.map_form)
--- local taille  = registre.get("galaxy_size",    defauts.map_size)
--- local densite = registre.get("galaxy_density", defauts.map_density)
--- print(forme.nom)                -- Disc with uniform density
--- print(taille.map_X, taille.map_Y)  -- 2500  2500
--- print(densite.density)
-
--- registre.get(...).champ
-
--- local reponse = registre.get_field("galaxy_form", "defaut:disc_uniform", "nom")
--- print (reponse)
+-- registre.get_field("panneau_hub", "empire", "touche")   -- "f1"

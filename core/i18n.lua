@@ -1,3 +1,5 @@
+-- core.i18n.lua
+
 -- local json = require("libs.dkjson.dkjson")              -- Librairie json
 local json_io = require "core.json_io"
 
@@ -102,8 +104,8 @@ function M.t(cle)
   return cle
 end
 
-function M.tc(categorie, id_complet)
-  return M.t(categorie .. "." .. id_complet)
+function M.tc(categorie, id)
+  return M.t(categorie .. "." .. id)
 end
 
 return M
