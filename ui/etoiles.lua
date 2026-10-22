@@ -1,4 +1,5 @@
 -- ui/etoiles.lua
+local events    = require("core.events")
 local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
 local ecran     = require("affichage.ecran")
@@ -53,6 +54,9 @@ end,
   onpress = function(x, y, button)
     if button ~= 1 then return end
     local s = trouver(x, y)
-    if s then print("étoile cliquée", s.id, s.x, s.y) end
+    if s then
+      print("étoile cliquée", s.id, s.x, s.y)
+      events.emit("carte_etoile", s.id)
+      end
   end,
 })

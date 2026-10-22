@@ -20,6 +20,7 @@ local hud =                   require("ui.hud")                          -- Char
 local panneau_empire =        require("ui.panneaux.empire")
 local panneau_diplomatie =    require("ui.panneaux.diplomatie")
 local panneau_science =       require("ui.panneaux.science")
+local carte_etoile =          require("ui.panneaux.etoile")
 
 
 

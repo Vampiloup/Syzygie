@@ -2,6 +2,7 @@
   "panneau_hub": [
     { "id": "empire",     "touche": "f1" },
     { "id": "science",    "touche": "f2" },
-    { "id": "diplomatie", "touche": "f3" }
+    { "id": "diplomatie", "touche": "f3" },
+    { "id": "carte_etoile", "touche": "f9" }
   ]
 }
