@@ -1,17 +1,26 @@
--- core/exclusif.lua
-local M = {}
-local actifs = {}   -- groupe -> fonction close du panneau actuellement ouvert
+-- core.exclusif.lua
 
--- À appeler dans open() : ferme l'éventuel occupant du groupe, puis s'inscrit
+local M = {}
+local actifs = {}   -- groupe -> fonction close du panneau ouvert
+
 function M.prendre(groupe, close)
   local ancien = actifs[groupe]
   if ancien and ancien ~= close then ancien() end
   actifs[groupe] = close
 end
 
--- À appeler dans close() : libère la place si c'est bien ce panneau
 function M.liberer(groupe, close)
   if actifs[groupe] == close then actifs[groupe] = nil end
+end
+
+-- ferme tous les panneaux ouverts ; renvoie true si au moins un l'était
+function M.fermer_tout()
+  local ferme = false
+  for _, close in pairs(actifs) do
+    close()            -- close appelle liberer : mettre un champ à nil pendant pairs est permis
+    ferme = true
+  end
+  return ferme
 end
 
 return M

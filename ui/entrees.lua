@@ -1,7 +1,8 @@
 -- ui.entrees.lua
-local events = require("core.events")
-local screen = require("affichage.ecran")
-local couches    = require("core.couches")
+local events       = require("core.events")
+local screen       = require("affichage.ecran")
+local couches      = require("core.couches")
+local exclusif     = require("core.exclusif")
 
 local pressed = {}   -- bouton -> élément qui a reçu le press
 
@@ -9,7 +10,9 @@ local survole = nil
 
 function love.keypressed(key, scancode, isrepeat)
   if key == "escape" then
-    love.event.quit()
+    if not exclusif.fermer_tout() then      -- rien à fermer : on quitte
+      love.event.quit()
+    end
     return
   end
   if key == "f11" then

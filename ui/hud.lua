@@ -7,6 +7,7 @@ local boutons = {
   { id = "empire", label = "Empire", w = 120, h = 40 },
   { id = "science",  label = "Science",  w = 120, h = 40 },
   { id = "diplomatie",  label = "Diplomatie",  w = 120, h = 40 },
+  { id = "economie",  label = "Économie",  w = 120, h = 40 },
 }
 
 local MARGIN = 24

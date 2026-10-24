@@ -3,6 +3,7 @@
     { "id": "empire",     "touche": "f1" },
     { "id": "science",    "touche": "f2" },
     { "id": "diplomatie", "touche": "f3" },
+    { "id": "economie",   "touche": "f4" },
     { "id": "carte_etoile", "touche": "f9" }
   ]
 }

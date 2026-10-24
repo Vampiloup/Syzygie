@@ -105,12 +105,12 @@ function M.pick(x, y)
 end
 
 -- Amène un élément au premier plan
-function M.raise(item)
-  local top = 0
-  for _, it in ipairs(items) do top = math.max(top, it.z) end
-  item.z = top + 1
-  M.sort()
-end
+-- function M.raise(item)
+--   local top = 0
+--   for _, it in ipairs(items) do top = math.max(top, it.z) end
+--     item.z = top + 1
+--   M.sort()
+-- end
 
 function M.draw()
   for i = #items, 1, -1 do        -- items est trié z décroissant : on parcourt à l'envers
