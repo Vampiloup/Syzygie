@@ -12,23 +12,29 @@ local ESPACE = 12
 -- ancre = coin de départ ; dir = sens de la file
 local groupes = {
   { ancre = "bas-gauche", dir = "droite", boutons = {
-      { id = "empire",     label = "Empire",     w = 120, h = 40 },
-      { id = "science",    label = "Science",    w = 120, h = 40 },
-      { id = "diplomatie", label = "Diplomatie", w = 120, h = 40 },
-      { id = "economie",   label = "Économie",   w = 120, h = 40 },
+      { id = "empire",           w = 120, h = 40 },
+      { id = "science",          w = 120, h = 40 },
+      { id = "diplomatie",       w = 120, h = 40 },
+      { id = "economie",         w = 120, h = 40 },
   }},
   { ancre = "haut-droite", dir = "gauche", boutons = {
-      { id = "reglages", label = "Réglages", w = 120, h = 40 },
+      { id = "reglages",         w = 120, h = 40 },
   }},
   { ancre = "bas-droite", dir = "gauche", boutons = {
-      { id = "appel_tour", label = "Fin du tour", w = 160, h = 48 },
+      { id = "appel_tour",       w = 160, h = 48 },
   }},
+--    { ancre = "centre", dir = "bas", boutons = {
+--    { id = "nouvelle_partie",  w = 240, h = 48 },
+--    { id = "options",          w = 240, h = 48 },
+--    { id = "quitter",          w = 240, h = 48 },
+--  }},
 }
 
 -- (ax, ay) : 0 = gauche/haut, 1 = droite/bas
 local ANCRES = {
   ["haut-gauche"] = {0, 0}, ["haut-droite"] = {1, 0},
   ["bas-gauche"]  = {0, 1}, ["bas-droite"]  = {1, 1},
+  ["centre"] = {0.5, 0.5},
 }
 local DIRS = {
   droite = {1, 0}, gauche = {-1, 0}, bas = {0, 1}, haut = {0, -1},
@@ -39,33 +45,47 @@ local tous = {}
 for _, g in ipairs(groupes) do
   assert(ANCRES[g.ancre], "ancre inconnue : " .. tostring(g.ancre))
   assert(DIRS[g.dir],     "direction inconnue : " .. tostring(g.dir))
-  for _, b in ipairs(g.boutons) do tous[#tous + 1] = b end
+  for _, b in ipairs(g.boutons) do
+    tous[#tous + 1] = b
+    b.cle = "hud_general." .. b.id
+  end
 end
 
 
 
 -- placement : ancré en bas à gauche, dans les bornes réelles de la fenêtre
 local function place(left, top, right, bottom)
+  local W, H = right - left, bottom - top
+
   for _, g in ipairs(groupes) do
-    local ax, ay = unpack(ANCRES[g.ancre])   -- LÖVE = LuaJIT : unpack global OK
+    local ax, ay = unpack(ANCRES[g.ancre])
     local dx, dy = unpack(DIRS[g.dir])
+    local liste  = g.boutons
 
-    local cx = (ax == 0) and left + MARGIN or right  - MARGIN
-    local cy = (ay == 0) and top  + MARGIN or bottom - MARGIN
+    local gw, gh = 0, 0
+    for i, b in ipairs(liste) do
+      local esp = (i > 1) and ESPACE or 0
+      if dx ~= 0 then gw = gw + b.w + esp; gh = math.max(gh, b.h)
+      else            gh = gh + b.h + esp; gw = math.max(gw, b.w) end
+    end
 
-    for _, b in ipairs(g.boutons) do
+    local x = left + MARGIN + (W - 2 * MARGIN - gw) * ax
+    local y = top  + MARGIN + (H - 2 * MARGIN - gh) * ay
+
+    local debut, fin, pas = 1, #liste, 1
+    if dx < 0 or dy < 0 then debut, fin, pas = #liste, 1, -1 end
+
+    for i = debut, fin, pas do
+      local b = liste[i]
       if dx ~= 0 then
-        -- file horizontale : x suit la direction, y suit l'ancre
-        if dx > 0 then b.x = cx;        cx = cx + b.w + ESPACE
-        else           b.x = cx - b.w;  cx = b.x - ESPACE end
-        b.y = (ay == 0) and cy or cy - b.h
+        b.x = x
+        b.y = y + (gh - b.h) * ay          -- alignement perpendiculaire selon l'ancre
+        x = x + b.w + ESPACE
       else
-        -- file verticale : y suit la direction, x suit l'ancre
-        if dy > 0 then b.y = cy;        cy = cy + b.h + ESPACE
-        else           b.y = cy - b.h;  cy = b.y - ESPACE end
-        b.x = (ax == 0) and cx or cx - b.w
+        b.y = y
+        b.x = x + (gw - b.w) * ax
+        y = y + b.h + ESPACE
       end
-      b.cle = "hud_general." .. b.id
     end
   end
 end

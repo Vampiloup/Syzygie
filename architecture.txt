@@ -33,7 +33,7 @@ syzygie/
 -- -- -- science.lua                               Affichage du panneau général de la recherche scientifique.
 -- -- widgets/                                     Widgets pour le HUD.
 -- -- -- fermer.lua                                Widget pour placer le bouton de fermeture de panneau... sur un panneau.
--- -- -- panneau.lua                               Factorise / centralize les éléments des différents panneaux (ceux partagés, au moins)
+-- -- -- panneau.lua                               Factorise / centralise les éléments des différents panneaux (ceux partagés, au moins)
 -- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
 -- -- etoiles.lua                                  Étoiles en tant qu'objets UI
 -- -- fond.lua                                     Crée la couche de fond (Z = 0)
@@ -42,10 +42,12 @@ syzygie/
 -- -- defaut/
 -- -- -- manifeste.json                            Manifeste du mod.
 -- -- -- type_etoiles.json                         Liste les types d'étoiles
--- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes)
+-- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes).
 -- -- -- type_galaxies.json                        Les possibilités de la galaxie (forme, taille, densité d'étoiles). Liste des possibilités de ces choix.
 -- -- -- langues/
 -- -- -- -- fr/
+-- -- -- -- -- type_galaxies.json                  Textes de génération de galaxie (caractéristiques de la carte en général).
+-- -- -- -- -- hud.json                            Textes du hub (panneaux, boutons...).
 -- -- -- -- en/
 -- -- -- sprites/
 -- -- -- -- galaxie/

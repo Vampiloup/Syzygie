@@ -10,5 +10,7 @@
   "hud_science.titre":                                        "Science panel",
   "hud_economie.titre":                                       "Economy panel",
   "hud_diplomatie.titre":                                     "Diplomacy panel",
-  "hud_reglages.titre":                                       "Settings panel"
+  "hud_reglages.titre":                                       "Settings panel",
+
+  "hud_star.titre":                                           "Star n°"
 }
