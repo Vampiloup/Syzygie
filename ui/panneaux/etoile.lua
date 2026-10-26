@@ -8,7 +8,7 @@ local ID = "carte_etoile"
 local etoile_id = nil
 
 local P = panneau.new({
-  id = ID, w = 320, h = 990, ancrage = "haut_gauche",
+  id = ID, w = 320, h = 990,  ancrage_x = "gauche", ancrage_y = "haut",
   draw       = function(p)
     local texte = i18n.t("hud_star.titre")
     love.graphics.print(texte.." : " .. tostring(etoile_id), p.x + 16, p.y + 16)

@@ -21,6 +21,7 @@ local panneau_empire =        require("ui.panneaux.empire")
 local panneau_diplomatie =    require("ui.panneaux.diplomatie")
 local panneau_science =       require("ui.panneaux.science")
 local panneau_economie =      require("ui.panneaux.economie")
+local panneau_reglages =      require("ui.panneaux.reglages")
 local carte_etoile =          require("ui.panneaux.etoile")
 
 -- local appel_tour =            require("core.appel_tour")                 -- Module demandant et recevant l'event de tour.

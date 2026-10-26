@@ -3,6 +3,7 @@ local events    =              require("core.events")
 local couches   =              require("core.couches")
 local couches_z =              require("core.couches_z")
 local i18n =                   require("core.i18n")
+local screen =                 require("affichage.ecran")
 
 
 local MARGIN = 24
@@ -69,8 +70,8 @@ local function place(left, top, right, bottom)
       else            gh = gh + b.h + esp; gw = math.max(gw, b.w) end
     end
 
-    local x = left + MARGIN + (W - 2 * MARGIN - gw) * ax
-    local y = top  + MARGIN + (H - 2 * MARGIN - gh) * ay
+    local x = math.floor(left + MARGIN + (W - 2 * MARGIN - gw) * ax)
+    local y = math.floor(top  + MARGIN + (H - 2 * MARGIN - gh) * ay)
 
     local debut, fin, pas = 1, #liste, 1
     if dx < 0 or dy < 0 then debut, fin, pas = #liste, 1, -1 end
@@ -78,12 +79,12 @@ local function place(left, top, right, bottom)
     for i = debut, fin, pas do
       local b = liste[i]
       if dx ~= 0 then
-        b.x = x
-        b.y = y + (gh - b.h) * ay          -- alignement perpendiculaire selon l'ancre
+        b.x = screen.snap(x)
+        b.y = screen.snap(y + (gh - b.h) * ay)  -- Alignement perpendiculaire.
         x = x + b.w + ESPACE
       else
-        b.y = y
-        b.x = x + (gw - b.w) * ax
+        b.y = screen.snap(y)
+        b.x = screen.snap(x + (gw - b.w) * ax)
         y = y + b.h + ESPACE
       end
     end

@@ -30,6 +30,7 @@ syzygie/
 -- -- -- etoile.lua                                Affichage du panneau de l'étoile
 -- -- -- hello.lua                                 Affichage du panneau Hello.
 -- -- -- planete.lua                               Affichage du panneau de la planète (orbital) de l'étoile sélectionnée.
+-- -- -- reglages.lua                              Affichage du panneau de réglages du jeu (pas de la partie).
 -- -- -- science.lua                               Affichage du panneau général de la recherche scientifique.
 -- -- widgets/                                     Widgets pour le HUD.
 -- -- -- fermer.lua                                Widget pour placer le bouton de fermeture de panneau... sur un panneau.

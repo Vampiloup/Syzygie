@@ -35,5 +35,9 @@ function M.bounds()
          (h - M.oy) / M.scale      -- bas
 end
 
+function M.snap(v)
+  return math.floor(v * M.scale + 0.5) / M.scale
+end
+
 M.load()
 return M

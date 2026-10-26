@@ -6,10 +6,17 @@ local couches_z = require("core.couches_z")
 local registre  = require("core.registre")
 local fermer    = require("ui.widgets.fermer")
 
-local MARGIN = 24
-local ANCRAGES = {
-  haut_gauche = function(p, l, t, r, b) p.x = l + MARGIN;       p.y = t + MARGIN end,
-  haut_droite = function(p, l, t, r, b) p.x = r - p.w - MARGIN; p.y = t + MARGIN end,
+local MARGIN_X = 24
+local MARGIN_Y = 72
+local AXE_X = {
+  gauche = function(p, l, r) return l + MARGIN_X end,
+  centre = function(p, l, r) return math.floor((l + r - p.w) / 2) end,
+  droite = function(p, l, r) return r - p.w - MARGIN_X end,
+}
+local AXE_Y = {
+  haut   = function(p, t, b) return t + MARGIN_Y end,
+  centre = function(p, t, b) return math.floor((t + b - p.h) / 2) end,
+  bas    = function(p, t, b) return b - p.h - MARGIN_Y end,
 }
 
 local M = {}
@@ -17,14 +24,18 @@ local M = {}
 function M.new(def)
   local panel  = { w = def.w, h = def.h }
   local groupe = def.groupe or "panneaux_jeu"
-  local ancrer = ANCRAGES[def.ancrage or "haut_droite"]
   local ouvert, item, touche = false, nil, nil
   local close
   local P = { panel = panel }
 
   local btn = fermer.new(panel, function() close() end)
 
-  local function place(l, t, r, b) ancrer(panel, l, t, r, b) end
+  local ax = assert(AXE_X[def.ancrage_x or "droite"], "ancrage_x invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_x))
+  local ay = assert(AXE_Y[def.ancrage_y or "haut"],   "ancrage_y invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_y))
+  local function place(l, t, r, b)
+    panel.x = screen.snap(ax(panel, l, r))
+    panel.y = screen.snap(ay(panel, t, b))
+  end
 
   local function inside(x, y)
     return x >= panel.x and x <= panel.x + panel.w
