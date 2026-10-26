@@ -23,7 +23,7 @@ local panneau_science =       require("ui.panneaux.science")
 local panneau_economie =      require("ui.panneaux.economie")
 local carte_etoile =          require("ui.panneaux.etoile")
 
-# local appel_tour =            require("core.appel_tour")                 -- Module demandant et recevant l'event de tour.
+-- local appel_tour =            require("core.appel_tour")                 -- Module demandant et recevant l'event de tour.
 
 
 
@@ -33,7 +33,7 @@ function love.load()
   -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
   -- mods.charger({ "defaut", "test" })
   mods.charger({ "defaut" })
-  i18n.definir("fr")                                                         -- une fois, au démarrage
+  i18n.definir("en")                                                         -- une fois, au démarrage
   screen.load()
   events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
 

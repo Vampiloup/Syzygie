@@ -1,6 +1,7 @@
 -- ui.panneaux.etoile
 local events  = require("core.events")
 local panneau = require("ui.widgets.panneau")
+local i18n =                   require("core.i18n")
 
 local ID = "carte_etoile"
 local etoile_id = nil

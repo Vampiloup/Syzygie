@@ -1,0 +1,14 @@
+{
+  "hud_general.empire":                                       "empire",
+  "hud_general.science":                                      "science",
+  "hud_general.economie":                                     "economy",
+  "hud_general.diplomatie":                                   "diplomacy",
+  "hud_general.reglages":                                     "settings",
+  "hud_general.appel_tour":                                   "end turn",
+
+  "hud_empire.titre":                                         "Empire panel",
+  "hud_science.titre":                                        "Science panel",
+  "hud_economie.titre":                                       "Economy panel",
+  "hud_diplomatie.titre":                                     "Diplomacy panel",
+  "hud_reglages.titre":                                       "Settings panel"
+}

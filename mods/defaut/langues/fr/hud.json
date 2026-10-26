@@ -1,0 +1,14 @@
+{
+  "hud_general.empire":                                       "empire",
+  "hud_general.science":                                      "science",
+  "hud_general.economie":                                     "économie",
+  "hud_general.diplomatie":                                   "diplomatie",
+  "hud_general.reglages":                                     "réglages",
+  "hud_general.appel_tour":                                   "fin tour",
+
+  "hud_empire.titre":                                         "Panneau Empire",
+  "hud_science.titre":                                        "Panneau Science",
+  "hud_economie.titre":                                       "Panneau Économie",
+  "hud_diplomatie.titre":                                     "Panneau Diplomatie",
+  "hud_reglages.titre":                                       "Panneau Réglages"
+}

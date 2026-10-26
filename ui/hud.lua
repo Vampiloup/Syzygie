@@ -1,7 +1,9 @@
 -- ui.hud.lua
-local events    = require("core.events")
-local couches   = require("core.couches")
-local couches_z = require("core.couches_z")
+local events    =              require("core.events")
+local couches   =              require("core.couches")
+local couches_z =              require("core.couches_z")
+local i18n =                   require("core.i18n")
+
 
 local MARGIN = 24
 local ESPACE = 12
@@ -16,10 +18,10 @@ local groupes = {
       { id = "economie",   label = "Économie",   w = 120, h = 40 },
   }},
   { ancre = "haut-droite", dir = "gauche", boutons = {
-      { id = "settings", label = "Réglages", w = 120, h = 40 },
+      { id = "reglages", label = "Réglages", w = 120, h = 40 },
   }},
   { ancre = "bas-droite", dir = "gauche", boutons = {
-      { id = "fin_tour", label = "Fin du tour", w = 160, h = 48 },
+      { id = "appel_tour", label = "Fin du tour", w = 160, h = 48 },
   }},
 }
 
@@ -63,6 +65,7 @@ local function place(left, top, right, bottom)
         else           b.y = cy - b.h;  cy = b.y - ESPACE end
         b.x = (ax == 0) and cx or cx - b.w
       end
+      b.cle = "hud_general." .. b.id
     end
   end
 end
@@ -92,7 +95,8 @@ couches.add({
       love.graphics.setColor(1, 1, 1)
       local font = love.graphics.getFont()
       local ty = b.y + (b.h - font:getHeight()) / 2
-      love.graphics.printf(b.label, b.x, ty, b.w, "center")
+      local reponse = i18n.t(b.cle)
+      love.graphics.printf(reponse, b.x, ty, b.w, "center")
     end
   end,
 
