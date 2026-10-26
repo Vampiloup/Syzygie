@@ -1,8 +1,8 @@
 -- ui.panneaux.empire
 
-local events  = require("core.events")
-local panneau = require("ui.widgets.panneau")
-local i18n =                   require("core.i18n")
+local events  =                 require("core.events")
+local panneau =                 require("ui.widgets.panneau")
+local i18n =                    require("core.i18n")
 
 local ID = "empire"
 local CLE = "hud_"..ID
