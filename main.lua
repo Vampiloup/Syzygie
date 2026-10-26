@@ -23,6 +23,8 @@ local panneau_science =       require("ui.panneaux.science")
 local panneau_economie =      require("ui.panneaux.economie")
 local carte_etoile =          require("ui.panneaux.etoile")
 
+# local appel_tour =            require("core.appel_tour")                 -- Module demandant et recevant l'event de tour.
+
 
 
 
