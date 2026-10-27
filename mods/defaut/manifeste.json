@@ -13,7 +13,8 @@
     "type_galaxies.json",
     "type_etoiles.json",
     "type_orbitales.json",
-    "touches_clavier.json"
+    "touches_clavier.json",
+    "screen_coordinates.json"
   ],
   "langues": ["fr", "en"]
 }

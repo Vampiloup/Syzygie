@@ -1,0 +1,10 @@
+{
+  "hud_panneau": [
+    { "id": "general",       "margin_x": 24,   "margin_y": 64 },
+    { "id": "etoile",        "largeur": 320,   "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" }
+    { "id": "science",       "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" }
+    { "id": "diplomatie",    "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" }
+    { "id": "economie",      "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" }
+    { "id": "empire",        "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" }
+  ]
+}

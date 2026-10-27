@@ -9,7 +9,7 @@ local CLE = "hud_"..ID
 
 
 local P = panneau.new({
-  id = ID, w = 1280, h = 768, ancrage_x = "droite", ancrage_y = "haut",
+  id = ID, preset = ID,
   draw    = function(p)
     local texte =i18n.t( CLE..".titre")
     love.graphics.print(texte, p.x + 16, p.y + 16)

@@ -6,7 +6,7 @@ local i18n =                   require("core.i18n")
 local screen =                 require("affichage.ecran")
 
 
-local MARGIN = 24
+local MARGIN = 12
 local ESPACE = 12
 
 

@@ -3,6 +3,7 @@
 local events  =                 require("core.events")
 local panneau =                 require("ui.widgets.panneau")
 local i18n =                    require("core.i18n")
+local exclusif     =            require("core.exclusif")
 
 local ID = "reglages"
 local CLE = "hud_"..ID
@@ -25,7 +26,7 @@ local P = panneau.new({
 events.on("hud_bouton", function(id) if id == ID then P.toggle() end end)
 
 bouton_test = function(id)
-  print ("Bouton test")
+    love.event.quit()
 end
 
 return P

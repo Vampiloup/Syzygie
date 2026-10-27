@@ -1,23 +1,27 @@
-local events    = require("core.events")
-local exclusif  = require("core.exclusif")
-local screen    = require("affichage.ecran")
-local couches   = require("core.couches")
-local couches_z = require("core.couches_z")
-local registre  = require("core.registre")
-local fermer    = require("ui.widgets.fermer")
-local bouton    = require("ui.widgets.bouton")
+local events    =               require("core.events")
+local exclusif  =               require("core.exclusif")
+local screen    =               require("affichage.ecran")
+local couches   =               require("core.couches")
+local couches_z =               require("core.couches_z")
+local registre  =               require("core.registre")
+local fermer    =               require("ui.widgets.fermer")
+local bouton    =               require("ui.widgets.bouton")
 
-local MARGIN_X = 24
-local MARGIN_Y = 72
+
+
+local function preset()
+  return registre.get("hud_panneau", "general")
+end
+
 local AXE_X = {
-  gauche = function(p, l, r) return l + MARGIN_X end,
+  gauche = function(p, l, r) return l + preset().margin_x end,
   centre = function(p, l, r) return math.floor((l + r - p.w) / 2) end,
-  droite = function(p, l, r) return r - p.w - MARGIN_X end,
+  droite = function(p, l, r) return r - p.w - preset().margin_x end,
 }
 local AXE_Y = {
-  haut   = function(p, t, b) return t + MARGIN_Y end,
+  haut   = function(p, t, b) return t + preset().margin_y end,
   centre = function(p, t, b) return math.floor((t + b - p.h) / 2) end,
-  bas    = function(p, t, b) return b - p.h - MARGIN_Y end,
+  bas    = function(p, t, b) return b - p.h - preset().margin_y end,
 }
 
 local M = {}
@@ -37,9 +41,12 @@ function M.new(def)
     widgets[#widgets + 1] = bouton.new(panel, bd)
   end
 
-  local ax = assert(AXE_X[def.ancrage_x or "droite"], "ancrage_x invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_x))
-  local ay = assert(AXE_Y[def.ancrage_y or "haut"],   "ancrage_y invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_y))
   local function place(l, t, r, b)
+    local pr = def.preset and registre.get("hud_panneau", def.preset)
+    panel.w = panel.w or pr.largeur
+    panel.h = panel.h or pr.hauteur
+    local ax = AXE_X[(pr and pr.ancrage_x) or def.ancrage_x or "droite"]
+    local ay = AXE_Y[(pr and pr.ancrage_y) or def.ancrage_y or "haut"]
     panel.x = screen.snap(ax(panel, l, r))
     panel.y = screen.snap(ay(panel, t, b))
   end
