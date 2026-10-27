@@ -43,6 +43,7 @@ syzygie/
 -- mods/
 -- -- defaut/
 -- -- -- manifeste.json                            Manifeste du mod.
+-- -- -- screen_coordinates                        Liste des coordonnées et tailles des différents panneaux du hud.
 -- -- -- type_etoiles.json                         Liste les types d'étoiles
 -- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes).
 -- -- -- type_galaxies.json                        Les possibilités de la galaxie (forme, taille, densité d'étoiles). Liste des possibilités de ces choix.
