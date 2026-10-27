@@ -5,6 +5,7 @@ local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
 local registre  = require("core.registre")
 local fermer    = require("ui.widgets.fermer")
+local bouton    = require("ui.widgets.bouton")
 
 local MARGIN_X = 24
 local MARGIN_Y = 72
@@ -30,6 +31,12 @@ function M.new(def)
 
   local btn = fermer.new(panel, function() close() end)
 
+  -- boutons internes : def.boutons = { {x=, y=, w=, h=, ancre=, cle=, action=}, ... }
+  local widgets = {}
+  for _, bd in ipairs(def.boutons or {}) do
+    widgets[#widgets + 1] = bouton.new(panel, bd)
+  end
+
   local ax = assert(AXE_X[def.ancrage_x or "droite"], "ancrage_x invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_x))
   local ay = assert(AXE_Y[def.ancrage_y or "haut"],   "ancrage_y invalide pour '" .. tostring(def.id) .. "' : " .. tostring(def.ancrage_y))
   local function place(l, t, r, b)
@@ -49,23 +56,32 @@ function M.new(def)
       love.graphics.setColor(1, 1, 1)
     end
     if def.draw then def.draw(panel) end
+    for _, w in ipairs(widgets) do w.draw() end
     btn.draw()
   end
 
   local function onPress(x, y, b)
     if btn.press(x, y, b) then return end
+    for _, w in ipairs(widgets) do
+      if w.press(x, y, b) then return end
+    end
     if def.onclick then def.onclick(x, y, b) end
   end
   local function onRelease(x, y, b)
     if btn.release(x, y, b) then return end
+    for _, w in ipairs(widgets) do
+      if w.release(x, y, b) then return end
+    end
     if def.onrelease then def.onrelease(x, y, b) end
   end
   local function onMove(x, y, dx, dy)
     btn.move(x, y)
+    for _, w in ipairs(widgets) do w.move(x, y) end   -- pas de court-circuit : le survol doit se mettre à jour partout
     if def.onmove then def.onmove(x, y, dx, dy) end
   end
   local function onLeave()
     btn.leave()
+    for _, w in ipairs(widgets) do w.leave() end
     if def.onleave then def.onleave() end
   end
   local function onKey(key, sc, rep)
@@ -94,7 +110,7 @@ function M.new(def)
   function close()
     if not ouvert then return end
     ouvert = false
-    btn.leave()
+    onLeave()   -- remet à zéro survol/enfoncé du bouton fermer ET des boutons internes
     exclusif.liberer(groupe, close)
     events.off("keypressed", onKey)
     events.off("resize", place)

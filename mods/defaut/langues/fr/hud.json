@@ -12,5 +12,7 @@
   "hud_diplomatie.titre":                                     "Panneau Diplomatie",
   "hud_reglages.titre":                                       "Panneau Réglages",
 
-  "hud_star.titre":                                           "Étoile n°"
+  "hud_star.titre":                                           "Étoile n°",
+
+  "hud_reglages.test":                                        "Test de bouton"
 }

@@ -12,5 +12,7 @@
   "hud_diplomatie.titre":                                     "Diplomacy panel",
   "hud_reglages.titre":                                       "Settings panel",
 
-  "hud_star.titre":                                           "Star n°"
+  "hud_star.titre":                                           "Star n°",
+
+  "hud_reglages.test":                                        "Button test"
 }
