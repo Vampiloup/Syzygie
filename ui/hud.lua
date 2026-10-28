@@ -1,134 +1,195 @@
 -- ui.hud.lua
 --
--- CE QUI A CHANGÉ PAR RAPPORT À L'ANCIENNE VERSION (repéré par "MODIF") :
---   MODIF 1 : chaque bouton du HUD devient un vrai widget bouton.lua.
---   MODIF 2 : place() écrit dans un rectangle (b.rect) que le widget lit.
---   MODIF 3 : les callbacks de la couche se contentent de transmettre aux widgets.
---   MODIF 4 : disparition de trouver(), survol, enfonce et du dessin maison.
---   Le calcul des files de boutons (groupes, ancres, directions) est INCHANGÉ :
---   c'est la vraie spécificité du HUD, elle reste ici.
+-- ÉTAPE 2 : les boutons ne sont plus écrits en dur dans ce fichier,
+-- ils sont lus dans le registre (catégories "hud_groupe" et "hud_bouton").
+--
+-- CE QUI A CHANGÉ PAR RAPPORT À L'ÉTAPE 1 (repéré par "MODIF") :
+--   MODIF A : le module renvoie maintenant une table M, avec une fonction M.init().
+--   MODIF B : la table "groupes" n'est plus écrite à la main : init() la remplit.
+--   MODIF C : init() VALIDE les données avant de les utiliser.
+--   MODIF D : init() place les boutons elle-même à la fin.
+--   Inchangés : le calcul de placement (place), les callbacks de la couche,
+--   et le fait que chaque bouton est un widget bouton.lua.
 
 local events    = require("core.events")
 local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
-local bouton    = require("ui.widgets.bouton")   -- MODIF 1 : remplace i18n et screen,
-                                                  -- dont le HUD n'a plus besoin directement
+local registre  = require("core.registre")       -- MODIF B : pour lire les données
+local screen    = require("affichage.ecran")      -- MODIF D : pour le placement initial
+local bouton    = require("ui.widgets.bouton")
 
-local MARGIN = 12
-local ESPACE = 12
-
-
--- ancre = coin de départ ; dir = sens de la file
-local groupes = {
-  { ancre = "bas-gauche", dir = "droite", boutons = {
-      { id = "empire",           w = 120, h = 40 },
-      { id = "science",          w = 120, h = 40 },
-      { id = "diplomatie",       w = 120, h = 40 },
-      { id = "economie",         w = 120, h = 40 },
-  }},
-  { ancre = "haut-droite", dir = "gauche", boutons = {
-      { id = "reglages",         w = 120, h = 40 },
-  }},
-  { ancre = "bas-droite", dir = "gauche", boutons = {
-      { id = "appel_tour",       w = 160, h = 48 },
-  }},
---    { ancre = "centre", dir = "bas", boutons = {
---    { id = "nouvelle_partie",  w = 240, h = 48 },
---    { id = "options",          w = 240, h = 48 },
---    { id = "quitter",          w = 240, h = 48 },
---  }},
-}
-
--- (ax, ay) : 0 = gauche/haut, 1 = droite/bas
-local ANCRES = {
-  ["haut-gauche"] = {0, 0}, ["haut-droite"] = {1, 0},
-  ["bas-gauche"]  = {0, 1}, ["bas-droite"]  = {1, 1},
-  ["centre"] = {0.5, 0.5},
-}
+-- MODIF E : même vocabulaire que hud_panneau (ancrage_x / ancrage_y), au lieu
+-- d'une ancre combinée ("bas-gauche"). Chaque mot est traduit en nombre :
+-- 0 = gauche/haut, 0.5 = centre, 1 = droite/bas (les "ax" et "ay" de place()).
+local ANCRAGE_X = { gauche = 0, centre = 0.5, droite = 1 }
+local ANCRAGE_Y = { haut   = 0, centre = 0.5, bas    = 1 }
 local DIRS = {
   droite = {1, 0}, gauche = {-1, 0}, bas = {0, 1}, haut = {0, -1},
 }
 
--- liste à plat pour le survol, le clic et le dessin
-local tous = {}
-for _, g in ipairs(groupes) do
-  assert(ANCRES[g.ancre], "ancre inconnue : " .. tostring(g.ancre))
-  assert(DIRS[g.dir],     "direction inconnue : " .. tostring(g.dir))
-  for _, b in ipairs(g.boutons) do
-    tous[#tous + 1] = b
+-- MODIF A : table du module. C'est ce que "require('ui.hud')" renverra,
+-- ce qui permet à main.lua d'écrire hud.init().
+local M = {}
 
-    -- MODIF 1 : on crée le widget de chaque bouton ici, une seule fois, au chargement.
-    -- b.rect est le "parent" du widget : un rectangle {x, y, w, h}.
-    -- bouton.lua lit ce rectangle à chaque dessin/clic (il est passé par
-    -- référence), donc quand place() le modifie, le widget suit tout seul.
-    -- x et y valent 0 pour l'instant : place() les remplira au premier "resize".
-    b.rect = { x = 0, y = 0, w = b.w, h = b.h }
+-- MODIF B : ces deux tables sont créées VIDES ici et remplies plus tard par init().
+-- Important : on ne les remplace jamais par une nouvelle table (pas de "groupes = {...}"
+-- dans init), on les remplit. Ainsi la couche et place(), définies plus bas,
+-- voient automatiquement le contenu une fois init() passée.
+local groupes = {}   -- { {id=, ancre=, dir=, boutons={...}}, ... }
+local tous    = {}   -- liste à plat des boutons pour le survol, le clic et le dessin
 
-    b.widget = bouton.new(b.rect, {
-      id  = b.id,
-      w   = b.w,
-      h   = b.h,
-      cle = "hud_general." .. b.id,   -- même clé i18n qu'avant (ex-b.cle)
-      -- Quand le clic est validé, le widget appelle cette fonction avec son id.
-      -- C'est elle qui émet l'événement : les autres modules n'ont rien à changer.
-      action = function(id) events.emit("hud_bouton", id) end,
-    })
-    -- Pas d'ancre ni de décalage donnés : valeurs par défaut de bouton.lua
-    -- ("haut-gauche", décalage 0), donc le widget se place exactement sur b.rect.
-  end
-end
+local initialise = false
 
 
-
--- placement : ancré en bas à gauche, dans les bornes réelles de la fenêtre
+-- placement : inchangé par rapport à l'étape 1.
+-- Défini AVANT init() car init() l'appelle (en Lua, une "local function"
+-- doit être déclarée avant l'endroit où on l'utilise).
 local function place(left, top, right, bottom)
   local W, H = right - left, bottom - top
 
   for _, g in ipairs(groupes) do
-    local ax, ay = unpack(ANCRES[g.ancre])
+    local ax, ay, mx, my, es = g.ax, g.ay, g.mx, g.my, g.es          -- MODIF E : déjà convertis en nombres par init()
     local dx, dy = unpack(DIRS[g.dir])
     local liste  = g.boutons
 
     local gw, gh = 0, 0
     for i, b in ipairs(liste) do
-      local esp = (i > 1) and ESPACE or 0
+      local esp = (i > 1) and es or 0
       if dx ~= 0 then gw = gw + b.w + esp; gh = math.max(gh, b.h)
       else            gh = gh + b.h + esp; gw = math.max(gw, b.w) end
     end
 
-    local x = math.floor(left + MARGIN + (W - 2 * MARGIN - gw) * ax)
-    local y = math.floor(top  + MARGIN + (H - 2 * MARGIN - gh) * ay)
+    local x = math.floor(left + mx + (W - 2 * mx - gw) * ax)
+    local y = math.floor(top  + my + (H - 2 * my - gh) * ay)
 
     local debut, fin, pas = 1, #liste, 1
     if dx < 0 or dy < 0 then debut, fin, pas = #liste, 1, -1 end
 
     for i = debut, fin, pas do
       local b = liste[i]
-      -- MODIF 2 : on écrit dans b.rect au lieu de b.x / b.y.
-      -- Le screen.snap() a disparu d'ici : bouton.lua l'applique déjà lui-même
-      -- à chaque lecture, inutile de le faire deux fois.
       if dx ~= 0 then
         b.rect.x = x
         b.rect.y = y + (gh - b.h) * ay  -- Alignement perpendiculaire.
-        x = x + b.w + ESPACE
+        x = x + b.w + es
       else
         b.rect.y = y
         b.rect.x = x + (gw - b.w) * ax
-        y = y + b.h + ESPACE
+        y = y + b.h + es
       end
     end
   end
 end
 events.on("resize", place)
 
--- MODIF 4 : trouver(), survol et enfonce ont disparu. Chaque widget connaît
--- maintenant son propre état (b.survol / b.enfonce dans bouton.lua).
 
+-- MODIF B + C : lecture et validation des données, puis création des widgets.
+-- À appeler UNE fois, depuis love.load(), APRÈS mods.charger()
+-- (avant, le registre est vide).
+function M.init()
+  if initialise then error("hud.init() ne doit être appelée qu'une seule fois") end
+  initialise = true
+
+  -- Valeurs par défaut des boutons (entrée "general", comme dans hud_panneau).
+  local defauts = registre.get("hud_bouton", "general")
+  for _, champ in ipairs({ "w", "h" }) do
+    if type(defauts[champ]) ~= "number" then
+      error("hud_bouton 'general' : le champ '" .. champ .. "' est manquant ou n'est pas un nombre")
+    end
+  end
+
+  -- 1. Les groupes. registre.list() les renvoie dans l'ordre d'enregistrement.
+  -- par_id sert à retrouver un groupe à partir de son nom (utilisé à l'étape 2).
+  local par_id = {}
+  for _, def in ipairs(registre.list("hud_groupe")) do
+    -- MODIF E : les deux champs sont obligatoires (pas de valeur par défaut).
+    -- Lire ANCRAGE_X[nil] ne plante pas en Lua, ça renvoie nil : le test fonctionne
+    -- donc aussi quand le champ est absent.
+    local ax, ay, mx, my, es = ANCRAGE_X[def.ancrage_x], ANCRAGE_Y[def.ancrage_y], def.margin_x, def.margin_y, def.espace
+    if not ax then
+      error("hud_groupe '" .. def.id .. "' : ancrage_x inconnu : " .. tostring(def.ancrage_x))
+    end
+    if not ay then
+      error("hud_groupe '" .. def.id .. "' : ancrage_y inconnu : " .. tostring(def.ancrage_y))
+    end
+    if not mx then
+      error("hud_groupe '" .. def.id .. "' : margin_x inconnu : " .. tostring(def.margin_x))
+    end
+    if not my then
+      error("hud_groupe '" .. def.id .. "' : margin_y inconnu : " .. tostring(def.margin_y))
+    end
+    if not es then
+      error("hud_groupe '" .. def.id .. "' : espace inconnu : " .. tostring(def.espace))
+    end
+    if not DIRS[def.dir] then
+      error("hud_groupe '" .. def.id .. "' : direction inconnue : " .. tostring(def.dir))
+    end
+    local g = { id = def.id, ax = ax, ay = ay, mx = mx, my = my, es = es, dir = def.dir, boutons = {} }
+    groupes[#groupes + 1] = g
+    par_id[def.id] = g
+  end
+
+  -- 2. Les boutons : on les range dans leur groupe, en vérifiant tout.
+  local ordres = {}   -- ordres[groupe][numero] = id du bouton qui occupe ce numéro
+  for _, def in ipairs(registre.list("hud_bouton")) do
+    if def.id ~= "general" then          -- "general" = valeurs par défaut, pas un vrai bouton
+      local g = par_id[def.groupe]
+      if not g then
+        error("hud_bouton '" .. def.id .. "' : groupe inconnu : " .. tostring(def.groupe))
+      end
+      if type(def.ordre) ~= "number" then
+        error("hud_bouton '" .. def.id .. "' : le champ 'ordre' est manquant ou n'est pas un nombre")
+      end
+
+      -- Deux boutons du même groupe avec le même ordre : erreur claire,
+      -- plutôt que de laisser le hasard décider lequel passe en premier.
+      ordres[g] = ordres[g] or {}
+      local deja = ordres[g][def.ordre]
+      if deja then
+        error("hud_bouton '" .. def.id .. "' : l'ordre " .. def.ordre ..
+              " du groupe '" .. g.id .. "' est déjà pris par '" .. deja .. "'")
+      end
+      ordres[g][def.ordre] = def.id
+
+      -- "a or b" : prend a s'il existe, sinon b. Donne ici la valeur propre au bouton
+      -- si elle est présente, sinon la valeur par défaut de "general".
+      local w, h = def.w or defauts.w, def.h or defauts.h
+      if type(w) ~= "number" or type(h) ~= "number" or w <= 0 or h <= 0 then
+        error("hud_bouton '" .. def.id .. "' : w et h doivent être des nombres positifs")
+      end
+
+      g.boutons[#g.boutons + 1] = { id = def.id, ordre = def.ordre, w = w, h = h }
+    end
+  end
+
+  -- 3. Tri par 'ordre', puis création des widgets (même code qu'à l'étape 1).
+  for _, g in ipairs(groupes) do
+    table.sort(g.boutons, function(a, b) return a.ordre < b.ordre end)
+    for _, b in ipairs(g.boutons) do
+      tous[#tous + 1] = b
+      b.rect = { x = 0, y = 0, w = b.w, h = b.h }
+      b.widget = bouton.new(b.rect, {
+        id  = b.id,
+        w   = b.w,
+        h   = b.h,
+        cle = "hud_general." .. b.id,   -- clé i18n : toujours construite à partir de l'id
+        action = function(id) events.emit("hud_bouton", id) end,
+      })
+    end
+  end
+
+  -- MODIF D : on place tout de suite. Avant, il fallait compter sur l'événement
+  -- "resize" émis par main.lua APRÈS init(). Maintenant l'ordre des deux appels
+  -- dans love.load() n'a plus d'importance pour le HUD.
+  place(screen.bounds())
+end
+
+
+-- La couche est toujours créée au chargement du module (comme avant).
+-- Au début, "tous" est vide : rien à dessiner, rien à cliquer. Après init(), il est rempli.
 couches.add({
   z = couches_z.HUD,
 
   -- uniquement sur les boutons, pas sur toute la barre
-  -- MODIF 3 : on demande à chaque widget s'il contient le point.
   contient = function(px, py)
     for _, b in ipairs(tous) do
       if b.widget.contient(px, py) then return true end
@@ -136,37 +197,30 @@ couches.add({
     return false
   end,
 
-  -- MODIF 4 : plus de dessin maison (rectangle, couleurs, texte) : le widget s'en charge.
   draw = function()
     for _, b in ipairs(tous) do b.widget.draw() end
   end,
 
-  -- MODIF 3 : press/release/move/leave sont transmis aux widgets.
-  -- press() renvoie true si le widget a consommé l'événement : on s'arrête alors
-  -- (un seul bouton peut être enfoncé à la fois).
   onpress = function(x, y, button)
     for _, b in ipairs(tous) do
       if b.widget.press(x, y, button) then return end
     end
   end,
 
-  -- La règle "press et release sur le même bouton" est maintenant dans bouton.lua :
-  -- release() ne déclenche l'action que si le widget était enfoncé ET que
-  -- la souris est encore dessus. Le widget non enfoncé renvoie false : on continue.
   onrelease = function(x, y, button)
     for _, b in ipairs(tous) do
       if b.widget.release(x, y, button) then return end
     end
   end,
 
-  -- Ici PAS de "return" anticipé : tous les boutons doivent mettre leur survol à jour
-  -- (celui qu'on quitte doit s'éteindre, celui qu'on entre doit s'allumer).
+  -- Pas de "return" anticipé : tous les boutons mettent leur survol à jour.
   onmove = function(x, y)
     for _, b in ipairs(tous) do b.widget.move(x, y) end
   end,
 
-  -- Remet survol ET enfoncé à zéro (avant, seul le survol l'était : petit oubli corrigé).
   onleave = function()
     for _, b in ipairs(tous) do b.widget.leave() end
   end,
 })
+
+return M   -- MODIF A

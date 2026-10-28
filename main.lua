@@ -36,6 +36,7 @@ function love.load()
   mods.charger({ "defaut" })
   i18n.definir("fr")                                                         -- une fois, au démarrage
   screen.load()
+  hud.init()                                                                 -- Lit le registre et crée les boutons.
   events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
 
 

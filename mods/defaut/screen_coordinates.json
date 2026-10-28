@@ -8,5 +8,21 @@
     { "id": "empire",        "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
     { "id": "reglages",      "largeur": 512,   "hauteur": 768,     "ancrage_x": "centre",       "ancrage_y": "centre" }
 
+  ],
+
+  "hud_groupe": [
+    { "id": "navigation",    "ancrage_x": "gauche",       "ancrage_y": "bas",   "dir": "droite",       "margin_x": 12, "margin_y": 12, "espace": 12 },
+    { "id": "systeme",       "ancrage_x": "droite",       "ancrage_y": "haut",  "dir": "gauche",       "margin_x": 12, "margin_y": 12, "espace": 12 },
+    { "id": "tour",          "ancrage_x": "droite",       "ancrage_y": "bas",   "dir": "gauche",       "margin_x": 12, "margin_y": 12, "espace": 12 }
+  ],
+
+  "hud_bouton": [
+    { "id": "general",       "w": 120, "h": 40 },
+    { "id": "empire",        "groupe": "navigation",  "ordre": 10 },
+    { "id": "science",       "groupe": "navigation",  "ordre": 20 },
+    { "id": "diplomatie",    "groupe": "navigation",  "ordre": 30 },
+    { "id": "economie",      "groupe": "navigation",  "ordre": 40 },
+    { "id": "reglages",      "groupe": "systeme",     "ordre": 10 },
+    { "id": "appel_tour",    "groupe": "tour",        "ordre": 10,  "w": 160, "h": 48 }
   ]
 }
