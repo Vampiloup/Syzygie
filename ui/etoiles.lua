@@ -8,9 +8,9 @@ local cam       = require("core.camera_monde")   -- une instance partagée
 local TOLERANCE_PX = 6   -- rayon minimal cliquable, en pixels virtuels
 
 local etoiles = {
-  { id = 1, x = 500,  y = 300, r = 8 },
-  { id = 2, x = 900,  y = 600, r = 12 },
-  { id = 3, x = 1500, y = 300, r = 150 },
+  { id = 1, x = 500,  y = 300, r = 8, rgb_1 = 1, rgb_2 = 0.9, rgb_3 = 0.3 },
+  { id = 2, x = 900,  y = 600, r = 12, rgb_1 = 1, rgb_2 = 0.1, rgb_3 = 0.1 },
+  { id = 3, x = 1500, y = 300, r = 150, rgb_1 = 0, rgb_2 = 1, rgb_3 = 1 },
   -- ... des milliers d'autres
 }
 
@@ -39,10 +39,10 @@ couches.add({
   end,
 
   draw = function()
-    love.graphics.setColor(1, 0.9, 0.3)
     local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
     local plancher = 2 / cam.scale
     for _, s in ipairs(etoiles) do
+      love.graphics.setColor(s.rgb_1, s.rgb_2, s.rgb_3)
       local rayon = math.max(s.r, plancher)
       if s.x + rayon >= x1 and s.x - rayon <= x2 and s.y + rayon >= y1 and s.y - rayon <= y2 then
         love.graphics.circle("fill", s.x, s.y, rayon)

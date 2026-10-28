@@ -11,9 +11,11 @@
   ],
 
   "hud_groupe": [
-    { "id": "navigation",    "ancrage_x": "gauche",       "ancrage_y": "bas",   "dir": "droite",       "margin_x": 12, "margin_y": 12, "espace": 12 },
-    { "id": "systeme",       "ancrage_x": "droite",       "ancrage_y": "haut",  "dir": "gauche",       "margin_x": 12, "margin_y": 12, "espace": 12 },
-    { "id": "tour",          "ancrage_x": "droite",       "ancrage_y": "bas",   "dir": "gauche",       "margin_x": 12, "margin_y": 12, "espace": 12 }
+    { "id": "general",       "margin_x": 12,      "margin_y": 12,       "espace": 12     },
+
+    { "id": "navigation",    "ancrage_x": "gauche",       "ancrage_y": "bas",   "dir": "droite"},
+    { "id": "systeme",       "ancrage_x": "droite",       "ancrage_y": "haut",  "dir": "gauche"},
+    { "id": "tour",          "ancrage_x": "droite",       "ancrage_y": "bas",   "dir": "gauche"}
   ],
 
   "hud_bouton": [

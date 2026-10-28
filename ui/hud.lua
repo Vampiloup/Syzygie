@@ -1,25 +1,23 @@
 -- ui.hud.lua
 --
--- ÉTAPE 2 : les boutons ne sont plus écrits en dur dans ce fichier,
--- ils sont lus dans le registre (catégories "hud_groupe" et "hud_bouton").
+-- Les boutons du HUD sont lus dans le registre (catégories "hud_groupe" et "hud_bouton").
 --
--- CE QUI A CHANGÉ PAR RAPPORT À L'ÉTAPE 1 (repéré par "MODIF") :
---   MODIF A : le module renvoie maintenant une table M, avec une fonction M.init().
---   MODIF B : la table "groupes" n'est plus écrite à la main : init() la remplit.
+-- HISTORIQUE DES MODIFICATIONS (repérées par "MODIF" dans le code) :
+--   MODIF A : le module renvoie une table M, avec une fonction M.init().
+--   MODIF B : les tables "groupes" et "tous" sont remplies par init().
 --   MODIF C : init() VALIDE les données avant de les utiliser.
 --   MODIF D : init() place les boutons elle-même à la fin.
---   Inchangés : le calcul de placement (place), les callbacks de la couche,
---   et le fait que chaque bouton est un widget bouton.lua.
+--   MODIF E : ancrage_x / ancrage_y, comme hud_panneau.
+--   MODIF F : margin_x, margin_y et espace viennent du registre, avec une entrée
+--             "general" de hud_groupe pour les valeurs par défaut.
 
 local events    = require("core.events")
 local couches   = require("core.couches")
 local couches_z = require("core.couches_z")
-local registre  = require("core.registre")       -- MODIF B : pour lire les données
-local screen    = require("affichage.ecran")      -- MODIF D : pour le placement initial
+local registre  = require("core.registre")
+local screen    = require("affichage.ecran")
 local bouton    = require("ui.widgets.bouton")
 
--- MODIF E : même vocabulaire que hud_panneau (ancrage_x / ancrage_y), au lieu
--- d'une ancre combinée ("bas-gauche"). Chaque mot est traduit en nombre :
 -- 0 = gauche/haut, 0.5 = centre, 1 = droite/bas (les "ax" et "ay" de place()).
 local ANCRAGE_X = { gauche = 0, centre = 0.5, droite = 1 }
 local ANCRAGE_Y = { haut   = 0, centre = 0.5, bas    = 1 }
@@ -27,28 +25,34 @@ local DIRS = {
   droite = {1, 0}, gauche = {-1, 0}, bas = {0, 1}, haut = {0, -1},
 }
 
--- MODIF A : table du module. C'est ce que "require('ui.hud')" renverra,
--- ce qui permet à main.lua d'écrire hud.init().
+-- MODIF F : les trois champs numériques d'un groupe, listés une seule fois.
+-- Utilisés pour valider "general" ET chaque groupe avec la même boucle.
+local CHAMPS_GROUPE = { "margin_x", "margin_y", "espace" }
+
+-- MODIF F : un nombre valide ici = un nombre supérieur ou égal à 0
+-- (0 est accepté : pas de marge, ou pas d'espace entre les boutons).
+local function nombre_valide(v)
+  return type(v) == "number" and v >= 0
+end
+
 local M = {}
 
--- MODIF B : ces deux tables sont créées VIDES ici et remplies plus tard par init().
--- Important : on ne les remplace jamais par une nouvelle table (pas de "groupes = {...}"
--- dans init), on les remplit. Ainsi la couche et place(), définies plus bas,
--- voient automatiquement le contenu une fois init() passée.
-local groupes = {}   -- { {id=, ancre=, dir=, boutons={...}}, ... }
+-- Créées VIDES ici et remplies par init() (on ne les remplace jamais par une
+-- nouvelle table : la couche et place() voient ainsi le contenu une fois init() passée).
+local groupes = {}   -- { {id=, ax=, ay=, mx=, my=, es=, dir=, boutons={...}}, ... }
 local tous    = {}   -- liste à plat des boutons pour le survol, le clic et le dessin
 
 local initialise = false
 
 
--- placement : inchangé par rapport à l'étape 1.
--- Défini AVANT init() car init() l'appelle (en Lua, une "local function"
+-- placement : défini AVANT init() car init() l'appelle (en Lua, une "local function"
 -- doit être déclarée avant l'endroit où on l'utilise).
 local function place(left, top, right, bottom)
   local W, H = right - left, bottom - top
 
   for _, g in ipairs(groupes) do
-    local ax, ay, mx, my, es = g.ax, g.ay, g.mx, g.my, g.es          -- MODIF E : déjà convertis en nombres par init()
+    -- MODIF F : marges et espacement propres à chaque groupe (convertis/validés par init()).
+    local ax, ay, mx, my, es = g.ax, g.ay, g.mx, g.my, g.es
     local dx, dy = unpack(DIRS[g.dir])
     local liste  = g.boutons
 
@@ -82,7 +86,7 @@ end
 events.on("resize", place)
 
 
--- MODIF B + C : lecture et validation des données, puis création des widgets.
+-- Lecture et validation des données, puis création des widgets.
 -- À appeler UNE fois, depuis love.load(), APRÈS mods.charger()
 -- (avant, le registre est vide).
 function M.init()
@@ -97,35 +101,59 @@ function M.init()
     end
   end
 
+  -- MODIF F : valeurs par défaut des groupes (entrée "general" de hud_groupe).
+  -- On vérifie d'abord qu'elles sont elles-mêmes valides : sinon un groupe qui
+  -- s'en sert hériterait d'une valeur fausse.
+  local defauts_g = registre.get("hud_groupe", "general")
+  for _, champ in ipairs(CHAMPS_GROUPE) do
+    if not nombre_valide(defauts_g[champ]) then
+      error("hud_groupe 'general' : '" .. champ ..
+            "' est manquant ou n'est pas un nombre positif ou nul")
+    end
+  end
+
   -- 1. Les groupes. registre.list() les renvoie dans l'ordre d'enregistrement.
   -- par_id sert à retrouver un groupe à partir de son nom (utilisé à l'étape 2).
   local par_id = {}
   for _, def in ipairs(registre.list("hud_groupe")) do
-    -- MODIF E : les deux champs sont obligatoires (pas de valeur par défaut).
-    -- Lire ANCRAGE_X[nil] ne plante pas en Lua, ça renvoie nil : le test fonctionne
-    -- donc aussi quand le champ est absent.
-    local ax, ay, mx, my, es = ANCRAGE_X[def.ancrage_x], ANCRAGE_Y[def.ancrage_y], def.margin_x, def.margin_y, def.espace
-    if not ax then
-      error("hud_groupe '" .. def.id .. "' : ancrage_x inconnu : " .. tostring(def.ancrage_x))
+    if def.id ~= "general" then          -- MODIF F : "general" = valeurs par défaut, pas un vrai groupe
+
+      -- Ancrage et direction : obligatoires (pas de valeur par défaut).
+      -- Lire ANCRAGE_X[nil] ne plante pas en Lua, ça renvoie nil : le test fonctionne
+      -- donc aussi quand le champ est absent.
+      local ax, ay = ANCRAGE_X[def.ancrage_x], ANCRAGE_Y[def.ancrage_y]
+      if not ax then
+        error("hud_groupe '" .. def.id .. "' : ancrage_x inconnu : " .. tostring(def.ancrage_x))
+      end
+      if not ay then
+        error("hud_groupe '" .. def.id .. "' : ancrage_y inconnu : " .. tostring(def.ancrage_y))
+      end
+      if not DIRS[def.dir] then
+        error("hud_groupe '" .. def.id .. "' : direction inconnue : " .. tostring(def.dir))
+      end
+
+      -- MODIF F : marges et espace. Valeur propre au groupe si elle existe, sinon celle
+      -- de "general". On teste "== nil" (et non "or") pour que le code reste correct
+      -- même si on veut un jour distinguer "absent" de "égal à zéro".
+      local valeurs = {}
+      for _, champ in ipairs(CHAMPS_GROUPE) do
+        local v = def[champ]
+        if v == nil then v = defauts_g[champ] end
+        if not nombre_valide(v) then
+          error("hud_groupe '" .. def.id .. "' : '" .. champ ..
+                "' doit être un nombre positif ou nul")
+        end
+        valeurs[champ] = v
+      end
+
+      local g = {
+        id = def.id, ax = ax, ay = ay, dir = def.dir,
+        mx = valeurs.margin_x, my = valeurs.margin_y, es = valeurs.espace,
+        boutons = {},
+      }
+      groupes[#groupes + 1] = g
+      par_id[def.id] = g
     end
-    if not ay then
-      error("hud_groupe '" .. def.id .. "' : ancrage_y inconnu : " .. tostring(def.ancrage_y))
-    end
-    if not mx then
-      error("hud_groupe '" .. def.id .. "' : margin_x inconnu : " .. tostring(def.margin_x))
-    end
-    if not my then
-      error("hud_groupe '" .. def.id .. "' : margin_y inconnu : " .. tostring(def.margin_y))
-    end
-    if not es then
-      error("hud_groupe '" .. def.id .. "' : espace inconnu : " .. tostring(def.espace))
-    end
-    if not DIRS[def.dir] then
-      error("hud_groupe '" .. def.id .. "' : direction inconnue : " .. tostring(def.dir))
-    end
-    local g = { id = def.id, ax = ax, ay = ay, mx = mx, my = my, es = es, dir = def.dir, boutons = {} }
-    groupes[#groupes + 1] = g
-    par_id[def.id] = g
   end
 
   -- 2. Les boutons : on les range dans leur groupe, en vérifiant tout.
@@ -161,7 +189,7 @@ function M.init()
     end
   end
 
-  -- 3. Tri par 'ordre', puis création des widgets (même code qu'à l'étape 1).
+  -- 3. Tri par 'ordre', puis création des widgets.
   for _, g in ipairs(groupes) do
     table.sort(g.boutons, function(a, b) return a.ordre < b.ordre end)
     for _, b in ipairs(g.boutons) do
@@ -177,15 +205,14 @@ function M.init()
     end
   end
 
-  -- MODIF D : on place tout de suite. Avant, il fallait compter sur l'événement
-  -- "resize" émis par main.lua APRÈS init(). Maintenant l'ordre des deux appels
-  -- dans love.load() n'a plus d'importance pour le HUD.
+  -- On place tout de suite : l'ordre des appels dans love.load() n'a ainsi
+  -- plus d'importance pour le HUD.
   place(screen.bounds())
 end
 
 
--- La couche est toujours créée au chargement du module (comme avant).
--- Au début, "tous" est vide : rien à dessiner, rien à cliquer. Après init(), il est rempli.
+-- La couche est créée au chargement du module. Au début, "tous" est vide :
+-- rien à dessiner, rien à cliquer. Après init(), il est rempli.
 couches.add({
   z = couches_z.HUD,
 
@@ -223,4 +250,4 @@ couches.add({
   end,
 })
 
-return M   -- MODIF A
+return M
