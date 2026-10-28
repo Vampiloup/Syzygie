@@ -18,8 +18,8 @@ local P = panneau.new({
     love.graphics.print(texte, p.x + 16, p.y + 16)
   end,
   boutons = {
-    { id = "test", x = 16, y = 16, w = 160, h = 40,
-    ancre = "centre", cle = "hud_reglages.test",
+    { id = "sortie_jeu", x = 16, y = 16, w = 160, h = 40,
+    ancre = "centre", cle = "hud_reglages.sortie_jeu",
     action = function(id) bouton_test(id) end },
   },
   onclick = function(x, y, b) if b == 1 then print("Clic dans le panneau Réglages") end end,

@@ -1,6 +1,11 @@
 -- ui.widgets.bouton.lua
 -- Bouton générique, même interface que ui.widgets.fermer :
 -- contient / draw / press / release / move / leave
+--
+-- CE QUI A CHANGÉ PAR RAPPORT À L'ANCIENNE VERSION (repéré par "MODIF") :
+--   MODIF 1 : l'état du bouton est calculé à un seul endroit (etat()).
+--   MODIF 2 : le dessin est sorti dans une fonction "style" remplaçable.
+--   Tout le reste (placement, press/release/move/leave) est inchangé.
 
 local screen = require("affichage.ecran")
 local i18n   = require("core.i18n")
@@ -14,6 +19,37 @@ local ANCRES = {
   ["centre"]      = {0.5, 0.5},
 }
 
+-- MODIF 2 : table des couleurs, indexée par l'état.
+-- Avant, ces nombres (0.15, 0.25, 0.35...) étaient noyés dans draw().
+-- Les mettre ici les rend faciles à retrouver et à changer.
+-- Chaque entrée : { niveau de gris, opacité du fond, opacité du texte }
+local COULEURS = {
+  normal  = { 0.15, 0.9, 1.0 },
+  survol  = { 0.25, 0.9, 1.0 },
+  enfonce = { 0.35, 0.9, 1.0 },
+  inactif = { 0.10, 0.5, 0.4 },
+}
+
+-- MODIF 2 : le "style" = la seule fonction qui sait COMMENT dessiner.
+-- Elle reçoit tout ce qu'il lui faut en paramètres et ne connaît rien
+-- de la logique du bouton (clics, survol...). C'est ça, la séparation
+-- comportement / rendu.
+-- Plus tard, un style "sprite" aura exactement la même signature :
+--   function(x, y, w, h, etat, texte)
+-- mais appellera love.graphics.draw(...) au lieu de rectangle(...).
+function M.style_defaut(x, y, w, h, etat, texte)
+  local niveau, alpha_fond, alpha_texte = unpack(COULEURS[etat])
+
+  love.graphics.setColor(niveau, niveau, niveau + 0.05, alpha_fond)
+  love.graphics.rectangle("fill", x, y, w, h, 8, 8)
+
+  local font = love.graphics.getFont()
+  love.graphics.setColor(1, 1, 1, alpha_texte)
+  love.graphics.printf(texte, x, y + (h - font:getHeight()) / 2, w, "center")
+
+  love.graphics.setColor(1, 1, 1)   -- on remet la couleur par défaut pour ne pas "polluer" le dessin suivant
+end
+
 -- parent : table {x, y, w, h} passée par référence (le bouton suit ses changements).
 --          nil = coordonnées absolues (virtuelles).
 -- def    : {
@@ -25,6 +61,7 @@ local ANCRES = {
 --   texte  = texte brut si pas de clé,
 --   action = function() appelée quand le clic est validé,
 --   actif  = function() -> bool (optionnel) ; faux = grisé et inerte,
+--   style  = function(x, y, w, h, etat, texte) (optionnel) ; MODIF 2 : dessin personnalisé,
 -- }
 function M.new(parent, def)
   parent = parent or { x = 0, y = 0, w = 0, h = 0 }
@@ -48,23 +85,29 @@ function M.new(parent, def)
     return def.actif == nil or def.actif()
   end
 
+  -- MODIF 1 : l'état est décidé ici, UNE fois, dans un ordre de priorité clair
+  -- (inactif l'emporte sur tout, puis enfoncé, puis survol).
+  -- Avant, cette logique était écrite en une ligne compacte dans draw().
+  -- Maintenant, draw() ne fait que lire le résultat.
+  local function etat()
+    if not actif()  then return "inactif" end
+    if b.enfonce    then return "enfonce" end
+    if b.survol     then return "survol"  end
+    return "normal"
+  end
+
   function b.contient(x, y)
     local bx, by, bw, bh = rect()
     return x >= bx and x <= bx + bw and y >= by and y <= by + bh
   end
 
+  -- MODIF 1 + 2 : draw() ne dessine plus rien lui-même.
+  -- Il rassemble les informations (position, état, texte) et les confie au style.
   function b.draw()
     local bx, by, bw, bh = rect()
-    local ok = actif()
-    local c = (not ok) and 0.1 or b.enfonce and 0.35 or b.survol and 0.25 or 0.15
-    love.graphics.setColor(c, c, c + 0.05, ok and 0.9 or 0.5)
-    love.graphics.rectangle("fill", bx, by, bw, bh, 8, 8)
-
     local texte = def.cle and i18n.t(def.cle) or def.texte or ""
-    local font = love.graphics.getFont()
-    love.graphics.setColor(1, 1, 1, ok and 1 or 0.4)
-    love.graphics.printf(texte, bx, by + (bh - font:getHeight()) / 2, bw, "center")
-    love.graphics.setColor(1, 1, 1)
+    local style = def.style or M.style_defaut
+    style(bx, by, bw, bh, etat(), texte)
   end
 
   -- true si le bouton a consommé l'événement (même désactivé : évite le clic "à travers")
@@ -92,23 +135,3 @@ function M.new(parent, def)
 end
 
 return M
-
-
--- Utilisation (ne pas oublier ID, ici l'identifiant du bouton) :
---
---   boutons = {
---    { id = "test", x = 16, y = 16, w = 160, h = 40,
---    ancre = "bas-gauche", cle = "hud_empire.test",
---    action = function(id) events.emit("bouton_reglage", id) end },
---  },
-
--- local bouton_test   -- en début de module (définir cette fonction AVANT panneau.new)
---
---   boutons = {
---    { id = "test", x = 16, y = 16, w = 160, h = 40,
---    ancre = "bas-gauche", cle = "hud_empire.test",
--- action = function(id) bouton_test(id) end
--- ... plus bas :
--- bouton_test = function(id) ... end
---
-
