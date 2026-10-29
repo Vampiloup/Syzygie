@@ -2,27 +2,22 @@
 -- Bouton générique, même interface que ui.widgets.fermer :
 -- contient / draw / press / release / move / leave
 --
--- CE QUI A CHANGÉ PAR RAPPORT À L'ANCIENNE VERSION (repéré par "MODIF") :
+-- HISTORIQUE (repéré par "MODIF" dans le code) :
 --   MODIF 1 : l'état du bouton est calculé à un seul endroit (etat()).
 --   MODIF 2 : le dessin est sorti dans une fonction "style" remplaçable.
---   Tout le reste (placement, press/release/move/leave) est inchangé.
+--   MODIF G : l'ancrage utilise ancrage_x / ancrage_y (comme hud_panneau et hud_groupe)
+--             au lieu de l'ancre combinée "bas-gauche".
 
 local screen = require("affichage.ecran")
 local i18n   = require("core.i18n")
 
 local M = {}
 
--- (ax, ay) : 0 = gauche/haut, 1 = droite/bas (mêmes noms que le HUD)
-local ANCRES = {
-  ["haut-gauche"] = {0, 0}, ["haut-droite"] = {1, 0},
-  ["bas-gauche"]  = {0, 1}, ["bas-droite"]  = {1, 1},
-  ["centre"]      = {0.5, 0.5},
-}
+-- MODIF G : 0 = gauche/haut, 0.5 = centre, 1 = droite/bas (même vocabulaire que le HUD)
+local ANCRAGE_X = { gauche = 0, centre = 0.5, droite = 1 }
+local ANCRAGE_Y = { haut   = 0, centre = 0.5, bas    = 1 }
 
--- MODIF 2 : table des couleurs, indexée par l'état.
--- Avant, ces nombres (0.15, 0.25, 0.35...) étaient noyés dans draw().
--- Les mettre ici les rend faciles à retrouver et à changer.
--- Chaque entrée : { niveau de gris, opacité du fond, opacité du texte }
+-- Couleurs par état : { niveau de gris, opacité du fond, opacité du texte }
 local COULEURS = {
   normal  = { 0.15, 0.9, 1.0 },
   survol  = { 0.25, 0.9, 1.0 },
@@ -30,13 +25,8 @@ local COULEURS = {
   inactif = { 0.10, 0.5, 0.4 },
 }
 
--- MODIF 2 : le "style" = la seule fonction qui sait COMMENT dessiner.
--- Elle reçoit tout ce qu'il lui faut en paramètres et ne connaît rien
--- de la logique du bouton (clics, survol...). C'est ça, la séparation
--- comportement / rendu.
--- Plus tard, un style "sprite" aura exactement la même signature :
---   function(x, y, w, h, etat, texte)
--- mais appellera love.graphics.draw(...) au lieu de rectangle(...).
+-- Le "style" = la seule fonction qui sait COMMENT dessiner.
+-- Un futur style sprite aura la même signature : function(x, y, w, h, etat, texte)
 function M.style_defaut(x, y, w, h, etat, texte)
   local niveau, alpha_fond, alpha_texte = unpack(COULEURS[etat])
 
@@ -47,27 +37,43 @@ function M.style_defaut(x, y, w, h, etat, texte)
   love.graphics.setColor(1, 1, 1, alpha_texte)
   love.graphics.printf(texte, x, y + (h - font:getHeight()) / 2, w, "center")
 
-  love.graphics.setColor(1, 1, 1)   -- on remet la couleur par défaut pour ne pas "polluer" le dessin suivant
+  love.graphics.setColor(1, 1, 1)
 end
 
 -- parent : table {x, y, w, h} passée par référence (le bouton suit ses changements).
 --          nil = coordonnées absolues (virtuelles).
 -- def    : {
---   id     = string (optionnel),
---   x, y   = décalage depuis l'ancre, vers l'intérieur du parent (défaut 0),
---   w, h   = taille,
---   ancre  = "haut-gauche" (défaut) | "haut-droite" | "bas-gauche" | "bas-droite" | "centre",
---   cle    = clé i18n (traduite à chaque dessin, donc compatible changement de langue à chaud),
---   texte  = texte brut si pas de clé,
---   action = function() appelée quand le clic est validé,
---   actif  = function() -> bool (optionnel) ; faux = grisé et inerte,
---   style  = function(x, y, w, h, etat, texte) (optionnel) ; MODIF 2 : dessin personnalisé,
+--   id        = string (optionnel),
+--   x, y      = décalage depuis l'ancrage, vers l'intérieur du parent (défaut 0),
+--   w, h      = taille,
+--   ancrage_x = "gauche" (défaut) | "centre" | "droite",      -- MODIF G
+--   ancrage_y = "haut" (défaut)   | "centre" | "bas",         -- MODIF G
+--   cle       = clé i18n (traduite à chaque dessin, donc compatible changement de langue à chaud),
+--   texte     = texte brut si pas de clé,
+--   action    = function(id) appelée quand le clic est validé,
+--   actif     = function() -> bool (optionnel) ; faux = grisé et inerte,
+--   style     = function(x, y, w, h, etat, texte) (optionnel) ; dessin personnalisé,
 -- }
 function M.new(parent, def)
   parent = parent or { x = 0, y = 0, w = 0, h = 0 }
-  local a = assert(ANCRES[def.ancre or "haut-gauche"],
-                   "ancre inconnue : " .. tostring(def.ancre))
-  local ax, ay = a[1], a[2]
+
+  -- MODIF G : l'ancien champ 'ancre' n'existe plus. Si un fichier l'utilise encore,
+  -- on le dit tout de suite avec un message clair, plutôt que de l'ignorer
+  -- silencieusement (le bouton se retrouverait en haut à gauche sans explication).
+  if def.ancre ~= nil then
+    error("bouton '" .. tostring(def.id) .. "' : le champ 'ancre' n'est plus supporté, " ..
+          "utiliser ancrage_x et ancrage_y", 2)
+  end
+
+  local ax = ANCRAGE_X[def.ancrage_x or "gauche"]
+  local ay = ANCRAGE_Y[def.ancrage_y or "haut"]
+  if not ax then
+    error("bouton '" .. tostring(def.id) .. "' : ancrage_x inconnu : " .. tostring(def.ancrage_x), 2)
+  end
+  if not ay then
+    error("bouton '" .. tostring(def.id) .. "' : ancrage_y inconnu : " .. tostring(def.ancrage_y), 2)
+  end
+
   local sx = (ax == 1) and -1 or 1      -- à droite / en bas, le décalage va vers l'intérieur
   local sy = (ay == 1) and -1 or 1
   local w, h = def.w, def.h
@@ -85,10 +91,7 @@ function M.new(parent, def)
     return def.actif == nil or def.actif()
   end
 
-  -- MODIF 1 : l'état est décidé ici, UNE fois, dans un ordre de priorité clair
-  -- (inactif l'emporte sur tout, puis enfoncé, puis survol).
-  -- Avant, cette logique était écrite en une ligne compacte dans draw().
-  -- Maintenant, draw() ne fait que lire le résultat.
+  -- L'état est décidé ici, UNE fois, dans un ordre de priorité clair.
   local function etat()
     if not actif()  then return "inactif" end
     if b.enfonce    then return "enfonce" end
@@ -101,8 +104,6 @@ function M.new(parent, def)
     return x >= bx and x <= bx + bw and y >= by and y <= by + bh
   end
 
-  -- MODIF 1 + 2 : draw() ne dessine plus rien lui-même.
-  -- Il rassemble les informations (position, état, texte) et les confie au style.
   function b.draw()
     local bx, by, bw, bh = rect()
     local texte = def.cle and i18n.t(def.cle) or def.texte or ""
@@ -135,3 +136,10 @@ function M.new(parent, def)
 end
 
 return M
+
+
+-- Utilisation :
+--   * Boutons du HUD   : créés par ui.hud (lus dans hud_bouton / hud_groupe).
+--   * Boutons de panneau : créés par ui.widgets.panneau (lus dans hud_bouton_panneau).
+--   * Ailleurs : bouton.new(parent, { id = "...", w = 160, h = 40,
+--       ancrage_x = "centre", ancrage_y = "bas", cle = "...", action = function(id) ... end })

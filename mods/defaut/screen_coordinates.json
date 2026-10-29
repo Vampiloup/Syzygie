@@ -26,5 +26,10 @@
     { "id": "economie",      "groupe": "navigation",  "ordre": 40 },
     { "id": "reglages",      "groupe": "systeme",     "ordre": 10 },
     { "id": "appel_tour",    "groupe": "tour",        "ordre": 10,  "w": 160, "h": 48 }
+  ],
+
+  "hud_bouton_panneau": [
+    { "id": "general",                    "w": 120, "h": 40 },
+    { "id": "reglages_sortie_jeu",        "panneau": "reglages",  "ancrage_x": "centre",       "ancrage_y": "centre", "x": 16,       "y": 16 },
   ]
 }

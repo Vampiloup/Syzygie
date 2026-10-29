@@ -1,3 +1,8 @@
+-- ui.widgets.panneau.lua
+--
+-- MODIF H : les boutons internes d'un panneau ne sont plus passés en code (def.boutons)
+-- mais lus dans le registre (catégorie "hud_bouton_panneau"), via M.init().
+
 local events    =               require("core.events")
 local exclusif  =               require("core.exclusif")
 local screen    =               require("affichage.ecran")
@@ -26,6 +31,13 @@ local AXE_Y = {
 
 local M = {}
 
+-- MODIF H : les panneaux sont créés (M.new) quand leur module est chargé par "require",
+-- donc AVANT mods.charger() : le registre est encore vide à ce moment-là.
+-- Chaque panneau dépose donc ici une fonction qui construira ses boutons plus tard,
+-- et M.init() les appelle toutes une fois le registre rempli.
+local constructeurs = {}     -- constructeurs[id_du_panneau] = function(liste_de_boutons)
+local initialise = false
+
 function M.new(def)
   local panel  = { w = def.w, h = def.h }
   local groupe = def.groupe or "panneaux_jeu"
@@ -35,10 +47,26 @@ function M.new(def)
 
   local btn = fermer.new(panel, function() close() end)
 
-  -- boutons internes : def.boutons = { {x=, y=, w=, h=, ancre=, cle=, action=}, ... }
+  -- MODIF H : plus de def.boutons. Si un panneau l'utilise encore, on le dit clairement.
+  if def.boutons ~= nil then
+    error("panneau '" .. tostring(def.id) .. "' : 'boutons' n'est plus supporté, " ..
+          "déclarer les boutons dans hud_bouton_panneau (registre)", 2)
+  end
+
+  -- boutons internes : remplis par M.init() à partir du registre
   local widgets = {}
-  for _, bd in ipairs(def.boutons or {}) do
-    widgets[#widgets + 1] = bouton.new(panel, bd)
+
+  -- MODIF H : seuls les panneaux qui ont un id peuvent avoir des boutons
+  -- (l'id est ce qui les relie aux entrées du registre).
+  if def.id then
+    constructeurs[def.id] = function(liste)
+      for _, bd in ipairs(liste) do
+        -- Le clic est signalé à tout le monde par un événement : le module du panneau
+        -- (par exemple reglages.lua) l'écoute et décide quoi faire.
+        bd.action = function(id) events.emit("panneau_bouton", def.id, id) end
+        widgets[#widgets + 1] = bouton.new(panel, bd)
+      end
+    end
   end
 
   local function place(l, t, r, b)
@@ -98,6 +126,11 @@ function M.new(def)
 
   local function open()
     if ouvert then return end
+    -- MODIF H : garde-fou. Sans init(), le panneau s'ouvrirait SANS ses boutons,
+    -- sans aucun message : on préfère une erreur explicite.
+    if not initialise then
+      error("panneau.init() n'a pas été appelée (à faire dans love.load, après mods.charger)")
+    end
     exclusif.prendre(groupe, close)
     ouvert = true
     place(screen.bounds())
@@ -143,6 +176,71 @@ function M.new(def)
   end
 
   return P
+end
+
+
+-- MODIF H : lecture et validation des boutons de panneau, puis construction des widgets.
+-- À appeler UNE fois, depuis love.load(), APRÈS mods.charger() et APRÈS le chargement
+-- (require) de tous les modules de panneaux.
+function M.init()
+  if initialise then error("panneau.init() ne doit être appelée qu'une seule fois") end
+  initialise = true
+
+  -- Valeurs par défaut (entrée "general"), comme pour hud_bouton.
+  local defauts = registre.get("hud_bouton_panneau", "general")
+  for _, champ in ipairs({ "w", "h" }) do
+    if type(defauts[champ]) ~= "number" then
+      error("hud_bouton_panneau 'general' : le champ '" .. champ .. "' est manquant ou n'est pas un nombre")
+    end
+  end
+
+  local par_panneau = {}   -- par_panneau[id_du_panneau] = liste de définitions validées
+  for _, bd in ipairs(registre.list("hud_bouton_panneau")) do
+    if bd.id ~= "general" then
+
+      -- Le panneau cité doit exister : détecte les fautes de frappe dans le JSON.
+      local pid = bd.panneau
+      if type(pid) ~= "string" or not constructeurs[pid] then
+        error("hud_bouton_panneau '" .. bd.id .. "' : panneau inconnu : " .. tostring(pid))
+      end
+
+      -- Ancrage : obligatoire (comme pour hud_groupe). Les VALEURS (gauche, haut...)
+      -- sont vérifiées par bouton.lua au moment de la création.
+      for _, champ in ipairs({ "ancrage_x", "ancrage_y" }) do
+        if type(bd[champ]) ~= "string" then
+          error("hud_bouton_panneau '" .. bd.id .. "' : le champ '" .. champ ..
+                "' est manquant ou n'est pas un texte")
+        end
+      end
+
+      local w, h = bd.w or defauts.w, bd.h or defauts.h
+      if type(w) ~= "number" or type(h) ~= "number" or w <= 0 or h <= 0 then
+        error("hud_bouton_panneau '" .. bd.id .. "' : w et h doivent être des nombres positifs")
+      end
+
+      -- x et y (décalage depuis l'ancrage) sont optionnels : nil = 0.
+      for _, champ in ipairs({ "x", "y" }) do
+        if bd[champ] ~= nil and type(bd[champ]) ~= "number" then
+          error("hud_bouton_panneau '" .. bd.id .. "' : '" .. champ .. "' doit être un nombre")
+        end
+      end
+
+      par_panneau[pid] = par_panneau[pid] or {}
+      local liste = par_panneau[pid]
+      liste[#liste + 1] = {
+        id = bd.id, w = w, h = h, x = bd.x, y = bd.y,
+        ancrage_x = bd.ancrage_x, ancrage_y = bd.ancrage_y,
+        -- clé i18n construite comme avant : "hud_<panneau>.<bouton>"
+        -- (par exemple hud_reglages.sortie_jeu : les fichiers de langue ne changent pas).
+        cle = "hud_" .. pid .. "." .. bd.id,
+      }
+    end
+  end
+
+  -- Chaque panneau construit ses widgets avec sa liste (vide s'il n'a aucun bouton).
+  for pid, construire in pairs(constructeurs) do
+    construire(par_panneau[pid] or {})
+  end
 end
 
 return M

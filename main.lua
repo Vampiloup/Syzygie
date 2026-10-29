@@ -23,6 +23,7 @@ local panneau_science =       require("ui.panneaux.science")
 local panneau_economie =      require("ui.panneaux.economie")
 local panneau_reglages =      require("ui.panneaux.reglages")
 local carte_etoile =          require("ui.panneaux.etoile")
+local panneau =               require("ui.widgets.panneau")
 
 -- local appel_tour =            require("core.appel_tour")                 -- Module demandant et recevant l'event de tour.
 
@@ -36,7 +37,8 @@ function love.load()
   mods.charger({ "defaut" })
   i18n.definir("fr")                                                         -- une fois, au démarrage
   screen.load()
-  hud.init()                                                                 -- Lit le registre et crée les boutons.
+  hud.init()                                                                 -- Lit le registre et crée les boutons du hud..
+  panneau.init()                                                             -- Même chose, pour les boutons des panneaux.
   events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
 
 
