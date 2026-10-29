@@ -20,7 +20,8 @@ syzygie/
 -- -- ecran.lua                                    Résolution virtuelle et conversion réel <=> virtuel
 -- -- sprites.lua                                  Atlas & spritebatches
 -- sim/
--- -- generation_galaxie.lua                       Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
+-- -- creation_partie/                             Creation de la partie. Ce qui se trouve à l'intérieur est supposé ne servir qu'une fois lors du jeu, lorqu'on lance une partie.
+-- -- -- generation_galaxie.lua                    Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
 -- -- panneaux/

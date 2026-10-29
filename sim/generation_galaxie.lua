@@ -1,1 +1,0 @@
-print "generation_galaxie"

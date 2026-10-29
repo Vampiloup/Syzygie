@@ -75,6 +75,10 @@ function M.dump()                           -- renvoie un dump du registre.
   end
 end
 
+function M.clear(category)                                      -- Efface une catégorie
+  store[category], ordre[category] = nil, nil
+end
+
 return M
 
 -- local registre = require "core.registre"
