@@ -1,13 +1,19 @@
 {
   "galaxy_form": [
     { "id": "carre" },
-    { "id": "disque_centre_dense" },
+    { "id": "disque_decroissant" },
     { "id": "disque_uniforme" },
     { "id": "anneau_tres_large" },
     { "id": "anneau_large" },
-    { "id": "anneau_etroit" },
-    { "id": "anneau_tres_etroit" }
-  ],
+    { "id": "anneau_moyen" },
+    { "id": "anneau_etroit" }
+    { "id": "ellipse_tres_epaisse" },
+    { "id": "ellipse_epaisse" },
+    { "id": "ellipse_moyenne" },
+    { "id": "ellipse_etroite" },
+    { "id": "double_anneau" },
+    { "id": "croix" }
+],
   "galaxy_size": [
     { "id": "minuscule", "map_X": 1250, "map_Y": 1250 },
     { "id": "petite",    "map_X": 1875, "map_Y": 1875 },
@@ -17,11 +23,15 @@
     { "id": "immense",   "map_X": 6250, "map_Y": 6250 }
   ],
   "galaxy_density": [
-    { "id": "epars",     "density": 0.5 },
-    { "id": "clairseme", "density": 0.75 },
-    { "id": "medium",    "density": 1 },
-    { "id": "dense",     "density": 1.5 },
-    { "id": "compact",   "density": 2 }
+    { "id": "void_space",               "density": 0.05 },
+    { "id": "nobody_here",              "density": 0.25 },
+    { "id": "epars",                    "density": 0.5 },
+    { "id": "clairseme",                "density": 0.75 },
+    { "id": "medium",                   "density": 1 },
+    { "id": "dense",                    "density": 1.5 },
+    { "id": "compact",                  "density": 2 },
+    { "id": "too_compact",              "density": 3 },
+    { "id": "no_space",                 "density": 4 },
   ],
   "galaxy_defaults": [
     { "id": "standard", "map_form": "disque_uniforme", "map_size": "medium", "map_density": "medium" }
