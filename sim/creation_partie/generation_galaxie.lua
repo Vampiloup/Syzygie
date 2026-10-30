@@ -1,19 +1,17 @@
 -- sim.creation_partie.generation_galaxie.lua
+--
+-- Usage (depuis main.lua, après le chargement des modules qui remplissent le registre) :
+--   local generation_galaxie = require("sim.creation_partie.generation_galaxie")
+--   generation_galaxie.generer({ map_X = 5000, map_Y = 5000, map_form = 12 })
+--
+-- Paramètres de generer(params) :
+--   map_X, map_Y   (obligatoires) dimensions du "carré plein" de référence ; A = map_X * map_Y
+--   map_form       (obligatoire)  1 à 13, voir la table FORMES
+--   densite        (défaut 1)     multiplicateur du nombre d'étoiles
+--   distance_mini  (défaut 80)    distance minimale entre deux étoiles
+--   graine         (défaut os.time())  graine aléatoire, mémorisée dans le registre
 
 local registre = require("core.registre")
-registre.clear("jeu_galaxie_details")
-registre.clear("jeu_galaxie_etoiles")
-
-local map_X = 5000                      -- Taille de la carte (ici moyenne)
-local map_Y = 5000
-local distance_mini = 80                -- distance mini entre systèmes (en coordonnées)
-local densite = 1
-local map_form = 3
-
--- Les données précédentes seront amenées soit par le joueur, soit par une table pré-créée
--- par un autre module. Elles sont ici juste le temps de la construction et des tests.
-
-love.math.setRandomSeed(os.time())
 
 local rnd = love.math.random
 local PI2 = 2 * math.pi
@@ -100,23 +98,23 @@ local function forme_croix(A)
 end
 
 local FORMES = {
-    [1]  = forme_carre,
-    [2]  = forme_disque_decroissant,
-    [3]  = forme_anneau(0),
-    [4]  = forme_anneau(0.2),     -- anneau très large
-    [5]  = forme_anneau(0.4),     -- anneau large
-    [6]  = forme_anneau(0.6),     -- anneau moyen
-    [7]  = forme_anneau(0.8),     -- anneau étroit
-    [8]  = forme_ellipse(1.25),
-    [9]  = forme_ellipse(1.5),
-    [10] = forme_ellipse(1.75),
-    [11] = forme_ellipse(2),
-    [12] = forme_double_anneau,
-    [13] = forme_croix,
+    ["carre"]  = forme_carre,
+    ["disque_decroissant"]  =   forme_disque_decroissant,
+    ["disque_uniforme"]  =      forme_anneau(0),
+    ["anneau_tres_large"]  =    forme_anneau(0.2),     -- anneau très large
+    ["anneau_large"]  =         forme_anneau(0.4),     -- anneau large
+    ["anneau_moyen"]  =         forme_anneau(0.6),     -- anneau moyen
+    ["anneau_etroit"]  =        forme_anneau(0.8),     -- anneau étroit
+    ["ellipse_tres_epaisse"]  = forme_ellipse(1.25),
+    ["ellipse_epaisse"]  =      forme_ellipse(1.5),
+    ["ellipse_moyenne"] =       forme_ellipse(1.75),
+    ["ellipse_etroite"] =       forme_ellipse(2),
+    ["double_anneau"] =         forme_double_anneau,
+    ["croix"] =                 forme_croix,
 }
 
 ----------------------------------------------------------------------
--- GÉNÉRATION
+-- GÉNÉRATION DES POSITIONS
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
 ----------------------------------------------------------------------
 local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
@@ -170,19 +168,47 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
     return xs, ys, n, boite
 end
 
-local nombre_etoiles = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-local star_position_X, star_position_Y, boite
-star_position_X, star_position_Y, nombre_etoiles, boite =
-    generer_etoiles(map_X, map_Y, nombre_etoiles, distance_mini, map_form)
+----------------------------------------------------------------------
+-- POINT D'ENTRÉE
+----------------------------------------------------------------------
+local M = {}
 
-registre.add("jeu_galaxie_details", "principal", {
-    nombre_etoiles = nombre_etoiles,
-    boite_englobante = boite,       -- {min_x, max_x, min_y, max_y, largeur, hauteur}
-})
-for i = 1, nombre_etoiles do
-    registre.add("jeu_galaxie_etoiles", tostring(i), {
-        id    = tostring(i),
-        pos_x = star_position_X[i],
-        pos_y = star_position_Y[i],
+function M.generer(params)
+    assert(params, "generer(params) : params manquant")
+    assert(params.map_X and params.map_Y, "generer : map_X et map_Y sont obligatoires")
+    assert(FORMES[params.map_form], "generer : map_form inconnu : " .. tostring(params.map_form))
+
+    local map_X         = params.map_X
+    local map_Y         = params.map_Y
+    local map_form      = params.map_form
+    local densite       = params.densite or 1
+    local distance_mini = params.distance_mini or 80
+
+    local graine = params.graine or os.time()
+    love.math.setRandomSeed(graine)
+
+    -- Repartir d'un registre vide : évite l'erreur « Doublon » en cas de régénération
+    registre.clear("jeu_galaxie_details")
+    registre.clear("jeu_galaxie_etoiles")
+
+    local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
+    local xs, ys, nombre_etoiles, boite =
+        generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form)
+
+    registre.add("jeu_galaxie_details", "principal", {
+        nombre_etoiles   = nombre_etoiles,      -- nombre réellement placé
+        nombre_cible     = nombre_cible,        -- nombre demandé
+        boite_englobante = boite,               -- {min_x, max_x, min_y, max_y, largeur, hauteur}
+        graine           = graine,              -- pour rejouer la même galaxie
+        map_form         = map_form,
     })
+    for i = 1, nombre_etoiles do
+        registre.add("jeu_galaxie_etoiles", tostring(i), {
+            id    = tostring(i),
+            pos_x = xs[i],
+            pos_y = ys[i],
+        })
+    end
 end
+
+return M

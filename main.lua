@@ -12,7 +12,7 @@ local entrees =               require("ui.entrees")                             
 local events =                require("core.events")                                    -- Chargement du module de gestion des évènements
 local couches =               require("core.couches")                                   -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
 
-local panneau =               require("sim.creation_partie.generation_galaxie")         -- generation at start of : The galxy at large.
+local generation_galaxie =    require("sim.creation_partie.generation_galaxie")         -- generation at start of : The galxy at large.
 
 local hello =                 require("ui.panneaux.hello")                              -- Chargement du panneau "Hello"
 local fond =                  require("ui.fond")                                        -- s'enregistre dans couches
@@ -34,41 +34,46 @@ local panneau =               require("ui.widgets.panneau")
 
 function love.load()
 
-  -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
-  -- mods.charger({ "defaut", "test" })
-  mods.charger({ "defaut" })
-  i18n.definir("fr")                                                         -- une fois, au démarrage
-  screen.load()
-  hud.init()                                                                 -- Lit le registre et crée les boutons du hud..
-  panneau.init()                                                             -- Même chose, pour les boutons des panneaux.
-  events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
+    -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
+    -- mods.charger({ "defaut", "test" })
+    mods.charger({ "defaut" })
+    i18n.definir("fr")                                                         -- une fois, au démarrage
+    screen.load()
+    hud.init()                                                                 -- Lit le registre et crée les boutons du hud..
+    panneau.init()                                                             -- Même chose, pour les boutons des panneaux.
+    events.emit("resize", screen.bounds())                                     -- placement initial des panneaux
 
 
+    local preset        = registre.get("galaxy_defaults",   "standard")
+    local taille        = registre.get("galaxy_size",       preset.map_size)
+    local form          = registre.get("galaxy_form",       preset.map_form)
+    local density       = registre.get("galaxy_density",    preset.map_density)
+    generation_galaxie.generer({ map_X = taille.map_X, map_Y = taille.map_Y, map_form = form.id, densite = density.density })
 
--- local reponse = i18n.tc("table", "id")
--- => Renvoit le nom à afficher de l'entrée "id" de la catégorie "table"
+    -- local reponse = i18n.tc("table", "id")
+    -- => Renvoit le nom à afficher de l'entrée "id" de la catégorie "table"
 
- -- local reponse = registre.get("table", "entree")
--- => Renvoit une table constituée des champs de l'entrée "id" = "entree" de la catégorie "table"
+    -- local reponse = registre.get("table", "entree")
+    -- => Renvoit une table constituée des champs de l'entrée "id" = "entree" de la catégorie "table"
 
--- local reponse = registre.get_field("table", "id", "champs")
--- => renvoit la valeur du champs "champs", de l'entrée "id", de la catégorie "table".
+    -- local reponse = registre.get_field("table", "id", "champs")
+    -- => renvoit la valeur du champs "champs", de l'entrée "id", de la catégorie "table".
 
--- Utilisation :
+    -- Utilisation :
 
-local reponse = i18n.tc("galaxy_form", "disque_uniforme")
-print (reponse)
+    local reponse = i18n.tc("galaxy_form", "disque_uniforme")
+    print (reponse)
 
-local r = registre.get("galaxy_defaults", "standard")
- print(r.map_size, r.map_form, r.source)
+    local r = registre.get("galaxy_defaults", "standard")
+    print(r.map_size, r.map_form, r.source)
 
-local preset  = registre.get("galaxy_defaults", "standard")
-local densite = registre.get_field("galaxy_density", preset.map_density, "density")
-print(densite)   -- 1 (ou la valeur imposée par un mod)
+    local preset  = registre.get("galaxy_defaults", "standard")
+    local densite = registre.get_field("galaxy_density", preset.map_density, "density")
+    print(densite)   -- 1 (ou la valeur imposée par un mod)
 
-local preset  = registre.get("galaxy_defaults", "standard")
-local taille  = registre.get("galaxy_size",    preset.map_size)
-print(taille.map_X, taille.map_Y)
+    local preset  = registre.get("galaxy_defaults", "standard")
+    local taille  = registre.get("galaxy_size",    preset.map_size)
+    print(taille.map_X, taille.map_Y)
 
 end
 
