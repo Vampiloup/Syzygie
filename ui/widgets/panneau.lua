@@ -163,9 +163,11 @@ function M.new(def)
   P.toggle  = function() if ouvert then close() else open() end end
   P.is_open = function() return ouvert end
 
+
   if def.id then
-    events.on("keypressed", function(key)
-      touche = touche or registre.get_field("panneau_hub", def.id, "touche")
+        print (" ---- "..def.id)
+      events.on("keypressed", function(key)
+      touche = touche or registre.get_field("panneau_hud", def.id, "touche")
       if key ~= touche then return end
       if ouvert then close()
       else
