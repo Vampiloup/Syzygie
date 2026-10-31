@@ -11,7 +11,8 @@
 --   distance_mini  (défaut 80)    distance minimale entre deux étoiles
 --   graine         (défaut os.time())  graine aléatoire, mémorisée dans le registre
 
-local registre = require("core.registre")
+local registre =                  require("core.registre")
+local events =                    require("core.events")
 
 local rnd = love.math.random
 local PI2 = 2 * math.pi
@@ -99,18 +100,26 @@ end
 
 local FORMES = {
     ["carre"]  = forme_carre,
-    ["disque_decroissant"]  =   forme_disque_decroissant,
-    ["disque_uniforme"]  =      forme_anneau(0),
-    ["anneau_tres_large"]  =    forme_anneau(0.2),     -- anneau très large
-    ["anneau_large"]  =         forme_anneau(0.4),     -- anneau large
-    ["anneau_moyen"]  =         forme_anneau(0.6),     -- anneau moyen
-    ["anneau_etroit"]  =        forme_anneau(0.8),     -- anneau étroit
+    ["disque_decroissant"]  = forme_disque_decroissant,
+    ["disque_uniforme"]  = forme_anneau(0),
+    ["anneau_tres_large"]  = forme_anneau(0.2),     -- anneau très large
+    ["anneau_large"]  = forme_anneau(0.4),     -- anneau large
+    ["anneau_moyen"]  = forme_anneau(0.6),     -- anneau moyen
+    ["anneau_etroit"]  = forme_anneau(0.8),     -- anneau étroit
     ["ellipse_tres_epaisse"]  = forme_ellipse(1.25),
-    ["ellipse_epaisse"]  =      forme_ellipse(1.5),
-    ["ellipse_moyenne"] =       forme_ellipse(1.75),
-    ["ellipse_etroite"] =       forme_ellipse(2),
-    ["double_anneau"] =         forme_double_anneau,
-    ["croix"] =                 forme_croix,
+    ["ellipse_epaisse"]  = forme_ellipse(1.5),
+    ["ellipse_moyenne"] = forme_ellipse(1.75),
+    ["ellipse_etroite"] = forme_ellipse(2),
+    ["double_anneau"] = forme_double_anneau,
+    ["croix"] = forme_croix,
+}
+
+local ETOILES_TYPE = {
+    [1]  = "rouge",
+    [2]  = "orange",
+    [3]  = "jaune",
+    [4]  = "blanc",
+    [5]  = "bleu"
 }
 
 ----------------------------------------------------------------------
@@ -118,7 +127,8 @@ local FORMES = {
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
 ----------------------------------------------------------------------
 local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
-    local constructeur = FORMES[map_form]
+
+local constructeur = FORMES[map_form]
     if not constructeur then
         print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
         return {}, {}, 0, nil
@@ -134,7 +144,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
         largeur = largeur, hauteur = hauteur,
     }
 
-    local xs, ys = {}, {}
+    local xs, ys, etoiles_type = {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -164,8 +174,14 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
             print(("Seulement %d étoiles sur %d générées (espace saturé)"):format(n, nombre_cible))
             break
         end
+
+        -- Couleurs
+        local a = rnd(1, 5)
+        etoiles_type[n] = ETOILES_TYPE[a]
+
     end
-    return xs, ys, n, boite
+
+    return xs, ys, n, boite, etoiles_type
 end
 
 ----------------------------------------------------------------------
@@ -192,7 +208,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite =
+    local xs, ys, nombre_etoiles, boite, etoiles_type =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -207,8 +223,10 @@ function M.generer(params)
             id    = tostring(i),
             pos_x = xs[i],
             pos_y = ys[i],
+            type  = etoiles_type[i]
         })
     end
+    events.emit("galaxie_generee")
 end
 
 return M

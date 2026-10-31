@@ -42,12 +42,12 @@ return M
 
 
 -- dans la simulation, quand une étoile est découverte
--- events.emit("star_discovered", star)
+-- events.emit("etoile_decouverte", star)
 
 -- dans l'UI, ailleurs, sans que la sim le sache
--- events.on("star_discovered", function(star)
--- notifications.add(i18n.t("msg.star_discovered"))
+-- events.on("etoile_decouverte", function(star)
+-- notifications.add(i18n.t("msg.etoile_decouverte"))
 -- end)
 
 -- un mod peut aussi s'y abonner
--- events.on("star_discovered", function(star) ... end)
+-- events.on("etoile_decouverte", function(star) ... end)

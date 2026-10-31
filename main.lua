@@ -61,7 +61,7 @@ function love.load()
 
     -- Utilisation :
 
-    local reponse = i18n.tc("galaxy_form", "disque_uniforme")
+    local reponse = i18n.tc("galaxy_form", "double_anneau")
     print (reponse)
 
     local r = registre.get("galaxy_defaults", "standard")

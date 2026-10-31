@@ -8,11 +8,26 @@ local registre  = require("core.registre")
 
 local TOLERANCE_PX = 6   -- rayon minimal cliquable, en pixels virtuels
 local RAYON_ETOILE = 8
-local etoiles
+local etoiles, etoiles_type
+
+local function charger()
+    etoiles  = registre.list("jeu_galaxie_etoiles")
+    etoiles_type = registre.table("etoiles_type")                       -- indexé par id : etoiles_type["rouge"] = {R=,G=,B=}
+    for _, s in ipairs(etoiles) do                                      -- vérification unique, au lieu d'une par frame
+        assert(etoiles_type[s.type], "type d'étoile inconnu : " .. tostring(s.type))
+    end
+end
+
+local function assurer()
+    if not etoiles then charger() end
+end
+
+local function invalider() etoiles, etoiles_type = nil, nil end
+events.on("galaxie_generee", invalider)
 
 -- renvoie l'étoile touchée (la plus au-dessus), ou nil
 local function trouver(px, py)
-    etoiles = etoiles or registre.list("jeu_galaxie_etoiles")
+    assurer()
     local r = math.max(RAYON_ETOILE, TOLERANCE_PX / cam.scale)
     local r2 = r * r
     local meilleure, meilleureDist = nil, math.huge
@@ -36,12 +51,14 @@ couches.add({
     end,
 
     draw = function()
-        etoiles = etoiles or registre.list("jeu_galaxie_etoiles")
+        assurer()
+
         local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
         local rayon = math.max(RAYON_ETOILE, 2 / cam.scale)
-        love.graphics.setColor(1, 0.9, 0.3)
         for _, s in ipairs(etoiles) do
             if s.pos_x + rayon >= x1 and s.pos_x - rayon <= x2 and s.pos_y + rayon >= y1 and s.pos_y - rayon <= y2 then
+                local c = etoiles_type[s.type]
+                love.graphics.setColor(c.R, c.G, c.B)
                 love.graphics.circle("fill", s.pos_x, s.pos_y, rayon)
             end
         end
