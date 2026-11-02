@@ -122,6 +122,71 @@ local ETOILES_TYPE = {
     [5]  = "bleu"
 }
 
+
+-- Génération des noms d'étoiles.
+
+local Premiere = {
+    "a", "ab", "ac", "ad", "ae", "aes", "am", "an", "ante", "au", "be", "car", "clau", "cen", "circum", "co", "con", "dan", "de", "den", "di", "dic", "dis", "do", "duo", "e", "est", "ex", "fe", "fi", "foe", "gra", "in", "inter", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni", "no", "non", "o", "ob", "pa", "pe", "per", "plu", "post", "prae", "pre", "pro", "pu", "qua", "quam", "quasi", "re", "rem", "res", "retro", "ro", "sa", "san", "sax", "si", "su", "sub", "super", "tan", "ter", "tol", "tra", "trans", "tri", "ui", "ver", "vi", "vo"
+}
+local Medium = {
+    "a", "an", "ant", "at", "bi", "bus", "ci", "di", "cer", "clu", "de", "e", "el", "en", "ent", "er", "ere", "es", "et", "fa", "fe", "in", "is", "it", "iu", "la", "le", "li", "ma", "mi", "mit", "mo", "mu", "na", "ne", "ni", "nt", "ob", "phan", "qu", "que", "qui", "ra", "re", "ri", "rum", "per", "ta", "te", "ter", "ti", "tin", "tu", "tur", "um", "us", "vi", "zen"
+}
+local Derniere = {
+    "a", "ae", "am", "an", "as", "ate", "ble", "bus", "ca", "ce", "cus", "cris", "ctae", "cto", "cut", "des", "do", "dos", "dus", "e", "ent", "er", "est", "hil", "git", "go", "gno", "ia", "io", "ion", "ior", "is", "it", "ius", "la", "le", "lo", "lus", "ma", "ment", "mnes", "mu", "mus", "na", "ne", "no", "num", "nus", "o", "ory", "ous", "que", "quis", "ra", "re", "rem", "ro", "ros", "sa", "sis", "sit", "sor", "sti", "sto", "stris", "strum", "sul", "sum", "tae", "tem", "to", "ter", "tes", "tius", "tor", "tur", "tus", "ty", "um", "us", "va"
+}
+
+local function pick(t)
+    return t[rnd(1, #t)]
+end
+
+local function trailingCons(s) return #s:match("[^aeiou]*$") end
+local function leadingCons(s)  return #s:match("^[^aeiou]*") end
+
+-- Heuristique de jonction : pas d'hiatus (voyelle+voyelle), pas plus de 3
+-- consonnes de suite, et "qu" doit être suivi d'une voyelle.
+local function junctionOK(a, b)
+    local bVowel = b:sub(1, 1):find("[aeiou]") ~= nil
+    if a:sub(-2) == "qu" then return bVowel end
+    local aVowel = a:sub(-1):find("[aeiou]") ~= nil
+    if aVowel and bVowel then return false end
+    return trailingCons(a) + leadingCons(b) <= 3
+end
+
+local function nextSyllable(name, pool)
+    local s
+    for _ = 1, 10 do
+        s = pick(pool)
+        if junctionOK(name, s) then return s end
+    end
+    return s   -- on tolère le résultat après 10 échecs
+end
+
+local function StartNameGeneration()
+    local name = pick(Premiere)
+    for _ = 1, rnd(0, 2) do
+        name = name .. nextSyllable(name, Medium)
+    end
+    name = name .. nextSyllable(name, Derniere)
+    return name:sub(1, 1):upper() .. name:sub(2)
+end
+
+local function GenerateUniqueName(utilises)
+    for _ = 1, 50 do
+        local nom = StartNameGeneration()
+        if not utilises[nom] then
+            utilises[nom] = true
+            return nom
+        end
+    end
+    -- Repli : suffixe numérique, garantit la terminaison
+    local base = StartNameGeneration()
+    local n = 2
+    while utilises[base .. " " .. n] do n = n + 1 end
+    local nom = base .. " " .. n
+    utilises[nom] = true
+    return nom
+end
+
 ----------------------------------------------------------------------
 -- GÉNÉRATION DES POSITIONS
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
@@ -131,7 +196,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
 local constructeur = FORMES[map_form]
     if not constructeur then
         print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
-        return {}, {}, 0, nil
+        return {}, {}, 0, nil, {}, {}
     end
 
     local A = map_X * map_Y
@@ -145,6 +210,8 @@ local constructeur = FORMES[map_form]
     }
 
     local xs, ys, etoiles_type = {}, {}, {}
+    local noms = {}
+    local noms_utilises = {}                                -- ensemble pour l'unicité (réinitialisé à chaque génération)
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -175,13 +242,16 @@ local constructeur = FORMES[map_form]
             break
         end
 
-        -- Couleurs
+        -- Couleur (type étoile)
         local a = rnd(1, 5)
         etoiles_type[n] = ETOILES_TYPE[a]
 
+        -- Nom
+        noms[n] = GenerateUniqueName(noms_utilises)
+
     end
 
-    return xs, ys, n, boite, etoiles_type
+    return xs, ys, n, boite, etoiles_type, noms
 end
 
 ----------------------------------------------------------------------
@@ -208,7 +278,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -223,8 +293,10 @@ function M.generer(params)
             id    = tostring(i),
             pos_x = xs[i],
             pos_y = ys[i],
-            type  = etoiles_type[i]
+            type  = etoiles_type[i],
+            nom   = noms[i]
         })
+        print (noms[i])
     end
     events.emit("galaxie_generee")
 end
