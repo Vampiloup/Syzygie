@@ -14,7 +14,8 @@
     "type_etoiles.json",
     "type_orbitales.json",
     "touches_clavier.json",
-    "screen_coordinates.json"
+    "screen_coordinates.json",
+    "noms_etoiles.json"
   ],
   "langues": ["fr", "en"]
 }

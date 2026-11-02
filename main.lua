@@ -37,6 +37,8 @@ function love.load()
     -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
     -- mods.charger({ "defaut", "test" })
     mods.charger({ "defaut" })
+
+
     i18n.definir("fr")                                                         -- une fois, au démarrage
     screen.load()
     hud.init()                                                                 -- Lit le registre et crée les boutons du hud..
@@ -61,19 +63,19 @@ function love.load()
 
     -- Utilisation :
 
-    local reponse = i18n.tc("galaxy_form", "double_anneau")
-    print (reponse)
+    -- local reponse = i18n.tc("galaxy_form", "double_anneau")
+    -- print (reponse)
 
-    local r = registre.get("galaxy_defaults", "standard")
-    print(r.map_size, r.map_form, r.source)
+    -- local r = registre.get("galaxy_defaults", "standard")
+    -- print(r.map_size, r.map_form, r.source)
 
-    local preset  = registre.get("galaxy_defaults", "standard")
-    local densite = registre.get_field("galaxy_density", preset.map_density, "density")
-    print(densite)   -- 1 (ou la valeur imposée par un mod)
+    -- local preset  = registre.get("galaxy_defaults", "standard")
+    -- local densite = registre.get_field("galaxy_density", preset.map_density, "density")
+    -- print(densite)   -- 1 (ou la valeur imposée par un mod)
 
-    local preset  = registre.get("galaxy_defaults", "standard")
-    local taille  = registre.get("galaxy_size",    preset.map_size)
-    print(taille.map_X, taille.map_Y)
+    -- local preset  = registre.get("galaxy_defaults", "standard")
+    -- local taille  = registre.get("galaxy_size",    preset.map_size)
+    -- print(taille.map_X, taille.map_Y)
 
 end
 

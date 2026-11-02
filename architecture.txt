@@ -22,6 +22,7 @@ syzygie/
 -- sim/
 -- -- creation_partie/                             Creation de la partie. Ce qui se trouve à l'intérieur est supposé ne servir qu'une fois lors du jeu, lorqu'on lance une partie.
 -- -- -- generation_galaxie.lua                    Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
+-- -- -- noms_etoiles.lua                          Génération des noms des étoiles (appeé par sim.generation_galaxie.lua)
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
 -- -- panneaux/
@@ -44,6 +45,7 @@ syzygie/
 -- mods/
 -- -- defaut/
 -- -- -- manifeste.json                            Manifeste du mod.
+-- -- -- noms_etoiles.json                         corpus pour la générations des noms des étoiles.
 -- -- -- screen_coordinates                        Liste des coordonnées et tailles des différents panneaux du hud.
 -- -- -- type_etoiles.json                         Liste les types d'étoiles
 -- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes).

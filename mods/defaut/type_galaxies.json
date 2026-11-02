@@ -6,7 +6,7 @@
     { "id": "anneau_tres_large" },
     { "id": "anneau_large" },
     { "id": "anneau_moyen" },
-    { "id": "anneau_etroit" }
+    { "id": "anneau_etroit" },
     { "id": "ellipse_tres_epaisse" },
     { "id": "ellipse_epaisse" },
     { "id": "ellipse_moyenne" },
@@ -31,7 +31,7 @@
     { "id": "dense",                    "density": 1.5 },
     { "id": "compact",                  "density": 2 },
     { "id": "too_compact",              "density": 3 },
-    { "id": "no_space",                 "density": 4 },
+    { "id": "no_space",                 "density": 4 }
   ],
   "galaxy_defaults": [
     { "id": "standard", "map_form": "disque_uniforme", "map_size": "medium", "map_density": "medium" }

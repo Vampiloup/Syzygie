@@ -165,7 +165,6 @@ function M.new(def)
 
 
   if def.id then
-        print (" ---- "..def.id)
       events.on("keypressed", function(key)
       touche = touche or registre.get_field("panneau_hud", def.id, "touche")
       if key ~= touche then return end

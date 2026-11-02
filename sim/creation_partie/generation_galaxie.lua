@@ -13,9 +13,17 @@
 
 local registre =                  require("core.registre")
 local events =                    require("core.events")
+local StarNames =                 require("sim.creation_partie.noms_etoiles")
 
 local rnd = love.math.random
 local PI2 = 2 * math.pi
+
+
+
+-- noms[n] = gen:generate("gaulois", used)          -- langue imposée (secteur, faction)
+-- noms[n] = gen:generateMixed({latin=3, grec=1}, used)  -- tirage pondéré, une langue par nom
+-- gen:addWords("gaulois", { ...mots du dictionnaire... })
+
 
 ----------------------------------------------------------------------
 -- FORMES
@@ -193,7 +201,10 @@ end
 ----------------------------------------------------------------------
 local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
 
-local constructeur = FORMES[map_form]
+    local gen  = StarNames.new(seed_galaxie)   -- ici, pas au niveau du fichier
+    local used = {}
+
+    local constructeur = FORMES[map_form]
     if not constructeur then
         print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
         return {}, {}, 0, nil, {}, {}
@@ -211,7 +222,6 @@ local constructeur = FORMES[map_form]
 
     local xs, ys, etoiles_type = {}, {}, {}
     local noms = {}
-    local noms_utilises = {}                                -- ensemble pour l'unicité (réinitialisé à chaque génération)
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -247,10 +257,10 @@ local constructeur = FORMES[map_form]
         etoiles_type[n] = ETOILES_TYPE[a]
 
         -- Nom
-        noms[n] = GenerateUniqueName(noms_utilises)
+        -- noms[n] = gen:generate("egyptien", used)
+        noms[n] = gen:generateMixed(used, "standard")
 
     end
-
     return xs, ys, n, boite, etoiles_type, noms
 end
 
@@ -296,7 +306,6 @@ function M.generer(params)
             type  = etoiles_type[i],
             nom   = noms[i]
         })
-        print (noms[i])
     end
     events.emit("galaxie_generee")
 end

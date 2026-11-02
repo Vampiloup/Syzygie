@@ -1,0 +1,86 @@
+{
+  "noms_corpus": [
+    {
+      "id": "latin_defaut",
+      "langue": "latin",
+      "mots": [
+        "aquila", "corvus", "lucius", "valerius", "fortunatus", "sabinus", "marcellus",
+        "severus", "cassius", "aurelius", "felix", "victor", "clemens", "maximus", "priscus",
+        "rufus", "flavius", "julianus", "magnus", "claudius", "livius", "octavius", "tiberius",
+        "vespasianus", "hadrianus", "antoninus", "verus", "gallienus", "lucilla", "aurora",
+        "luna", "stella", "vesta", "fortuna", "victoria", "concordia", "lucerna", "sidus",
+        "polaris", "sabina", "tullius", "quintus", "domitius", "pompeius", "augustus",
+        "constantius", "valentinus", "placidus", "sextus", "cornelius", "fabius", "marcia",
+        "portia", "livia", "octavia", "camilla", "aemilia"
+      ]
+    },
+    {
+      "id": "grec_defaut",
+      "langue": "grec",
+      "mots": [
+        "aristarchos", "theron", "kallias", "lykos", "alexandros", "demetrios", "hermes",
+        "selene", "helios", "eos", "nikias", "philon", "xenon", "sophokles", "perikles",
+        "themistokles", "leonidas", "kimon", "euripides", "archimedes", "hipparchos",
+        "eratosthenes", "ptolemaios", "pythagoras", "thales", "anaximandros", "kleitos",
+        "lysandros", "melissa", "kalliope", "thalia", "urania", "erato", "dione", "phoebe",
+        "hyperion", "theia", "kronos", "rhea", "atlas", "pallas", "alkmene", "andromeda",
+        "kassandra", "menandros", "hesiodos", "pindaros", "aristoteles", "xenophon",
+        "diogenes", "epikouros", "zenon", "hypatia", "orestes", "iphigenia"
+      ]
+    },
+    {
+      "id": "gaulois_defaut",
+      "langue": "gaulois",
+      "mots": [
+        "vercingetorix", "ambiorix", "dumnorix", "orgetorix", "cingetorix", "brennos",
+        "cassivellaunos", "epona", "teutates", "cernunnos", "belenos", "taranis", "esus",
+        "bibracte", "alesia", "mediolanum", "lugdunum", "nemausus", "argentomagus",
+        "noviodunum", "camulodunum", "vindobona", "segovax", "catuvolcus", "boudica",
+        "brigantia", "nantosuelta", "rosmerta", "sirona", "maponos", "ogmios", "sucellos",
+        "vindonissa", "divodurum", "cambodunum", "camulos", "lugus", "artio", "andarta",
+        "borvo", "grannus", "cobannos", "nodens"
+      ]
+    },
+    {
+      "id": "ancien_francais_defaut",
+      "langue": "ancien_francais",
+      "mots": [
+        "montfort", "beaulieu", "clairvaux", "roncevaux", "bellegarde", "valcourt",
+        "hautefeuille", "monsegur", "vaucelles", "aiglemont", "belmont", "castelnau",
+        "villebois", "fontevrault", "aelis", "aalis", "guibert", "thibaut", "raoul", "gautier",
+        "girart", "aymeri", "hugues", "mahaut", "berenger", "roland", "olivier", "ganelon",
+        "turpin", "renaut", "tristan", "yseut", "perceval", "lancelot", "gauvain", "yvain",
+        "erec", "enide", "guenievre", "morgane", "mordret", "beaumanoir", "broceliande",
+        "rocamadour", "vauclair", "fierabras", "aliscans"
+      ]
+    },
+    {
+      "id": "egyptien_defaut",
+      "langue": "egyptien",
+      "mots": [
+        "nefer", "amun", "ptah", "sekhmet", "hathor", "khepri", "anubis", "thoth", "sobek",
+        "horus", "osiris", "isis", "bastet", "khnum", "meretseger", "seth", "nefertari",
+        "hatshepsut", "djoser", "khufu", "menkaure", "sneferu", "ramses", "merneptah",
+        "imhotep", "nefertiti", "akhenaten", "tutankhamun", "senusret", "amenemhat",
+        "thutmose", "ahmose", "khafre", "unas", "pepi", "teti", "mentuhotep", "sobekhotep",
+        "nebamun", "hapi", "khonsu", "mut", "neith", "wadjet", "nekhbet", "maat", "geb", "nut",
+        "shu", "tefnut", "atum", "aten"
+      ]
+    }
+  ],
+  "noms_blacklist": [
+    { "id": "defaut", "motifs": ["anus", "penis", "penus", "pute", "merd", "fuck", "shit", "cunt", "cock", "dick", "nazi", "pipi", "caca", "zob", "couil", "salop", "nique", "sexe", "vagin", "nigg", "puta"] }
+  ],
+  "noms_repartition": [
+    {
+      "id": "standard",
+      "repartition": [
+        { "langue": "latin", "poids": 4 },
+        { "langue": "grec", "poids": 2 },
+        { "langue": "gaulois", "poids": 2 },
+        { "langue": "ancien_francais", "poids": 1 },
+        { "langue": "egyptien", "poids": 1 }
+      ]
+    }
+  ]
+}
