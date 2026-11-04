@@ -12,6 +12,8 @@ local entrees =               require("ui.entrees")                             
 local events =                require("core.events")                                    -- Chargement du module de gestion des évènements
 local couches =               require("core.couches")                                   -- Chargement du système de couches/layers/pile pour les évents sur éléments visuels.
 
+local polices =               require("core.polices")
+
 local generation_galaxie =    require("sim.creation_partie.generation_galaxie")         -- generation at start of : The galxy at large.
 
 local hello =                 require("ui.panneaux.hello")                              -- Chargement du panneau "Hello"
@@ -30,13 +32,17 @@ local panneau =               require("ui.widgets.panneau")
 -- local appel_tour =            require("core.appel_tour")                             -- Module demandant et recevant l'event de tour.
 
 
-
-
 function love.load()
 
     -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre
     -- mods.charger({ "defaut", "test" })
+
     mods.charger({ "defaut" })
+    polices.charger()
+
+
+    -- Temporaire. À placer dans les mods, puis utilisation via le registre.
+
 
 
     i18n.definir("fr")                                                         -- une fois, au démarrage
@@ -76,6 +82,7 @@ function love.load()
     -- local preset  = registre.get("galaxy_defaults", "standard")
     -- local taille  = registre.get("galaxy_size",    preset.map_size)
     -- print(taille.map_X, taille.map_Y)
+
 
 end
 

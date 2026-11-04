@@ -11,6 +11,7 @@ syzygie/
 -- -- couches_z.lua                                Tableau des valeurs de Z, pour les éléments UI.
 -- -- events.lua                                   Gestion des évènements.
 -- -- exclusif.lua                                 Permet d'imposer qu'un seul élément d'un même groupe soit ouvert.
+-- -- polices.lua                                  Routine créant un fichier de polices d'affichage lorsque demandées.
 -- -- registre.lua                                 Lit ou écrit dans le registre (les tables contenant les données du jeu)
 -- -- sauvegardes.lua                              Sauvegarde et charge les parties.
 -- -- i18n.lua                                     Gère le multilangues (deux au début : français et anglais)
@@ -46,6 +47,7 @@ syzygie/
 -- -- defaut/
 -- -- -- manifeste.json                            Manifeste du mod.
 -- -- -- noms_etoiles.json                         corpus pour la générations des noms des étoiles.
+-- -- -- polices.json                              Liste des polices utilisées.
 -- -- -- screen_coordinates                        Liste des coordonnées et tailles des différents panneaux du hud.
 -- -- -- type_etoiles.json                         Liste les types d'étoiles
 -- -- -- type_orbitales.json                       Les "orbitales" sont les astres orbitant autour des étoiles (planètes, essentiellement, ou astéroïdes).

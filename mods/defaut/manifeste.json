@@ -16,6 +16,7 @@
     "touches_clavier.json",
     "screen_coordinates.json",
     "noms_etoiles.json"
+    "polices.json"
   ],
   "langues": ["fr", "en"]
 }

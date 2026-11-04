@@ -12,7 +12,7 @@
   "hud_diplomatie.titre":                                     "Panneau Diplomatie",
   "hud_reglages.titre":                                       "Panneau Réglages",
 
-  "hud_star.titre":                                           "Étoile n°",
+  "hud_star.numero":                                          "Étoile n°",
 
   "hud_reglages.reglages_sortie_jeu":                         "Sortie du jeu"
 }

@@ -1,0 +1,6 @@
+{
+  "polices": [
+    { "id": "titre_panneau",            "police": "defaut/police/Roboto/Roboto-Bold",            "taille": 24    },
+    { "id": "standard_panneau",         "police": "defaut/police/Roboto/Roboto-Regular",         "taille": 16    }
+  ]
+}
