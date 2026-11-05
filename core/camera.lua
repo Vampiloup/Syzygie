@@ -1,4 +1,4 @@
--- core/camera.lua
+-- core.camera.lua
 local Camera = {}
 Camera.__index = Camera
 

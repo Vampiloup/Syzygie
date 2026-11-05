@@ -71,12 +71,15 @@ couches.add({
                 love.graphics.setFont(polices.f["standard_panneau"])
                 love.graphics.setColor(c.R, c.G, c.B)
                 love.graphics.circle("fill", s.pos_x, s.pos_y, rayon)
-                love.graphics.setColor(0.15, 0.15, 0.15, 0.85)
-                love.graphics.rectangle("fill", boxX, boxY, boxW, boxH, 4, 4)
-                love.graphics.setColor(0.45, 0.45, 0.45)                                      -- liseré fin
-                love.graphics.rectangle("line", boxX, boxY, boxW, boxH, 4, 4)
+                if cam.scale > 0.5 then
+                    love.graphics.setColor(0.15, 0.15, 0.15, 0.85)
+                    love.graphics.rectangle("fill", boxX, boxY, boxW, boxH, 4, 4)
+                    love.graphics.setColor(0.45, 0.45, 0.45)                                      -- liseré fin
+                    love.graphics.rectangle("line", boxX, boxY, boxW, boxH, 4, 4)
+                    love.graphics.setColor(1, 1, 1)
+                    love.graphics.print(nom, boxX + padX, boxY + padY)
+                end
                 love.graphics.setColor(1, 1, 1)
-                love.graphics.print(nom, boxX + padX, boxY + padY)
             end
         end
         love.graphics.setColor(1, 1, 1)

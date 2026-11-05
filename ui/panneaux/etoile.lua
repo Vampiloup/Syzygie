@@ -32,7 +32,6 @@ local P = panneau.new({
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.setFont(polices.f["standard_panneau"])
-
   end,
   pre_touche = function() etoile_id = etoile_id or 1 end,
   on_close   = function() etoile_id = nil end,

@@ -28,6 +28,7 @@ local panneau_economie =      require("ui.panneaux.economie")
 local panneau_reglages =      require("ui.panneaux.reglages")
 local carte_etoile =          require("ui.panneaux.etoile")
 local panneau =               require("ui.widgets.panneau")
+local cam =                    require("core.camera_monde")
 
 -- local appel_tour =            require("core.appel_tour")                             -- Module demandant et recevant l'event de tour.
 
@@ -95,6 +96,7 @@ function love.draw()
   screen.begin()
   couches.draw()
   screen.finish()
+
 end
 
 function love.resize(w, h)
@@ -107,3 +109,8 @@ events.on("keypressed", function(key)
     if hello.is_open() then hello.close() else hello.open() end
   end
 end)
+
+
+
+
+-- reglages.seuil_etiquette = 1.1 ^ niveau * 0.999
