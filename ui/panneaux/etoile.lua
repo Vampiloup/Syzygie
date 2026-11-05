@@ -18,6 +18,7 @@ local P = panneau.new({
     -- for k, v in pairs(polices.f) do print("police chargée : [" .. k .. "]", v) end
     local texte = i18n.t("hud_star.numero")
     local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
+    local etoile = registre.get("etoiles_type", tostring(reponse.type))
     love.graphics.setFont(polices.f["titre_panneau"])
     -- love.graphics.setFont(assert(polices.f["titre_panneau"], "police 'titre_panneau' introuvable"))
     love.graphics.setColor(1, 0.9, 0.4)
@@ -25,7 +26,6 @@ local P = panneau.new({
     love.graphics.setFont(polices.f["standard_panneau"])
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(texte.." : " .. tostring(etoile_id), p.x + 16, p.y + 64)
-    local etoile = registre.get("etoiles_type", tostring(reponse.type))
     love.graphics.setColor(etoile.R, etoile.G, etoile.B)
     love.graphics.circle("fill", p.x + 24, p.y + 32, RAYON_ETOILE)
     love.graphics.setFont(polices.f["standard_panneau"])

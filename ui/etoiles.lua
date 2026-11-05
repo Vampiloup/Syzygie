@@ -5,6 +5,7 @@ local couches_z = require("core.couches_z")
 local ecran     = require("affichage.ecran")
 local cam       = require("core.camera_monde")   -- une instance partagée
 local registre  = require("core.registre")
+local polices   = require("core.polices")
 
 local TOLERANCE_PX = 6   -- rayon minimal cliquable, en pixels virtuels
 local RAYON_ETOILE = 8
@@ -55,11 +56,27 @@ couches.add({
 
         local x1, y1, x2, y2 = cam:visibleRect(ecran.bounds())
         local rayon = math.max(RAYON_ETOILE, 2 / cam.scale)
+        local font   = love.graphics.getFont()
         for _, s in ipairs(etoiles) do
             if s.pos_x + rayon >= x1 and s.pos_x - rayon <= x2 and s.pos_y + rayon >= y1 and s.pos_y - rayon <= y2 then
                 local c = etoiles_type[s.type]
+                local nom    = s.nom
+                local textW  = font:getWidth(nom)
+                local textH  = font:getHeight()
+                local padX, padY = 6, 2
+                local boxW   = textW + padX * 2
+                local boxH   = textH + padY * 2
+                local boxX   = math.floor((s.pos_x - boxW / 2) + 0.5)                                             -- centré sur le disque
+                local boxY   = s.pos_y + rayon + 4                                            -- sous le disque (4 px d'écart)
+                love.graphics.setFont(polices.f["standard_panneau"])
                 love.graphics.setColor(c.R, c.G, c.B)
                 love.graphics.circle("fill", s.pos_x, s.pos_y, rayon)
+                love.graphics.setColor(0.15, 0.15, 0.15, 0.85)
+                love.graphics.rectangle("fill", boxX, boxY, boxW, boxH, 4, 4)
+                love.graphics.setColor(0.45, 0.45, 0.45)                                      -- liseré fin
+                love.graphics.rectangle("line", boxX, boxY, boxW, boxH, 4, 4)
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.print(nom, boxX + padX, boxY + padY)
             end
         end
         love.graphics.setColor(1, 1, 1)
