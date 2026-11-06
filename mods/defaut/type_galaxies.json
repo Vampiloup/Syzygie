@@ -1,18 +1,18 @@
 {
   "galaxy_form": [
-    { "id": "carre" },
-    { "id": "disque_decroissant" },
-    { "id": "disque_uniforme" },
-    { "id": "anneau_tres_large" },
-    { "id": "anneau_large" },
-    { "id": "anneau_moyen" },
-    { "id": "anneau_etroit" },
-    { "id": "ellipse_tres_epaisse" },
-    { "id": "ellipse_epaisse" },
-    { "id": "ellipse_moyenne" },
-    { "id": "ellipse_etroite" },
-    { "id": "double_anneau" },
-    { "id": "croix" }
+    { "id": "carre",                    "generation": "forme_carre" },
+    { "id": "disque_decroissant",       "generation": "forme_disque_decroissant" },
+    { "id": "disque_uniforme",          "generation": "forme_anneau",               "args": [0] },
+    { "id": "anneau_tres_large",        "generation": "forme_anneau",               "args": [0.2] },
+    { "id": "anneau_large",             "generation": "forme_anneau",               "args": [0.4] },
+    { "id": "anneau_moyen",             "generation": "forme_anneau",               "args": [0.6] },
+    { "id": "anneau_etroit",            "generation": "forme_anneau",               "args": [0.8] },
+    { "id": "ellipse_tres_epaisse",     "generation": "forme_ellipse",              "args": [1.25] },
+    { "id": "ellipse_epaisse",          "generation": "forme_ellipse",              "args": [1.5] },
+    { "id": "ellipse_moyenne",          "generation": "forme_ellipse",              "args": [1.75] },
+    { "id": "ellipse_etroite",          "generation": "forme_ellipse",              "args": [2] },
+    { "id": "double_anneau",            "generation": "forme_double_anneau" },
+    { "id": "croix",                    "generation": "forme_croix" }
 ],
   "galaxy_size": [
     { "id": "minuscule", "map_X": 1250, "map_Y": 1250 },
@@ -34,6 +34,6 @@
     { "id": "no_space",                 "density": 4 }
   ],
   "galaxy_defaults": [
-    { "id": "standard", "map_form": "disque_uniforme", "map_size": "medium", "map_density": "medium" }
+    { "id": "standard", "map_form": "anneau_moyen", "map_size": "medium", "map_density": "medium" }
   ]
 }

@@ -6,7 +6,7 @@
 --
 -- Paramètres de generer(params) :
 --   map_X, map_Y   (obligatoires) dimensions du "carré plein" de référence ; A = map_X * map_Y
---   map_form       (obligatoire)  1 à 13, voir la table FORMES
+--   map_form       (obligatoire)  id de la forme, trouvé dans galaxy_form (type_galaxies.json par défaut)
 --   densite        (défaut 1)     multiplicateur du nombre d'étoiles
 --   distance_mini  (défaut 80)    distance minimale entre deux étoiles
 --   graine         (défaut os.time())  graine aléatoire, mémorisée dans le registre
@@ -106,21 +106,28 @@ local function forme_croix(A)
     end, L, L
 end
 
-local FORMES = {
-    ["carre"]  = forme_carre,
-    ["disque_decroissant"]           = forme_disque_decroissant,
-    ["disque_uniforme"]              = forme_anneau(0),
-    ["anneau_tres_large"]            = forme_anneau(0.2),     -- anneau très large
-    ["anneau_large"]                 = forme_anneau(0.4),     -- anneau large
-    ["anneau_moyen"]                 = forme_anneau(0.6),     -- anneau moyen
-    ["anneau_etroit"]                = forme_anneau(0.8),     -- anneau étroit
-    ["ellipse_tres_epaisse"]         = forme_ellipse(1.25),
-    ["ellipse_epaisse"]              = forme_ellipse(1.5),
-    ["ellipse_moyenne"]              = forme_ellipse(1.75),
-    ["ellipse_etroite"]              = forme_ellipse(2),
-    ["double_anneau"]                = forme_double_anneau,
-    ["croix"]                        = forme_croix,
+local GENERATEURS = {
+    forme_carre              = forme_carre,
+    forme_disque_decroissant = forme_disque_decroissant,
+    forme_anneau             = forme_anneau,
+    forme_ellipse            = forme_ellipse,
+    forme_double_anneau      = forme_double_anneau,
+    forme_croix              = forme_croix,
 }
+
+local unpack = table.unpack or unpack   -- LuaJIT (LÖVE) : unpack
+
+local function resoudre_constructeur(id)
+    local def = registre.get("galaxy_form", id)   -- erreur claire si l'id est inconnu
+    local f = GENERATEURS[def.generation]
+    if not f then
+        error("generation inconnue dans galaxy_form : " .. tostring(def.generation))
+    end
+    if def.args then
+        return f(unpack(def.args))   -- fabrique (anneau, ellipse)
+    end
+    return f                         -- constructeur direct
+end
 
 ----------------------------------------------------------------------
 -- GÉNÉRATION DES POSITIONS
@@ -131,9 +138,9 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
     local gen  = StarNames.new(seed_galaxie)   -- ici, pas au niveau du fichier
     local used = {}
 
-    local constructeur = FORMES[map_form]
+    local constructeur = resoudre_constructeur(map_form)
     if not constructeur then
-        print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
+    print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
         return {}, {}, 0, nil, {}, {}
     end
 
@@ -200,7 +207,7 @@ local M = {}
 function M.generer(params)
     assert(params, "generer(params) : params manquant")
     assert(params.map_X and params.map_Y, "generer : map_X et map_Y sont obligatoires")
-    assert(FORMES[params.map_form], "generer : map_form inconnu : " .. tostring(params.map_form))
+    assert(registre.has("galaxy_form", params.map_form), "generer : map_form inconnu : " .. tostring(params.map_form))
 
     local map_X         = params.map_X
     local map_Y         = params.map_Y
