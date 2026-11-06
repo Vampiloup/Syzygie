@@ -99,8 +99,8 @@ function love.draw()
 
 end
 
-function love.resize(w, h)
-  screen.resize(w, h)
+function love.resize()
+  screen.resize()
   events.emit("resize", screen.bounds())
 end
 

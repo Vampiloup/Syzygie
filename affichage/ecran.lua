@@ -1,14 +1,15 @@
 -- affichage.ecran.lua
 local M = { W = 1920, H = 1080 }
 
-function M.resize(w, h)
+function M.resize()
+  local w, h = love.graphics.getDimensions()
   M.scale = math.min(w / M.W, h / M.H)
   M.ox = math.floor((w - M.W * M.scale) / 2)
   M.oy = math.floor((h - M.H * M.scale) / 2)
 end
 
 function M.load()
-  M.resize(love.graphics.getDimensions())
+  M.resize()
 end
 
 -- à appeler autour de tout le dessin
