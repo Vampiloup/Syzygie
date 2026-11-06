@@ -108,99 +108,26 @@ end
 
 local FORMES = {
     ["carre"]  = forme_carre,
-    ["disque_decroissant"]  = forme_disque_decroissant,
-    ["disque_uniforme"]  = forme_anneau(0),
-    ["anneau_tres_large"]  = forme_anneau(0.2),     -- anneau très large
-    ["anneau_large"]  = forme_anneau(0.4),     -- anneau large
-    ["anneau_moyen"]  = forme_anneau(0.6),     -- anneau moyen
-    ["anneau_etroit"]  = forme_anneau(0.8),     -- anneau étroit
-    ["ellipse_tres_epaisse"]  = forme_ellipse(1.25),
-    ["ellipse_epaisse"]  = forme_ellipse(1.5),
-    ["ellipse_moyenne"] = forme_ellipse(1.75),
-    ["ellipse_etroite"] = forme_ellipse(2),
-    ["double_anneau"] = forme_double_anneau,
-    ["croix"] = forme_croix,
+    ["disque_decroissant"]           = forme_disque_decroissant,
+    ["disque_uniforme"]              = forme_anneau(0),
+    ["anneau_tres_large"]            = forme_anneau(0.2),     -- anneau très large
+    ["anneau_large"]                 = forme_anneau(0.4),     -- anneau large
+    ["anneau_moyen"]                 = forme_anneau(0.6),     -- anneau moyen
+    ["anneau_etroit"]                = forme_anneau(0.8),     -- anneau étroit
+    ["ellipse_tres_epaisse"]         = forme_ellipse(1.25),
+    ["ellipse_epaisse"]              = forme_ellipse(1.5),
+    ["ellipse_moyenne"]              = forme_ellipse(1.75),
+    ["ellipse_etroite"]              = forme_ellipse(2),
+    ["double_anneau"]                = forme_double_anneau,
+    ["croix"]                        = forme_croix,
 }
-
-local ETOILES_TYPE = {
-    [1]  = "rouge",
-    [2]  = "orange",
-    [3]  = "jaune",
-    [4]  = "blanc",
-    [5]  = "bleu"
-}
-
-
--- Génération des noms d'étoiles.
-
-local Premiere = {
-    "a", "ab", "ac", "ad", "ae", "aes", "am", "an", "ante", "au", "be", "car", "clau", "cen", "circum", "co", "con", "dan", "de", "den", "di", "dic", "dis", "do", "duo", "e", "est", "ex", "fe", "fi", "foe", "gra", "in", "inter", "ma", "me", "men", "mi", "mit", "mo", "mon", "ni", "no", "non", "o", "ob", "pa", "pe", "per", "plu", "post", "prae", "pre", "pro", "pu", "qua", "quam", "quasi", "re", "rem", "res", "retro", "ro", "sa", "san", "sax", "si", "su", "sub", "super", "tan", "ter", "tol", "tra", "trans", "tri", "ui", "ver", "vi", "vo"
-}
-local Medium = {
-    "a", "an", "ant", "at", "bi", "bus", "ci", "di", "cer", "clu", "de", "e", "el", "en", "ent", "er", "ere", "es", "et", "fa", "fe", "in", "is", "it", "iu", "la", "le", "li", "ma", "mi", "mit", "mo", "mu", "na", "ne", "ni", "nt", "ob", "phan", "qu", "que", "qui", "ra", "re", "ri", "rum", "per", "ta", "te", "ter", "ti", "tin", "tu", "tur", "um", "us", "vi", "zen"
-}
-local Derniere = {
-    "a", "ae", "am", "an", "as", "ate", "ble", "bus", "ca", "ce", "cus", "cris", "ctae", "cto", "cut", "des", "do", "dos", "dus", "e", "ent", "er", "est", "hil", "git", "go", "gno", "ia", "io", "ion", "ior", "is", "it", "ius", "la", "le", "lo", "lus", "ma", "ment", "mnes", "mu", "mus", "na", "ne", "no", "num", "nus", "o", "ory", "ous", "que", "quis", "ra", "re", "rem", "ro", "ros", "sa", "sis", "sit", "sor", "sti", "sto", "stris", "strum", "sul", "sum", "tae", "tem", "to", "ter", "tes", "tius", "tor", "tur", "tus", "ty", "um", "us", "va"
-}
-
-local function pick(t)
-    return t[rnd(1, #t)]
-end
-
-local function trailingCons(s) return #s:match("[^aeiou]*$") end
-local function leadingCons(s)  return #s:match("^[^aeiou]*") end
-
--- Heuristique de jonction : pas d'hiatus (voyelle+voyelle), pas plus de 3
--- consonnes de suite, et "qu" doit être suivi d'une voyelle.
-local function junctionOK(a, b)
-    local bVowel = b:sub(1, 1):find("[aeiou]") ~= nil
-    if a:sub(-2) == "qu" then return bVowel end
-    local aVowel = a:sub(-1):find("[aeiou]") ~= nil
-    if aVowel and bVowel then return false end
-    return trailingCons(a) + leadingCons(b) <= 3
-end
-
-local function nextSyllable(name, pool)
-    local s
-    for _ = 1, 10 do
-        s = pick(pool)
-        if junctionOK(name, s) then return s end
-    end
-    return s   -- on tolère le résultat après 10 échecs
-end
-
-local function StartNameGeneration()
-    local name = pick(Premiere)
-    for _ = 1, rnd(0, 2) do
-        name = name .. nextSyllable(name, Medium)
-    end
-    name = name .. nextSyllable(name, Derniere)
-    return name:sub(1, 1):upper() .. name:sub(2)
-end
-
-local function GenerateUniqueName(utilises)
-    for _ = 1, 50 do
-        local nom = StartNameGeneration()
-        if not utilises[nom] then
-            utilises[nom] = true
-            return nom
-        end
-    end
-    -- Repli : suffixe numérique, garantit la terminaison
-    local base = StartNameGeneration()
-    local n = 2
-    while utilises[base .. " " .. n] do n = n + 1 end
-    local nom = base .. " " .. n
-    utilises[nom] = true
-    return nom
-end
 
 ----------------------------------------------------------------------
 -- GÉNÉRATION DES POSITIONS
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
 ----------------------------------------------------------------------
 local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
-
+    local NB_ETOILES  = registre.nombre("etoiles_type")
     local gen  = StarNames.new(seed_galaxie)   -- ici, pas au niveau du fichier
     local used = {}
 
@@ -253,8 +180,9 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
         end
 
         -- Couleur (type étoile)
-        local a = rnd(1, 5)
-        etoiles_type[n] = ETOILES_TYPE[a]
+        local a = rnd(1, NB_ETOILES)
+        local def = registre.list("etoiles_type")[a]
+        etoiles_type[n] = def.id
 
         -- Nom
         -- noms[n] = gen:generate("egyptien", used)

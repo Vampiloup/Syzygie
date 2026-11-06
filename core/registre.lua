@@ -75,7 +75,18 @@ function M.dump()                           -- renvoie un dump du registre.
   end
 end
 
-function M.clear(category)                                      -- Efface une catégorie
+function M.nombre(category)                 -- renvoie le nombre d'entrées d'une catégorie (0 si inconnue)
+    if not ordre[category] then error("Inconnu : " .. tostring(category), 2) end
+    return #ordre[category]
+end
+
+function M.random(category)                 -- Renvoit une ligne au hasard de la table indiquée.
+  local ids = ordre[category]
+  if not ids or #ids == 0 then error("Catégorie vide ou inconnue : " .. tostring(category), 2) end
+  return store[category][ids[math.random(#ids)]]
+end
+
+function M.clear(category)                  -- Efface une catégorie
   store[category], ordre[category] = nil, nil
 end
 
