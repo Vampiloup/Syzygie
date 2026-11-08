@@ -34,6 +34,6 @@
     { "id": "no_space",                 "density": 4 }
   ],
   "galaxy_defaults": [
-    { "id": "standard", "map_form": "anneau_moyen", "map_size": "medium", "map_density": "medium" }
+    { "id": "standard", "map_form": "disque_decroissant", "map_size": "medium", "map_density": "medium" }
   ]
 }
