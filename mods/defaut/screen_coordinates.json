@@ -6,8 +6,8 @@
     { "id": "diplomatie",    "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
     { "id": "economie",      "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
     { "id": "empire",        "largeur": 1872,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "reglages",      "largeur": 512,   "hauteur": 768,     "ancrage_x": "centre",       "ancrage_y": "centre" }
-
+    { "id": "reglages",      "largeur": 512,   "hauteur": 768,     "ancrage_x": "centre",       "ancrage_y": "centre" },
+    { "id": "planete",       "largeur": 1580,  "hauteur": 944,     "ancrage_x": "droite",       "ancrage_y": "haut" }
   ],
 
   "hud_groupe": [

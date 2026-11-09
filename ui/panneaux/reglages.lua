@@ -35,7 +35,7 @@ local actions = {
 events.on("panneau_bouton", function(panneau_id, id)
   if panneau_id ~= ID then return end
   local action = actions[id] or error("panneau '" .. ID .. "' : aucune action pour le bouton '" .. tostring(id) .. "'")
-  if action then action() end
+  action()
 end)
 
 return P

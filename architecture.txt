@@ -40,6 +40,7 @@ syzygie/
 -- -- -- bouton.lua                                Pour placer des boutons DANS un panneau.
 -- -- -- fermer.lua                                Widget pour placer le bouton de fermeture de panneau... sur un panneau.
 -- -- -- panneau.lua                               Factorise / centralise les éléments des différents panneaux (ceux partagés, au moins)
+-- -- -- zone.lua                                  Widget pour cliquer sur une zone de panneau indiqquée par ses coordonnées (relatives du panneau)
 -- -- entrees.lua                                  interception des clics, envoi vers le bon script (ancien clics.lua).
 -- -- etoiles.lua                                  Étoiles en tant qu'objets UI
 -- -- fond.lua                                     Crée la couche de fond (Z = 0)
