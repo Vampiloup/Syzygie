@@ -8,24 +8,25 @@ local polices =                require("core.polices")
 local bouton    =              require("ui.widgets.bouton")
 
 
-local ID = "panneau_etoile"
-
-events.on("planete_cliquee", function(k) print("planète", k.etoile, k.orbite) end)
+local ID = "planete"
+local etoile_id, orbite = nil, nil
 
 
 local PL = panneau.new({
-
-    id = ID, preset = "planete",
-    draw       = function(p)
-        love.graphics.print(" Planète : " .. tostring(etoile_id), p.x + 16, p.y + 64)
-
-    end
-
+    id = ID, preset = ID, groupe = "panneaux_secondaires",
+    draw = function(p)
+        love.graphics.print(" Planète : " .. tostring(orbite) .. " de l'étoile " .. tostring(etoile_id), p.x + 16, p.y + 64)
+    end,
 })
 
-events.on("panneau_etoile", function(id)
-    etoile_id = id
+events.on("etoile_changee", function() PL.close() end)
+
+events.on("etoile_fermee", function() PL.close() end)
+
+events.on("panneau_etoile", function(d)
+    etoile_id, orbite = d.etoile, d.orbite
     PL.open()
 end)
+
 
 return PL

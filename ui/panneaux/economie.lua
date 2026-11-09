@@ -8,7 +8,7 @@ local ID = "economie"
 local CLE = "hud_"..ID
 
 local P = panneau.new({
-  id = ID, preset = ID,
+  id = ID, preset = ID,   groupe = "panneaux_jeu",
   draw    = function(p)
     local texte =i18n.t( CLE..".titre")
     love.graphics.print(texte, p.x + 16, p.y + 16)

@@ -23,7 +23,7 @@ local MARGE = 4
 
 local P = panneau.new({
 
-    id = ID, preset = "etoile",
+    id = ID, preset = "etoile",  groupe = "panneaux_jeu",
     draw       = function(p)
         -- for k, v in pairs(polices.f) do print("police chargée : [" .. k .. "]", v) end
         local texte = i18n.t("hud_star.numero")
@@ -52,7 +52,10 @@ local P = panneau.new({
         love.graphics.setFont(polices.f["standard_panneau"])
     end,
     pre_touche = function() etoile_id = etoile_id or 1 end,
-    on_close   = function() etoile_id = nil end,
+    on_close   = function()
+        etoile_id = nil
+        events.emit("etoile_fermee")
+    end,
 
 })
 
@@ -67,7 +70,12 @@ end
 
 -- l'argument est une donnée (numéro d'étoile), pas une adresse
 events.on("carte_etoile", function(id)
+    if id ~= etoile_id then
+        events.emit("etoile_changee", id)   -- avant la mise à jour
+    end
     etoile_id = id
     P.open()
 end)
+
+
 return P
