@@ -24,6 +24,7 @@ syzygie/
 -- -- creation_partie/                             Creation de la partie. Ce qui se trouve à l'intérieur est supposé ne servir qu'une fois lors du jeu, lorqu'on lance une partie.
 -- -- -- generation_galaxie.lua                    Création de la galaxie. génération des étoiles, nom en "simili-latin", leurs planètes (type, taille hygrométrie, température).
 -- -- -- noms_etoiles.lua                          Génération des noms des étoiles (appeé par sim.generation_galaxie.lua)
+-- -- -- placer_orbitals.lua                       Placer les objets (planètes) en orbite autour de l'étoile.
 -- -- tours.lua                                    juste avec un bouton incrémentant un compteur visible, pour le moment : Comme je l'ai dit, je me concentre d'abord sur le monde "physique", la galaxie.
 -- ui/
 -- -- panneaux/

@@ -33,6 +33,21 @@ local cam =                    require("core.camera_monde")
 -- local appel_tour =            require("core.appel_tour")                             -- Module demandant et recevant l'event de tour.
 
 
+local function printTable(t, indent)         -- fonction de débug pour lire une table renvoyée par le registre
+    indent = indent or ""
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            print(indent .. tostring(k) .. " : {")
+            printTable(v, indent .. "  ") -- Appel récursif pour la sous-table
+            print(indent .. "}")
+        else
+            print(indent .. tostring(k) .. " = " .. tostring(v))
+        end
+    end
+end
+   -- x = registre.list("jeu_galaxie_etoiles")
+   -- printTable( x )
+
 function love.load()
 
     -- mods.charger_defaut()                                                   -- lit, fusionne, vérifie les références, remplit le registre

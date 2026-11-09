@@ -14,6 +14,7 @@
 local registre =                  require("core.registre")
 local events =                    require("core.events")
 local StarNames =                 require("sim.creation_partie.noms_etoiles")
+local orbitals =                  require("sim.creation_partie.placer_orbitals")
 
 local rnd = love.math.random
 local PI2 = 2 * math.pi
@@ -129,48 +130,6 @@ local function resoudre_constructeur(id)
     return f                         -- constructeur direct
 end
 
-local function calculerProbabilites(mu, sigma)                  -- Calcul probabilité du nombre de planètes.
-    local poids = {}
-    local sommePoids = 0
-
-    for x = 1, 5 do
-        local w = math.exp(-((x - mu)^2) / (2 * (sigma^2)))
-        poids[x] = w
-        sommePoids = sommePoids + w
-    end
-
-    local probabilites = {}
-    for x = 1, 5 do
-        probabilites[x] = poids[x] / sommePoids
-    end
-
-    return probabilites
-end
-
-local function genererNombrePlanetes(couleur)                         -- Génère le nombre de planètes dans le système
-    local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
-    local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
-    if not mu then
-        error("etoiles_type unknown: " .. tostring(couleur))
-    end
-
-    local probs = calculerProbabilites(mu, sigma)
-
-    -- Initialisation du générateur aléatoire (si ce n'est pas déjà fait globalement)
-    local jet = math.random() -- Retourne un nombre décimal entre 0.0 et 1.0
-    local cumul = 0.0
-
-    for x = 1, 5 do
-        cumul = cumul + probs[x]
-        if jet <= cumul then
-               print (x)
-            return x
-        end
-    end
-
-    return 5
-end
-
 ----------------------------------------------------------------------
 -- GÉNÉRATION DES POSITIONS
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
@@ -197,7 +156,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
     }
 
     local xs, ys, etoiles_type = {}, {}, {}
-    local noms = {}
+    local noms, nb_orbitals, orbites = {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -239,13 +198,11 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
 
         -- Nombre de planètes.
         --nbplanets_pic => centre de la courbe, nbplanets_disp = dispersion de la courbe
-        genererNombrePlanetes(etoiles_type[n])
-
-
-
+        nb_orbitals[n] =     orbitals.genererNombrePlanetes(etoiles_type[n])
+        orbites[n] =            orbitals.generer_orbites(nb_orbitals[n])
 
     end
-    return xs, ys, n, boite, etoiles_type, noms
+    return xs, ys, n, boite, etoiles_type, noms, nb_orbitals, orbites
 end
 
 ----------------------------------------------------------------------
@@ -272,7 +229,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type, noms =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, nb_orbitals, orbites =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -284,11 +241,13 @@ function M.generer(params)
     })
     for i = 1, nombre_etoiles do
         registre.add("jeu_galaxie_etoiles", tostring(i), {
-            id    = tostring(i),
-            pos_x = xs[i],
-            pos_y = ys[i],
-            type  = etoiles_type[i],
-            nom   = noms[i]
+            id              = tostring(i),
+            pos_x           = xs[i],
+            pos_y           = ys[i],
+            type            = etoiles_type[i],
+            nom             = noms[i],
+            nb_orbitals     = nb_orbitals[i],
+            orbites         = orbites[i]
         })
     end
     events.emit("galaxie_generee")
