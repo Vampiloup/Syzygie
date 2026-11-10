@@ -196,10 +196,8 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
         -- noms[n] = gen:generate("egyptien", used)
         noms[n] = gen:generateMixed(used, "standard")
 
-        -- Nombre de planètes.
-        --nbplanets_pic => centre de la courbe, nbplanets_disp = dispersion de la courbe
-        nb_orbitals[n] =     orbitals.genererNombrePlanetes(etoiles_type[n])
-        orbites[n] =            orbitals.generer_orbites(nb_orbitals[n])
+        -- Générer les orbitals (planètes, essentiellement)
+        orbites[n] = orbitals.placer_orbitals(etoiles_type[n])
 
     end
     return xs, ys, n, boite, etoiles_type, noms, nb_orbitals, orbites

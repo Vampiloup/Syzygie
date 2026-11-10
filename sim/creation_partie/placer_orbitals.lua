@@ -21,30 +21,20 @@ local function calculerProbabilites(mu, sigma)                  -- Calcul probab
     return probabilites
 end
 
-local function genererNombrePlanetes(couleur)                         -- Génère le nombre de planètes dans le système
-    local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
-    local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
-    if not mu then
+local function genererTypePlanete(couleur)
+    local proba = registre.get_field("etoiles_type", couleur, "planet_gas_prob")
+
+    if proba == nil then
         error("etoiles_type unknown: " .. tostring(couleur))
     end
-
-    local probs = calculerProbabilites(mu, sigma)
-
-    -- Initialisation du générateur aléatoire (si ce n'est pas déjà fait globalement)
-    local jet = math.random() -- Retourne un nombre décimal entre 0.0 et 1.0
-    local cumul = 0.0
-
-    for x = 1, 5 do
-        cumul = cumul + probs[x]
-        if jet <= cumul then
-            return x
-        end
+    if math.random() < proba then
+        return "gazeuse"
+    else
+        return "tellurique"
     end
-
-    return 5
 end
 
-local function generer_orbites(X)
+local function generer_orbites(x, couleur)
     -- Table de 5 positions, toutes à 0 au départ
     local orbits = {0, 0, 0, 0, 0}
 
@@ -58,8 +48,8 @@ local function generer_orbites(X)
     end
 
     -- On met à 1 les X premières positions tirées au hasard
-    for i = 1, X do
-        orbits[indices[i]] = 1
+    for i = 1, x do
+        orbits[indices[i]] = genererTypePlanete(couleur)
     end
 
     return orbits
@@ -67,7 +57,30 @@ end
 
 
 
+local function placer_orbitals(couleur)
+    local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
+    local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
+    if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
+    if sigma <= 0 then error("nbplanets_disp invalide pour: " .. tostring(couleur)) end
+
+    local probs = calculerProbabilites(mu, sigma)
+    local jet = math.random()
+    local cumul = 0.0
+    local choix = 5  -- repli en cas d'arrondi
+
+    for x = 1, 5 do
+        cumul = cumul + probs[x]
+        if jet <= cumul then
+            choix = x
+            break
+        end
+    end
+
+    return generer_orbites(choix, couleur)
+end
+
+
+
 return {
-    genererNombrePlanetes = genererNombrePlanetes,
-    generer_orbites = generer_orbites
+    placer_orbitals = placer_orbitals
 }

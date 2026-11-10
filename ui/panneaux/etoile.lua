@@ -44,8 +44,8 @@ local P = panneau.new({
         love.graphics.setFont(polices.f["standard_panneau"])
         love.graphics.setColor(1, 1, 1)
         for k = 1, NB_ORBITES do
-            if (reponse.orbites[k] or 0) > 0 then
-                love.graphics.print(k .. " : Planète " .. tostring(reponse.orbites[k]), p.x + LIGNE_X, p.y + ligne_y(k))
+            if reponse.orbites[k] ~= 0 then
+                love.graphics.print(k .. " : Planète " .. reponse.orbites[k], p.x + LIGNE_X, p.y + ligne_y(k))
             end
         end
         love.graphics.setColor(1, 1, 1)
@@ -64,7 +64,7 @@ P.zone(LIGNE_X - MARGE, ligne_y(k) - MARGE, LIGNE_W + 2*MARGE, LIGNE_H + 2*MARGE
          function()
            if not etoile_id then return false end
            local r = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
-           return (r.orbites[k] or 0) > 0
+           return r.orbites[k] ~= 0
          end)
 end
 
