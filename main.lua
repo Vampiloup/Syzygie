@@ -31,6 +31,11 @@ local panneau_planete       =            require("ui.panneaux.planete")
 local panneau               =            require("ui.widgets.panneau")
 local cam                   =            require("core.camera_monde")
 
+setmetatable(_G, {
+    __newindex = function(_, k) error("écriture d'une globale : " .. tostring(k), 2) end,
+    __index    = function(_, k) error("lecture d'une globale inconnue : " .. tostring(k), 2) end,
+})
+
 -- local appel_tour =            require("core.appel_tour")                             -- Module demandant et recevant l'event de tour.
 
 

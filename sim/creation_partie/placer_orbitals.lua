@@ -2,6 +2,16 @@
 
 local registre =                  require("core.registre")
 
+local TAU = 2 * math.pi
+
+local function generer_phases(ph)
+    local phases = {}
+    for o = 1, 5 do                       -- 5 tirages, orbites vides comprises
+        phases[o] = ph:random() * TAU
+    end
+    return phases
+end
+
 
 local function calculerProbabilites(mu, sigma)                  -- Calcul probabilité du nombre de planètes.
     local poids = {}
@@ -47,7 +57,7 @@ local function generer_orbites(x, couleur, g)
         indices[i], indices[j] = indices[j], indices[i]
     end
 
-    -- On met à 1 les X premières positions tirées au hasard
+    -- On met le type voulu dans les X premières positions tirées au hasard
     for i = 1, x do
         orbits[indices[i]] = genererTypePlanete(couleur, g)
     end
@@ -57,7 +67,7 @@ end
 
 
 
-local function placer_orbitals(couleur, rng_nb, rng_types)
+local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
@@ -75,8 +85,9 @@ local function placer_orbitals(couleur, rng_nb, rng_types)
             break
         end
     end
-
-    return generer_orbites(choix, couleur, rng_types)
+    local orbites = generer_orbites(choix, couleur, rng_types)
+    local phases  = generer_phases(rng_ph)
+    return orbites, phases
 end
 
 

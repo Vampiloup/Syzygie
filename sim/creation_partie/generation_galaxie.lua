@@ -18,7 +18,7 @@ local orbitals =                  require("sim.creation_partie.placer_orbitals")
 local Graine  =                   require("sim.creation_partie.graine")
 
 local PI2 = 2 * math.pi
-local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5 }
+local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6 }
 
 
 
@@ -152,7 +152,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
     local constructeur = resoudre_constructeur(map_form)
     if not constructeur then
         print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
-        return {}, {}, 0, nil, {}, {}
+        return {}, {}, {}, {}, {}, {}
     end
 
     local A = map_X * map_Y
@@ -166,7 +166,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
     }
 
     local xs, ys, etoiles_type = {}, {}, {}
-    local noms, nb_orbitals, orbites = {}, {}, {}
+    local noms, orbites, phases = {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -209,10 +209,11 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
         -- Générer les orbitals (planètes, essentiellement)
         local rng_nb = Graine.rng(graine, ETAPE.NB_PLANETES, n)                     -- générateur nombre de planètes
         local rng_pl = Graine.rng(graine, ETAPE.PLANETES, n)                        -- emplacement et type
-        orbites[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl)
+        local rng_ph = Graine.rng(graine, ETAPE.PHASES, n)                        -- emplacement et type
+        orbites[n], phases[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph)
 
     end
-    return xs, ys, n, boite, etoiles_type, noms, nb_orbitals, orbites
+    return xs, ys, n, boite, etoiles_type, noms, orbites, phases
 end
 
 ----------------------------------------------------------------------
@@ -238,7 +239,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, nb_orbitals, orbites =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form, graine)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -255,8 +256,8 @@ function M.generer(params)
             pos_y           = ys[i],
             type            = etoiles_type[i],
             nom             = noms[i],
-            nb_orbitals     = nb_orbitals[i],
-            orbites         = orbites[i]
+            orbites         = orbites[i],
+            phases          = phases[i]
         })
     end
     events.emit("galaxie_generee")
