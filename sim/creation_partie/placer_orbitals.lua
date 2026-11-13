@@ -21,20 +21,20 @@ local function calculerProbabilites(mu, sigma)                  -- Calcul probab
     return probabilites
 end
 
-local function genererTypePlanete(couleur)
+local function genererTypePlanete(couleur, g)
     local proba = registre.get_field("etoiles_type", couleur, "planet_gas_prob")
-
     if proba == nil then
         error("etoiles_type unknown: " .. tostring(couleur))
     end
-    if math.random() < proba then
+    -- [MODIF] math.random() -> g:random()  (méthode : deux-points, pas de point)
+    if g:random() < proba then
         return "gazeuse"
     else
         return "tellurique"
     end
 end
 
-local function generer_orbites(x, couleur)
+local function generer_orbites(x, couleur, g)
     -- Table de 5 positions, toutes à 0 au départ
     local orbits = {0, 0, 0, 0, 0}
 
@@ -43,13 +43,13 @@ local function generer_orbites(x, couleur)
 
     -- On mélange les indices (Fisher-Yates)
     for i = 5, 2, -1 do
-        local j = math.random(i)
+        local j = g:random(i)
         indices[i], indices[j] = indices[j], indices[i]
     end
 
     -- On met à 1 les X premières positions tirées au hasard
     for i = 1, x do
-        orbits[indices[i]] = genererTypePlanete(couleur)
+        orbits[indices[i]] = genererTypePlanete(couleur, g)
     end
 
     return orbits
@@ -57,14 +57,14 @@ end
 
 
 
-local function placer_orbitals(couleur)
+local function placer_orbitals(couleur, rng_nb, rng_types)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
     if sigma <= 0 then error("nbplanets_disp invalide pour: " .. tostring(couleur)) end
 
     local probs = calculerProbabilites(mu, sigma)
-    local jet = math.random()
+    local jet = rng_nb:random()
     local cumul = 0.0
     local choix = 5  -- repli en cas d'arrondi
 
@@ -76,7 +76,7 @@ local function placer_orbitals(couleur)
         end
     end
 
-    return generer_orbites(choix, couleur)
+    return generer_orbites(choix, couleur, rng_types)
 end
 
 

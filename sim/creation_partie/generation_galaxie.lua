@@ -15,9 +15,10 @@ local registre =                  require("core.registre")
 local events =                    require("core.events")
 local StarNames =                 require("sim.creation_partie.noms_etoiles")
 local orbitals =                  require("sim.creation_partie.placer_orbitals")
+local Graine  =                   require("sim.creation_partie.graine")
 
-local rnd = love.math.random
 local PI2 = 2 * math.pi
+local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5 }
 
 
 
@@ -36,17 +37,17 @@ local PI2 = 2 * math.pi
 
 -- 1 : carré plein
 local function forme_carre(A, mX, mY)
-    return function()
-        return (rnd() - 0.5) * mX, (rnd() - 0.5) * mY
+    return function(g)
+        return (g:random() - 0.5) * mX, (g:random() - 0.5) * mY
     end, mX, mY
 end
 
 -- 2 : disque à densité décroissante (même aire que le carré, densité en 1/r)
 local function forme_disque_decroissant(A)
     local R = math.sqrt(A / math.pi)
-    return function()
-        local t = PI2 * rnd()
-        local r = R * rnd()
+    return function(g)
+        local t = PI2 * g:random()
+        local r = R * g:random()
         return r * math.cos(t), r * math.sin(t)
     end, 2 * R, 2 * R
 end
@@ -56,9 +57,9 @@ end
 local function forme_anneau(a)
     return function(A)
         local R = math.sqrt(A / (math.pi * (1 - a)))
-        return function()
-            local t = PI2 * rnd()
-            local r = R * math.sqrt(a + (1 - a) * rnd())
+        return function(g)
+            local t = PI2 * g:random()
+            local r = R * math.sqrt(a + (1 - a) * g:random())
             return r * math.cos(t), r * math.sin(t)
         end, 2 * R, 2 * R
     end
@@ -69,9 +70,9 @@ local function forme_ellipse(k)
     return function(A)
         local R0 = math.sqrt(A / math.pi)
         local a, b = R0 * k, R0 / k
-        return function()
-            local t = PI2 * rnd()
-            local r = math.sqrt(rnd())
+        return function(g)
+            local t = PI2 * g:random()
+            local r = math.sqrt(g:random())
             return r * a * math.cos(t), r * b * math.sin(t)
         end, 2 * a, 2 * b
     end
@@ -81,13 +82,13 @@ end
 -- Les deux bandes ont la même aire : tirage 50/50.
 local function forme_double_anneau(A)
     local R = math.sqrt(A / (math.pi * 0.4))
-    return function()
+    return function(g)
         local lo, hi = 0.7, 0.9
-        if rnd() < 0.5 then lo, hi = 0.3, 0.5 end
-        local t = PI2 * rnd()
-        local r = R * math.sqrt(lo + (hi - lo) * rnd())
+        if g:random() < 0.5 then lo, hi = 0.3, 0.5 end
+        local t = PI2 * g:random()
+        local r = R * math.sqrt(lo + (hi - lo) * g:random())
         return r * math.cos(t), r * math.sin(t)
-    end, 2 * R * math.sqrt(0.9), 2 * R * math.sqrt(0.9)   -- rayon max réel = R*sqrt(0.9)
+    end, 2 * R * math.sqrt(0.9), 2 * R * math.sqrt(0.9)
 end
 
 -- 13 : croix, bras de largeur w = 0.2*L, aire = 0.36*L² (centre compté une seule fois)
@@ -95,17 +96,18 @@ local function forme_croix(A)
     local L = math.sqrt(A) / 0.6
     local w = 0.2 * L
     local p_horiz = L / (2 * L - w)            -- part d'aire de la barre horizontale
-    return function()
-        if rnd() < p_horiz then
-            return (rnd() - 0.5) * L, (rnd() - 0.5) * w
+    return function(g)
+        if g:random() < p_horiz then
+            return (g:random() - 0.5) * L, (g:random() - 0.5) * w
         end
-        -- barre verticale SANS le carré central (déjà dans la barre horizontale)
-        local u = rnd() * (L - w)
+                -- barre verticale SANS le carré central (déjà dans la barre horizontale)
+        local u = g:random() * (L - w)
         local y = u - L / 2
         if u >= (L - w) / 2 then y = y + w end
-        return (rnd() - 0.5) * w, y
+        return (g:random() - 0.5) * w, y
     end, L, L
 end
+
 
 local GENERATEURS = {
     forme_carre              = forme_carre,
@@ -134,14 +136,22 @@ end
 -- GÉNÉRATION DES POSITIONS
 -- Renvoie : xs, ys, n, boite  (boite = boîte englobante de la forme)
 ----------------------------------------------------------------------
-local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
-    local NB_ETOILES  = registre.nombre("etoiles_type")
-    local gen  = StarNames.new(seed_galaxie)   -- ici, pas au niveau du fichier
+local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, graine)
+    local NB_ETOILES = registre.nombre("etoiles_type")
+
+    -- Un seul générateur pour les noms, créé UNE fois avant la boucle.
+    -- sous_graine() donne un entier ; StarNames.new l'accepte comme graine (creer_rng).
+
+    local gen  = StarNames.new(Graine.sous_graine(graine, ETAPE.NOM))
     local used = {}
+
+    -- Un seul générateur pour toutes les positions : le placement par rejet
+    -- est séquentiel (chaque étoile dépend des précédentes), donc un flux unique.
+    local rng_pos = Graine.rng(graine, ETAPE.POS)
 
     local constructeur = resoudre_constructeur(map_form)
     if not constructeur then
-    print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
+        print(("Forme %s non gérée : aucune étoile générée"):format(tostring(map_form)))
         return {}, {}, 0, nil, {}, {}
     end
 
@@ -164,8 +174,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
     while n < nombre_cible do
         local place = false
         for _ = 1, MAX_ESSAIS do
-            local dx0, dy0 = tirer()
-            -- arrondi AVANT le test de distance : on teste les positions réellement stockées
+            local dx0, dy0 = tirer(rng_pos)      -- on passe le générateur
             local x = math.floor(cx + dx0 + 0.5)
             local y = math.floor(cy + dy0 + 0.5)
 
@@ -188,7 +197,8 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
         end
 
         -- Couleur (type étoile)
-        local a = rnd(1, NB_ETOILES)
+        local rng_type = Graine.rng(graine, ETAPE.TYPE, n)
+        local a = rng_type:random(1, NB_ETOILES)
         local def = registre.list("etoiles_type")[a]
         etoiles_type[n] = def.id
 
@@ -197,7 +207,9 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form)
         noms[n] = gen:generateMixed(used, "standard")
 
         -- Générer les orbitals (planètes, essentiellement)
-        orbites[n] = orbitals.placer_orbitals(etoiles_type[n])
+        local rng_nb = Graine.rng(graine, ETAPE.NB_PLANETES, n)                     -- générateur nombre de planètes
+        local rng_pl = Graine.rng(graine, ETAPE.PLANETES, n)                        -- emplacement et type
+        orbites[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl)
 
     end
     return xs, ys, n, boite, etoiles_type, noms, nb_orbitals, orbites
@@ -220,7 +232,6 @@ function M.generer(params)
     local distance_mini = params.distance_mini or 80
 
     local graine = params.graine or os.time()
-    love.math.setRandomSeed(graine)
 
     -- Repartir d'un registre vide : évite l'erreur « Doublon » en cas de régénération
     registre.clear("jeu_galaxie_details")
@@ -228,7 +239,7 @@ function M.generer(params)
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
     local xs, ys, nombre_etoiles, boite, etoiles_type, noms, nb_orbitals, orbites =
-        generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form)
+        generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form, graine)
 
     registre.add("jeu_galaxie_details", "principal", {
         nombre_etoiles   = nombre_etoiles,      -- nombre réellement placé
