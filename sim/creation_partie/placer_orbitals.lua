@@ -4,6 +4,42 @@ local registre =                  require("core.registre")
 
 local TAU = 2 * math.pi
 
+local CFG = {
+    pas      = 0.8,   -- niveaux de température gagnés par orbite (orbite 1 → 5 : 3.2 niveaux)
+    gain     = 0.5,   -- décalage par unité de ln(luminosité) : l'effet "couleur d'étoile"
+    sigma    = 0.75,  -- dispersion autour de la moyenne
+}
+
+local function generer_humidite(g)
+    local eau = {}
+    for k = 1, 5 do
+        eau[k] = g:random(1, 5)
+    end
+    return eau
+end
+
+local function gauss(g)                     -- Box-Muller, 2 tirages par appel (flux stable)
+    local u1, u2 = 1 - g:random(), g:random()   -- 1 - u1 évite log(0)
+    return math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
+end
+
+local function temperature_moyenne(lum, k)  -- sans clamp : le clamp final suffit
+    return 3 + CFG.pas * (k - 3) - CFG.gain * math.log(lum)
+end
+
+local function generer_temperatures(couleur, g)
+    local lum = registre.get_field("etoiles_type", couleur, "luminosite")
+    if not lum or lum <= 0 then error("luminosite invalide pour: " .. tostring(couleur)) end
+    local temps = {}
+    for k = 1, 5 do                         -- 5 tirages, orbites vides comprises
+        local x = temperature_moyenne(lum, k) + CFG.sigma * gauss(g)
+        temps[k] = math.max(1, math.min(5, math.floor(x + 0.5)))
+    end
+    table.sort(temps)                       -- 1 = très chaud en premier : monotone garanti
+    return temps
+end
+
+
 local function generer_phases(ph)
     local phases = {}
     for o = 1, 5 do                       -- 5 tirages, orbites vides comprises
@@ -67,7 +103,7 @@ end
 
 
 
-local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph)
+local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
@@ -85,9 +121,11 @@ local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph)
             break
         end
     end
-    local orbites = generer_orbites(choix, couleur, rng_types)
-    local phases  = generer_phases(rng_ph)
-    return orbites, phases
+    local orbites       = generer_orbites(choix, couleur, rng_types)
+    local phases        = generer_phases(rng_ph)
+    local temperatures  = generer_temperatures(couleur, rng_temp)
+    local humidite      = generer_humidite(rng_eau)
+    return orbites, phases, temperatures, humidite
 end
 
 

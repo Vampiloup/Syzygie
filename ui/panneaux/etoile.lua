@@ -21,6 +21,7 @@ local MARGE = 4
 
 
 
+
 local P = panneau.new({
 
     id = ID, preset = "etoile",  groupe = "panneaux_jeu",
@@ -29,27 +30,45 @@ local P = panneau.new({
         local texte = i18n.t("hud_star.numero")
         local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
         local etoile = registre.get("etoiles_type", tostring(reponse.type))
+        local bord_droit = 300
+        local police = polices.f["standard_panneau"]
         love.graphics.setFont(polices.f["titre_panneau"])
         -- love.graphics.setFont(assert(polices.f["titre_panneau"], "police 'titre_panneau' introuvable"))
         love.graphics.setColor(1, 0.9, 0.4)
         love.graphics.print(reponse.nom, p.x + 72, p.y + 16)
-        love.graphics.setFont(polices.f["standard_panneau"])
+        love.graphics.setFont(police)
         love.graphics.setColor(1, 1, 1)
         love.graphics.print(texte.." : " .. tostring(etoile_id), p.x + 16, p.y + 64)
 
         love.graphics.setColor(etoile.R, etoile.G, etoile.B)
         love.graphics.circle("fill", p.x + 24, p.y + 32, RAYON_ETOILE)
-        love.graphics.setFont(polices.f["standard_panneau"])
 
-        love.graphics.setFont(polices.f["standard_panneau"])
+        love.graphics.setFont(police)
         love.graphics.setColor(1, 1, 1)
-        for k = 1, NB_ORBITES do
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   type
             if reponse.orbites[k] ~= 0 then
                 love.graphics.print(k .. " : Planète " .. reponse.orbites[k], p.x + LIGNE_X, p.y + ligne_y(k))
             end
         end
+        love.graphics.setFont(police)
+        love.graphics.setColor(1, 0.55, 1)
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   teméprature
+            if reponse.orbites[k] ~= 0 then
+                local texte = i18n.t("hud_orbital.temperature."..reponse.temperatures[k])
+                love.graphics.print(texte, p.x + LIGNE_X + 16, p.y + ligne_y(k) + 16 )
+            end
+        end
+        love.graphics.setFont(police)
+        love.graphics.setColor(0.2, 0.6, 1)
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   teméprature
+            if reponse.orbites[k] ~= 0 then
+                local texte = i18n.t("hud_orbital.humidite."..reponse.humidite[k])
+                love.graphics.print(texte, p.x + bord_droit - police:getWidth(texte), p.y + ligne_y(k) + 16)
+            end
+        end
+
         love.graphics.setColor(1, 1, 1)
-        love.graphics.setFont(polices.f["standard_panneau"])
+        love.graphics.setFont(police)
     end,
     pre_touche = function() etoile_id = etoile_id or 1 end,
     on_close   = function()
