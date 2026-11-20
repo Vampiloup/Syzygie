@@ -88,6 +88,19 @@ draw = function()
         local cx, cy = s.pos_x, s.pos_y
         if cx + marge >= x1 and cx - marge <= x2 and cy + marge >= y1 and cy - marge <= y2 then
 
+            if etiquettes then
+                local boxW = font:getWidth(s.nom) + padX * 2
+                local boxH = hauteur + padY * 2
+                local boxX = math.floor(cx - boxW / 2 + 0.5)
+                local boxY = math.floor(cy + rayon + 4 + 0.5)
+                love.graphics.setColor(0.15, 0.15, 0.15, 0.85)
+                love.graphics.rectangle("fill", boxX, boxY, boxW, boxH, 4, 4)
+                love.graphics.setColor(0.45, 0.45, 0.45)
+                love.graphics.rectangle("line", boxX, boxY, boxW, boxH, 4, 4)
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.print(s.nom, boxX + padX, boxY + padY)
+            end
+
             if planetes then                                                                        -- Orbites planetes
                 local orbites, phases = s.orbites, s.phases
                 for o = 1, NB_ORBITS do
@@ -108,18 +121,6 @@ draw = function()
             love.graphics.setColor(c.R, c.G, c.B)
             love.graphics.circle("fill", cx, cy, rayon)
 
-            if etiquettes then
-                local boxW = font:getWidth(s.nom) + padX * 2
-                local boxH = hauteur + padY * 2
-                local boxX = math.floor(cx - boxW / 2 + 0.5)
-                local boxY = math.floor(cy + rayon + 4 + 0.5)
-                love.graphics.setColor(0.15, 0.15, 0.15, 0.85)
-                love.graphics.rectangle("fill", boxX, boxY, boxW, boxH, 4, 4)
-                love.graphics.setColor(0.45, 0.45, 0.45)
-                love.graphics.rectangle("line", boxX, boxY, boxW, boxH, 4, 4)
-                love.graphics.setColor(1, 1, 1)
-                love.graphics.print(s.nom, boxX + padX, boxY + padY)
-            end
         end
     end
     love.graphics.setColor(1, 1, 1)
