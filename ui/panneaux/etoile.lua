@@ -30,7 +30,7 @@ local P = panneau.new({
         local texte = i18n.t("hud_star.numero")
         local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
         local etoile = registre.get("etoiles_type", tostring(reponse.type))
-        local bord_droit = 300
+        local bord_droit = registre.get_field("hud_panneau", "etoile", "largeur")
         local police = polices.f["standard_panneau"]
         love.graphics.setFont(polices.f["titre_panneau"])
         -- love.graphics.setFont(assert(polices.f["titre_panneau"], "police 'titre_panneau' introuvable"))
@@ -52,18 +52,26 @@ local P = panneau.new({
         end
         love.graphics.setFont(police)
         love.graphics.setColor(1, 0.55, 1)
-        for k = 1, NB_ORBITES do                                        -- Orbitals     :   teméprature
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   température
             if reponse.orbites[k] ~= 0 then
                 local texte = i18n.t("hud_orbital.temperature."..reponse.temperatures[k])
-                love.graphics.print(texte, p.x + LIGNE_X + 16, p.y + ligne_y(k) + 16 )
+                love.graphics.print(texte, p.x + LIGNE_X, p.y + ligne_y(k) + 16 )
+            end
+        end
+        love.graphics.setFont(police)
+        love.graphics.setColor(1, 0.55, 0.1)
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   taille
+            if reponse.orbites[k] ~= 0 then
+                local texte = i18n.t("hud_orbital.taille."..reponse.taille[k])
+                love.graphics.print(texte, p.x + (bord_droit - police:getWidth(texte)) / 2, p.y + ligne_y(k) + 16)
             end
         end
         love.graphics.setFont(police)
         love.graphics.setColor(0.2, 0.6, 1)
-        for k = 1, NB_ORBITES do                                        -- Orbitals     :   teméprature
+        for k = 1, NB_ORBITES do                                        -- Orbitals     :   humidité
             if reponse.orbites[k] ~= 0 then
                 local texte = i18n.t("hud_orbital.humidite."..reponse.humidite[k])
-                love.graphics.print(texte, p.x + bord_droit - police:getWidth(texte), p.y + ligne_y(k) + 16)
+                love.graphics.print(texte, p.x + bord_droit - police:getWidth(texte) - LIGNE_X, p.y + ligne_y(k) + 16)
             end
         end
 

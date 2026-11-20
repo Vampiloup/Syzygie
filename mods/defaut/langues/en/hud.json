@@ -26,5 +26,12 @@
     "hud_orbital.humidite.4":                                   "arid",
     "hud_orbital.humidite.5":                                   "parched",
 
+    "hud_orbital.taille.1":                                     "enormous",
+    "hud_orbital.taille.2":                                     "large",
+    "hud_orbital.taille.3":                                     "medium",
+    "hud_orbital.taille.4":                                     "small",
+    "hud_orbital.taille.5":                                     "tiny",
+
+
     "hud_reglages.reglages_sortie_jeu":                         "Game exit"
 }

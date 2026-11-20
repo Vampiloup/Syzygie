@@ -18,7 +18,7 @@ local orbitals =                  require("sim.creation_partie.placer_orbitals")
 local Graine  =                   require("sim.creation_partie.graine")
 
 local PI2 = 2 * math.pi
-local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8 }
+local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8, TAILLE = 9 }
 
 
 
@@ -166,7 +166,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
     }
 
     local xs, ys, etoiles_type, noms  = {}, {}, {}, {}
-    local orbites, phases, temperatures, humidite = {}, {}, {}, {}
+    local orbites, phases, temperatures, humidite, taille = {}, {}, {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -207,15 +207,16 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
         noms[n] = gen:generateMixed(used, "standard")
 
         -- Générer les orbitals (planètes, essentiellement)
-        local rng_nb    = Graine.rng(graine, ETAPE.NB_PLANETES, n)                     -- générateur nombre de planètes
-        local rng_pl    = Graine.rng(graine, ETAPE.PLANETES, n)                        -- emplacement et type
-        local rng_ph    = Graine.rng(graine, ETAPE.PHASES, n)                          -- Départ de rotation
-        local rng_temp  = Graine.rng(graine, ETAPE.TEMP, n)                            -- Temperature orbites
-        local rng_eau   = Graine.rng(graine, ETAPE.EAU, n)                             -- Humidité orbites
-        orbites[n], phases[n], temperatures[n], humidite[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau)
+        local rng_nb        = Graine.rng(graine, ETAPE.NB_PLANETES, n)                     -- générateur nombre de planètes
+        local rng_pl        = Graine.rng(graine, ETAPE.PLANETES, n)                        -- emplacement et type
+        local rng_ph        = Graine.rng(graine, ETAPE.PHASES, n)                          -- Départ de rotation
+        local rng_temp      = Graine.rng(graine, ETAPE.TEMP, n)                            -- Temperature orbites
+        local rng_eau       = Graine.rng(graine, ETAPE.EAU, n)                             -- Humidité orbites
+        local rng_taille    = Graine.rng(graine, ETAPE.TAILLE, n)                          -- Taille orbitales (planètes)
+        orbites[n], phases[n], temperatures[n], humidite[n], taille[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille)
 
     end
-    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite
+    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille
 end
 
 ----------------------------------------------------------------------
@@ -241,7 +242,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form, graine)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -261,7 +262,8 @@ function M.generer(params)
             orbites         = orbites[i],
             phases          = phases[i],
             temperatures    = temperatures[i],
-            humidite        = humidite[i]
+            humidite        = humidite[i],
+            taille          = taille[i]
         })
     end
     events.emit("galaxie_generee")

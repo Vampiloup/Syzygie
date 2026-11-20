@@ -10,6 +10,14 @@ local CFG = {
     sigma    = 0.75,  -- dispersion autour de la moyenne
 }
 
+local function generer_taille(g)
+    local taille = {}
+    for k = 1, 5 do
+        taille[k] = g:random(1, 5)
+    end
+    return taille
+end
+
 local function generer_humidite(g)
     local eau = {}
     for k = 1, 5 do
@@ -103,7 +111,7 @@ end
 
 
 
-local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau)
+local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
@@ -125,7 +133,8 @@ local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng
     local phases        = generer_phases(rng_ph)
     local temperatures  = generer_temperatures(couleur, rng_temp)
     local humidite      = generer_humidite(rng_eau)
-    return orbites, phases, temperatures, humidite
+    local taille        = generer_taille(rng_taille)
+    return orbites, phases, temperatures, humidite, taille
 end
 
 
