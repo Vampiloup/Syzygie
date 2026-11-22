@@ -4,7 +4,7 @@ local registre =                  require("core.registre")
 
 local TAU = 2 * math.pi
 
-local CFG = {
+local CFG = {         -- Données pour calcul température orbite.
     pas      = 0.8,   -- niveaux de température gagnés par orbite (orbite 1 → 5 : 3.2 niveaux)
     gain     = 0.5,   -- décalage par unité de ln(luminosité) : l'effet "couleur d'étoile"
     sigma    = 0.75,  -- dispersion autour de la moyenne

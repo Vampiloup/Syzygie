@@ -7,7 +7,7 @@ local polices =                require("core.polices")
 local bouton    =              require("ui.widgets.bouton")
 
 
-local ID = "carte_etoile"
+local ID = "hud_etoile"
 local RAYON_ETOILE = 24
 local NB_ORBITES = 5
 
@@ -24,13 +24,13 @@ local MARGE = 4
 
 local P = panneau.new({
 
-    id = ID, preset = "etoile",  groupe = "panneaux_jeu",
+    id = ID, preset = ID,  groupe = "panneaux_jeu",
     draw       = function(p)
         -- for k, v in pairs(polices.f) do print("police chargée : [" .. k .. "]", v) end
         local texte = i18n.t("hud_star.numero")
         local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
         local etoile = registre.get("etoiles_type", tostring(reponse.type))
-        local bord_droit = registre.get_field("hud_panneau", "etoile", "largeur")
+        local bord_droit = registre.get_field("hud_panneau", ID, "largeur")
         local police = polices.f["standard_panneau"]
         love.graphics.setFont(polices.f["titre_panneau"])
         -- love.graphics.setFont(assert(polices.f["titre_panneau"], "police 'titre_panneau' introuvable"))
@@ -96,7 +96,7 @@ P.zone(LIGNE_X - MARGE, ligne_y(k) - MARGE, LIGNE_W + 2*MARGE, LIGNE_H + 2*MARGE
 end
 
 -- l'argument est une donnée (numéro d'étoile), pas une adresse
-events.on("carte_etoile", function(id)
+events.on("hud_etoile", function(id)
     if id ~= etoile_id then
         events.emit("etoile_changee", id)   -- avant la mise à jour
     end

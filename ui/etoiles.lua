@@ -131,7 +131,7 @@ end,
         local s = trouver(x, y)
         if s then
             print("étoile cliquée", s.id, s.pos_x, s.pos_y)
-            events.emit("carte_etoile", s.id)
+            events.emit("hud_etoile", s.id)
         end
     end,
 })

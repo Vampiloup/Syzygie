@@ -7,16 +7,15 @@ local exclusif     =            require("core.exclusif")
 local registre  =               require("core.registre")
 
 
-local ID = "reglages"
-local CLE = "hud_"..ID
+local ID = "hud_reglages"
 
 -- MODIF H : plus de "boutons = {...}" ici : le bouton "sortie_jeu" est décrit dans
 -- le registre (hud_bouton_panneau). Ce fichier ne garde que ce qui est du code :
 -- ce que FAIT le bouton (voir "actions" plus bas).
 local P = panneau.new({
-  id = ID, preset = "reglages",
+  id = ID, preset = ID,
   draw    = function(p)
-    local texte =i18n.t( CLE..".titre")
+    local texte =i18n.t( ID..".titre")
     love.graphics.print(texte, p.x + 16, p.y + 16)
   end,
   onclick = function(x, y, b) if b == 1 then print("Clic dans le panneau Réglages") end end,

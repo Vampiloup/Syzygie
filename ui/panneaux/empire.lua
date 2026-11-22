@@ -4,14 +4,13 @@ local events  =                 require("core.events")
 local panneau =                 require("ui.widgets.panneau")
 local i18n =                    require("core.i18n")
 
-local ID = "empire"
-local CLE = "hud_"..ID
+local ID = "hud_empire"
 
 
 local P = panneau.new({
   id = ID, preset = ID,   groupe = "panneaux_jeu",
   draw    = function(p)
-    local texte =i18n.t( CLE..".titre")
+    local texte =i18n.t( ID..".titre")
     love.graphics.print(texte, p.x + 16, p.y + 16)
   end,
   onclick = function(x, y, b) if b == 1 then print("Clic dans le panneau Empire") end end,

@@ -8,7 +8,7 @@ local polices =                require("core.polices")
 local bouton    =              require("ui.widgets.bouton")
 
 
-local ID = "planete"
+local ID = "hud_planete"
 local etoile_id, orbite = nil, nil
 
 

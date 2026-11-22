@@ -1,10 +1,11 @@
 {
   "panneau_hud": [
-    { "id": "empire",     "touche": "f1" },
-    { "id": "science",    "touche": "f2" },
-    { "id": "diplomatie", "touche": "f3" },
-    { "id": "economie",   "touche": "f4" },
-    { "id": "reglages",   "touche": "f9" },
-    { "id": "carte_etoile", "touche": "f10" }
+    { "id": "hud_empire",         "touche": "f1" },
+    { "id": "hud_science",        "touche": "f2" },
+    { "id": "hud_diplomatie",     "touche": "f3" },
+    { "id": "hud_economie",       "touche": "f4" },
+    { "id": "hud_reglages",       "touche": "f9" },
+    { "id": "hud_etoile",     "touche": "f10" },
+    { "id": "hud_planete",    "touche": "" },
   ]
 }

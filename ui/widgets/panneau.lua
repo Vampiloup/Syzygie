@@ -240,7 +240,7 @@ function M.init()
         ancrage_x = bd.ancrage_x, ancrage_y = bd.ancrage_y,
         -- clé i18n construite comme avant : "hud_<panneau>.<bouton>"
         -- (par exemple hud_reglages.sortie_jeu : les fichiers de langue ne changent pas).
-        cle = "hud_" .. pid .. "." .. bd.id,
+        cle = pid .. "." .. bd.id,
       }
     end
   end

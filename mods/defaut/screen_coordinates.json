@@ -1,35 +1,34 @@
 {
   "hud_panneau": [
-    { "id": "general",       "margin_x": 12,   "margin_y": 64 },
-    { "id": "etoile",        "largeur": 320,   "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "science",       "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "diplomatie",    "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "economie",      "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "empire",        "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
-    { "id": "reglages",      "largeur": 512,   "hauteur": 768,     "ancrage_x": "centre",       "ancrage_y": "centre" },
-    { "id": "planete",       "largeur": 1576,  "hauteur": 944,     "ancrage_x": "droite",       "ancrage_y": "haut" }
+    { "id": "general",           "margin_x": 12,   "margin_y": 64 },
+    { "id": "hud_etoile",        "largeur": 320,   "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
+    { "id": "hud_science",       "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
+    { "id": "hud_diplomatie",    "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
+    { "id": "hud_economie",      "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
+    { "id": "hud_empire",        "largeur": 1898,  "hauteur": 944,     "ancrage_x": "gauche",       "ancrage_y": "haut" },
+    { "id": "hud_reglages",      "largeur": 512,   "hauteur": 768,     "ancrage_x": "centre",       "ancrage_y": "centre" },
+    { "id": "hud_planete",       "largeur": 1576,  "hauteur": 944,     "ancrage_x": "droite",       "ancrage_y": "haut" }
   ],
 
   "hud_groupe": [
-    { "id": "general",       "margin_x": 12,      "margin_y": 12,       "espace": 12     },
-
-    { "id": "navigation",    "ancrage_x": "gauche",       "ancrage_y": "bas",   "dir": "droite"},
-    { "id": "systeme",       "ancrage_x": "droite",       "ancrage_y": "haut",  "dir": "gauche"},
-    { "id": "tour",          "ancrage_x": "droite",       "ancrage_y": "bas",   "dir": "gauche"}
+    { "id": "general",           "margin_x": 12,              "margin_y": 12,       "espace": 12     },
+    { "id": "navigation",        "ancrage_x": "gauche",       "ancrage_y": "bas",   "dir": "droite"},
+    { "id": "systeme",           "ancrage_x": "droite",       "ancrage_y": "haut",  "dir": "gauche"},
+    { "id": "tour",              "ancrage_x": "droite",       "ancrage_y": "bas",   "dir": "gauche"}
   ],
 
   "hud_bouton": [
-    { "id": "general",       "w": 120, "h": 40 },
-    { "id": "empire",        "groupe": "navigation",  "ordre": 10 },
-    { "id": "science",       "groupe": "navigation",  "ordre": 20 },
-    { "id": "diplomatie",    "groupe": "navigation",  "ordre": 30 },
-    { "id": "economie",      "groupe": "navigation",  "ordre": 40 },
-    { "id": "reglages",      "groupe": "systeme",     "ordre": 10 },
-    { "id": "appel_tour",    "groupe": "tour",        "ordre": 10,  "w": 160, "h": 48 }
+    { "id": "general",           "w": 120,                "h": 40 },
+    { "id": "hud_empire",        "groupe": "navigation",  "ordre": 10 },
+    { "id": "hud_science",       "groupe": "navigation",  "ordre": 20 },
+    { "id": "hud_diplomatie",    "groupe": "navigation",  "ordre": 30 },
+    { "id": "hud_economie",      "groupe": "navigation",  "ordre": 40 },
+    { "id": "hud_reglages",      "groupe": "systeme",     "ordre": 10 },
+    { "id": "hud_appel_tour",    "groupe": "tour",        "ordre": 10,  "w": 160, "h": 48 }
   ],
 
   "hud_bouton_panneau": [
     { "id": "general",                    "w": 120, "h": 40 },
-    { "id": "reglages_sortie_jeu",        "panneau": "reglages",  "ancrage_x": "centre",       "ancrage_y": "centre", "x": 16,       "y": 16 },
+    { "id": "reglages_sortie_jeu",        "panneau": "hud_reglages",  "ancrage_x": "centre",       "ancrage_y": "centre", "x": 0,       "y": 0 }
   ]
 }
