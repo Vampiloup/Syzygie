@@ -3,10 +3,11 @@
 local registre =                  require("core.registre")
 
 local TAU = 2 * math.pi
+local NB_ZONES = 4
 
 local CFG = {         -- Données pour calcul température orbite.
     pas      = 0.8,   -- niveaux de température gagnés par orbite (orbite 1 → 5 : 3.2 niveaux)
-    gain     = 0.5,   -- décalage par unité de ln(luminosité) : l'effet "couleur d'étoile"
+    gain     = 0.75,   -- décalage par unité de ln(luminosité) : l'effet "couleur d'étoile"
     sigma    = 0.75,  -- dispersion autour de la moyenne
 }
 
@@ -32,7 +33,7 @@ local function gauss(g)                     -- Box-Muller, 2 tirages par appel (
 end
 
 local function temperature_moyenne(lum, k)  -- sans clamp : le clamp final suffit
-    return 3 + CFG.pas * (k - 3) - CFG.gain * math.log(lum)
+    return 3 - CFG.pas * (k - 3) + CFG.gain * math.log(lum)
 end
 
 local function generer_temperatures(couleur, g)
@@ -43,7 +44,7 @@ local function generer_temperatures(couleur, g)
         local x = temperature_moyenne(lum, k) + CFG.sigma * gauss(g)
         temps[k] = math.max(1, math.min(5, math.floor(x + 0.5)))
     end
-    table.sort(temps)                       -- 1 = très chaud en premier : monotone garanti
+    table.sort(temps, function(a, b) return a > b end)
     return temps
 end
 
@@ -109,9 +110,31 @@ local function generer_orbites(x, couleur, g)
     return orbits
 end
 
+local function generer_zones(orbits, humidite, g)
+    local zones = {}
+    for i = 1, #orbits do
+        -- Mélange fait pour toutes les orbites : nombre de tirages constant
+        local indices = {1, 2, 3, 4}
+        for k = NB_ZONES, 2, -1 do
+            local j = g:random(k)
+            indices[k], indices[j] = indices[j], indices[k]
+        end
+
+        if orbits[i] == "tellurique" then
+            local z = {"terre", "terre", "terre", "terre"}
+            for k = 1, humidite[i] - 1 do
+                z[indices[k]] = "ocean"
+            end
+            zones[i] = z
+        else
+            zones[i] = 0
+        end
+    end
+    return zones
+end
 
 
-local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille)
+local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
@@ -134,7 +157,9 @@ local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng
     local temperatures  = generer_temperatures(couleur, rng_temp)
     local humidite      = generer_humidite(rng_eau)
     local taille        = generer_taille(rng_taille)
-    return orbites, phases, temperatures, humidite, taille
+    local zones         = generer_zones(orbites, humidite, rng_zones)
+
+    return orbites, phases, temperatures, humidite, taille, zones
 end
 
 

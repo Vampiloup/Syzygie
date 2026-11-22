@@ -18,7 +18,7 @@ local orbitals =                  require("sim.creation_partie.placer_orbitals")
 local Graine  =                   require("sim.creation_partie.graine")
 
 local PI2 = 2 * math.pi
-local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8, TAILLE = 9 }
+local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8, TAILLE = 9, ZONES = 10 }
 
 
 
@@ -166,7 +166,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
     }
 
     local xs, ys, etoiles_type, noms  = {}, {}, {}, {}
-    local orbites, phases, temperatures, humidite, taille = {}, {}, {}, {}, {}
+    local orbites, phases, temperatures, humidite, taille, zones = {}, {}, {}, {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -213,10 +213,11 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
         local rng_temp      = Graine.rng(graine, ETAPE.TEMP, n)                            -- Temperature orbites
         local rng_eau       = Graine.rng(graine, ETAPE.EAU, n)                             -- Humidité orbites
         local rng_taille    = Graine.rng(graine, ETAPE.TAILLE, n)                          -- Taille orbitales (planètes)
-        orbites[n], phases[n], temperatures[n], humidite[n], taille[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille)
+        local rng_zones     = Graine.rng(graine, ETAPE.ZONES, n)                           -- Zones des orbitales (planètes)
+        orbites[n], phases[n], temperatures[n], humidite[n], taille[n], zones[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
 
     end
-    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille
+    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones
 end
 
 ----------------------------------------------------------------------
@@ -242,7 +243,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form, graine)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -263,7 +264,8 @@ function M.generer(params)
             phases          = phases[i],
             temperatures    = temperatures[i],
             humidite        = humidite[i],
-            taille          = taille[i]
+            taille          = taille[i],
+            zones           = zones[i]
         })
     end
     events.emit("galaxie_generee")

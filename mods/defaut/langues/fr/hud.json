@@ -14,17 +14,17 @@
 
     "hud_star.numero":                                          "Étoile n°",
 
-    "hud_orbital.temperature.1":                                "brûlant",
-    "hud_orbital.temperature.2":                                "chaud",
+    "hud_orbital.temperature.1":                                "glacial",
+    "hud_orbital.temperature.2":                                "froid",
     "hud_orbital.temperature.3":                                "tempéré",
-    "hud_orbital.temperature.4":                                "froid",
-    "hud_orbital.temperature.5":                                "glacial",
+    "hud_orbital.temperature.4":                                "chaud",
+    "hud_orbital.temperature.5":                                "brûlant",
 
-    "hud_orbital.humidite.1":                                   "aquatique",
-    "hud_orbital.humidite.2":                                   "humide",
+    "hud_orbital.humidite.1":                                   "aride",
+    "hud_orbital.humidite.2":                                   "sec",
     "hud_orbital.humidite.3":                                   "tempéré",
-    "hud_orbital.humidite.4":                                   "aride",
-    "hud_orbital.humidite.5":                                   "sec",
+    "hud_orbital.humidite.4":                                   "humide",
+    "hud_orbital.humidite.5":                                   "aqueux",
 
     "hud_orbital.taille.1":                                     "énorme",
     "hud_orbital.taille.2":                                     "grande",

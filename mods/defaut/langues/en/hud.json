@@ -14,17 +14,17 @@
 
     "hud_star.numero":                                          "Star n°",
 
-    "hud_orbital.temperature.1":                                "searing",
-    "hud_orbital.temperature.2":                                "hot",
+    "hud_orbital.temperature.1":                                "frigid",
+    "hud_orbital.temperature.2":                                "cold",
     "hud_orbital.temperature.3":                                "warm",
-    "hud_orbital.temperature.4":                                "cold",
-    "hud_orbital.temperature.5":                                "frigid",
+    "hud_orbital.temperature.4":                                "hot",
+    "hud_orbital.temperature.5":                                "searing",
 
-    "hud_orbital.humidite.1":                                   "watery",
-    "hud_orbital.humidite.2":                                   "humid",
+    "hud_orbital.humidite.1":                                   "arid",
+    "hud_orbital.humidite.2":                                   "dry",
     "hud_orbital.humidite.3":                                   "temperate",
-    "hud_orbital.humidite.4":                                   "arid",
-    "hud_orbital.humidite.5":                                   "parched",
+    "hud_orbital.humidite.4":                                   "humid",
+    "hud_orbital.humidite.5":                                   "watery",
 
     "hud_orbital.taille.1":                                     "enormous",
     "hud_orbital.taille.2":                                     "large",
