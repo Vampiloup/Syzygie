@@ -26,12 +26,17 @@
     "hud_orbital.humidite.4":                                   "humide",
     "hud_orbital.humidite.5":                                   "aqueux",
 
-    "hud_orbital.taille.1":                                     "énorme",
-    "hud_orbital.taille.2":                                     "grande",
-    "hud_orbital.taille.3":                                     "moyenne",
-    "hud_orbital.taille.4":                                     "petite",
-    "hud_orbital.taille.5":                                     "minuscule",
+    "hud_orbital.taille.tellurique.1":                          "énorme",
+    "hud_orbital.taille.tellurique.2":                          "grande",
+    "hud_orbital.taille.tellurique.3":                          "moyenne",
+    "hud_orbital.taille.tellurique.4":                          "petite",
+    "hud_orbital.taille.tellurique.5":                          "minuscule",
 
+    "hud_orbital.taille.gazeuse.1":                             "super-jupiter",
+    "hud_orbital.taille.gazeuse.2":                             "jupiter",
+    "hud_orbital.taille.gazeuse.3":                             "saturne",
+    "hud_orbital.taille.gazeuse.4":                             "neptune",
+    "hud_orbital.taille.gazeuse.5":                             "mini-neptune",
 
     "hud_reglages.reglages_sortie_jeu":                         "Sortie du jeu"
 }

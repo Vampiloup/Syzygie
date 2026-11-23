@@ -1,6 +1,14 @@
 {
-  "base_orbitales_type": [
-    { "id": "terre",    "RGB": [0.733, 0.396, 0.157 ] },
-    { "id": "ocean",    "RGB": [0.255, 0.412, 0.882] }
-  ]
+    "base_orbitales": [
+        { "id": "tellurique", "type": {"sec":"terre", "humide":"ocean"}, "eau_dans_hud":"oui"},
+        { "id": "gazeuse", "type": {"surface1":"glace","surface2":"ocean","profondeur1":"ocean profond","profondeur2":"glace hyperdense",} , "eau_dans_hud":"non" }
+    ],
+    "base_orbitales_type": [
+        { "id": "terre",             "RGB": [0.733, 0.396, 0.157 ] },
+        { "id": "ocean",             "RGB": [0.255, 0.412, 0.882] },
+        { "id": "glace",             "RGB": [1, 1, 1 ] },
+        { "id": "ocean profond",     "RGB": [0, 0, 0.9] },
+        { "id": "glace hyperdense",  "RGB": [0.65, 0.65, 0.65 ] }
+    ]
 }
+

@@ -121,13 +121,15 @@ local function generer_zones(orbits, humidite, g)
         end
 
         if orbits[i] == "tellurique" then
-            local z = {"terre", "terre", "terre", "terre"}
+            local proba = registre.get_field("base_orbitales", orbits[i], "type")
+            local z = {proba["sec"], proba["sec"], proba["sec"], proba["sec"]}
             for k = 1, humidite[i] - 1 do
-                z[indices[k]] = "ocean"
+                z[indices[k]] = proba["humide"]
             end
             zones[i] = z
-        else
-            zones[i] = 0
+        elseif orbits[i] == "gazeuse" then
+            local proba = registre.get_field("base_orbitales", orbits[i], "type")
+            zones[i] = {proba["surface1"], proba["surface2"], proba["profondeur1"], proba["profondeur2"]}
         end
     end
     return zones

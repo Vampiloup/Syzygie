@@ -23,7 +23,10 @@ local PL = panneau.new({
         for i = 1, 4 do
             zone_couleur = registre.get_field("base_orbitales_type", reponse_zones[i], "RGB")
             love.graphics.setColor(zone_couleur)
-            love.graphics.rectangle("fill", p.x + ((i-1)*263),        p.y + 160 + 8 ,  255, 776, 6, 6)
+            love.graphics.rectangle("fill", p.x + ((i-1)*263),         p.y + 160 + 8 ,  255, 776, 6, 6)
+            local texte = registre.get_field("base_orbitales_type", reponse_zones[i], "id")
+            love.graphics.setColor(0, 0, 0)
+            love.graphics.print(texte, p.x + ((i-1)*263) + 16, p.y + 160 + 8 + 16 )
         end
         love.graphics.setColor(0, 0, 0)
         love.graphics.rectangle("fill", p.x + 1052, p.y + 160 + 8 ,  255, 776, 6, 6)

@@ -26,12 +26,17 @@
     "hud_orbital.humidite.4":                                   "humid",
     "hud_orbital.humidite.5":                                   "watery",
 
-    "hud_orbital.taille.1":                                     "enormous",
-    "hud_orbital.taille.2":                                     "large",
-    "hud_orbital.taille.3":                                     "medium",
-    "hud_orbital.taille.4":                                     "small",
-    "hud_orbital.taille.5":                                     "tiny",
+    "hud_orbital.taille.tellurique.1":                          "enormous",
+    "hud_orbital.taille.tellurique.2":                          "large",
+    "hud_orbital.taille.tellurique.3":                          "medium",
+    "hud_orbital.taille.tellurique.4":                          "small",
+    "hud_orbital.taille.tellurique.5":                          "tiny",
 
+    "hud_orbital.taille.gazeuse.1":                             "super-jupiter",
+    "hud_orbital.taille.gazeuse.2":                             "jupiter",
+    "hud_orbital.taille.gazeuse.3":                             "saturne",
+    "hud_orbital.taille.gazeuse.4":                             "neptune",
+    "hud_orbital.taille.gazeuse.5":                             "mini-neptune",
 
     "hud_reglages.reglages_sortie_jeu":                         "Game exit"
 }
