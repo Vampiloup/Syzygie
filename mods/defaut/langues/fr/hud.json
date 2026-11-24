@@ -14,29 +14,5 @@
 
     "hud_star.numero":                                          "Étoile n°",
 
-    "hud_orbital.temperature.1":                                "glacial",
-    "hud_orbital.temperature.2":                                "froid",
-    "hud_orbital.temperature.3":                                "tempéré",
-    "hud_orbital.temperature.4":                                "chaud",
-    "hud_orbital.temperature.5":                                "brûlant",
-
-    "hud_orbital.humidite.1":                                   "aride",
-    "hud_orbital.humidite.2":                                   "sec",
-    "hud_orbital.humidite.3":                                   "tempéré",
-    "hud_orbital.humidite.4":                                   "humide",
-    "hud_orbital.humidite.5":                                   "aqueux",
-
-    "hud_orbital.taille.tellurique.1":                          "énorme",
-    "hud_orbital.taille.tellurique.2":                          "grande",
-    "hud_orbital.taille.tellurique.3":                          "moyenne",
-    "hud_orbital.taille.tellurique.4":                          "petite",
-    "hud_orbital.taille.tellurique.5":                          "minuscule",
-
-    "hud_orbital.taille.gazeuse.1":                             "super-jupiter",
-    "hud_orbital.taille.gazeuse.2":                             "jupiter",
-    "hud_orbital.taille.gazeuse.3":                             "saturne",
-    "hud_orbital.taille.gazeuse.4":                             "neptune",
-    "hud_orbital.taille.gazeuse.5":                             "mini-neptune",
-
     "hud_reglages.reglages_sortie_jeu":                         "Sortie du jeu"
 }

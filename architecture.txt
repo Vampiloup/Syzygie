@@ -58,7 +58,8 @@ syzygie/
 -- -- -- -- fr/
 -- -- -- -- -- type_galaxies.json                  Textes de génération de galaxie (caractéristiques de la carte en général).
 -- -- -- -- -- hud.json                            Textes du hub (panneaux, boutons...).
--- -- -- -- en/
+-- -- -- -- -- orbitals.jsons                      Textes des éléments d'orbitals (planètes, essentiellement).
+-- -- -- -- en/                                    Même fichiers, mais en anglais.
 -- -- -- sprites/
 -- -- -- -- galaxie/
 -- -- -- -- -- etoiles/

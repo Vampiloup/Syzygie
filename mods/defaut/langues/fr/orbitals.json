@@ -1,0 +1,54 @@
+{
+    "orbital.temperature.1":                                "glacial",
+    "orbital.temperature.2":                                "froid",
+    "orbital.temperature.3":                                "tempéré",
+    "orbital.temperature.4":                                "chaud",
+    "orbital.temperature.5":                                "brûlant",
+
+    "orbital.humidite.1":                                   "aride",
+    "orbital.humidite.2":                                   "sec",
+    "orbital.humidite.3":                                   "tempéré",
+    "orbital.humidite.4":                                   "humide",
+    "orbital.humidite.5":                                   "aqueux",
+
+    "orbital.taille.tellurique.1":                          "énorme",
+    "orbital.taille.tellurique.2":                          "grande",
+    "orbital.taille.tellurique.3":                          "moyenne",
+    "orbital.taille.tellurique.4":                          "petite",
+    "orbital.taille.tellurique.5":                          "minuscule",
+
+    "orbital.taille.gazeuse.1":                             "super-jupiter",
+    "orbital.taille.gazeuse.2":                             "jupiter",
+    "orbital.taille.gazeuse.3":                             "saturne",
+    "orbital.taille.gazeuse.4":                             "neptune",
+    "orbital.taille.gazeuse.5":                             "mini-neptune",
+
+    "orbital.base_orbitales.tellurique":                    "tellurique",
+    "orbital.base_orbitales.gazeuse":                       "géante gazeuse",
+
+    "orbital.base_orbitales_zone.terre":                    "terre",
+    "orbital.base_orbitales_zone.eau":                      "eau",
+    "orbital.base_orbitales_zone.surface1":                 "surface 1",
+    "orbital.base_orbitales_zone.surface2":                 "surface 2",
+    "orbital.base_orbitales_zone.profondeur1":              "profondeur 1",
+    "orbital.base_orbitales_zone.profondeur2":              "profondeur 2",
+
+
+    "orbital.orbitales_zone_aspect.champs_de_pierres":      "champs de pierres",
+    "orbital.orbitales_zone_aspect.champs_de_dunes":        "champs de dunes",
+    "orbital.orbitales_zone_aspect.collines":               "collines",
+    "orbital.orbitales_zone_aspect.hautes_montagnes":       "hautes montagnes",
+    "orbital.orbitales_zone_aspect.hauts_plateaux":         "hauts plateaux",
+    "orbital.orbitales_zone_aspect.ocean_profond":          "océan profond",
+    "orbital.orbitales_zone_aspect.ocean":                  "ocean",
+    "orbital.orbitales_zone_aspect.mers_peu_profondes":     "mer peu profonde",
+    "orbital.orbitales_zone_aspect.glace_epaisse":          "glace épaisse",
+    "orbital.orbitales_zone_aspect.banquise":               "banquise",
+    "orbital.orbitales_zone_aspect.vaste_ocean":            "vaste océan",
+    "orbital.orbitales_zone_aspect.Hycean_ocean":           "océan hycéan",
+    "orbital.orbitales_zone_aspect.mixed_fluids_ocean":     "océan à fluides mixés",
+    "orbital.orbitales_zone_aspect.glace_hyceane":          "glace hycéane",
+    "orbital.orbitales_zone_aspect.glace_hyperdense":       "glace hyperdense",
+    "orbital.orbitales_zone_aspect.large_noyau":            "large noyau"
+
+}

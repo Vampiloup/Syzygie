@@ -1,0 +1,53 @@
+{
+    "orbital.temperature.1":                                "frigid",
+    "orbital.temperature.2":                                "cold",
+    "orbital.temperature.3":                                "warm",
+    "orbital.temperature.4":                                "hot",
+    "orbital.temperature.5":                                "searing",
+
+    "orbital.humidite.1":                                   "arid",
+    "orbital.humidite.2":                                   "dry",
+    "orbital.humidite.3":                                   "temperate",
+    "orbital.humidite.4":                                   "humid",
+    "orbital.humidite.5":                                   "watery",
+
+    "orbital.taille.tellurique.1":                          "enormous",
+    "orbital.taille.tellurique.2":                          "large",
+    "orbital.taille.tellurique.3":                          "medium",
+    "orbital.taille.tellurique.4":                          "small",
+    "orbital.taille.tellurique.5":                          "tiny",
+
+    "orbital.taille.gazeuse.1":                             "super-jupiter",
+    "orbital.taille.gazeuse.2":                             "jupiter",
+    "orbital.taille.gazeuse.3":                             "saturne",
+    "orbital.taille.gazeuse.4":                             "neptune",
+    "orbital.taille.gazeuse.5":                             "mini-neptune",
+
+    "orbital.base_orbitales.tellurique":                    "telluric",
+    "orbital.base_orbitales.gazeuse":                       "gas giant",
+
+    "orbital.base_orbitales_zone.terre":                    "land",
+    "orbital.base_orbitales_zone.eau":                      "water",
+    "orbital.base_orbitales_zone.surface1":                 "surface 1",
+    "orbital.base_orbitales_zone.surface2":                 "surface 2",
+    "orbital.base_orbitales_zone.profondeur1":              "deep",
+    "orbital.base_orbitales_zone.profondeur2":              "deeper",
+
+    "orbital.orbitales_zone_aspect.champs_de_pierres":      "stones field",
+    "orbital.orbitales_zone_aspect.champs_de_dunes":        "dunes field",
+    "orbital.orbitales_zone_aspect.collines":               "hills",
+    "orbital.orbitales_zone_aspect.hautes_montagnes":       "high moutains",
+    "orbital.orbitales_zone_aspect.hauts_plateaux":         "highlands",
+    "orbital.orbitales_zone_aspect.ocean_profond":          "deep ocean",
+    "orbital.orbitales_zone_aspect.ocean":                  "ocean",
+    "orbital.orbitales_zone_aspect.mers_peu_profondes":     "shallow seas",
+    "orbital.orbitales_zone_aspect.glace_epaisse":          "thick ice",
+    "orbital.orbitales_zone_aspect.banquise":               "pack ice",
+    "orbital.orbitales_zone_aspect.vaste_ocean":            "wide ocean",
+    "orbital.orbitales_zone_aspect.Hycean_ocean":           "hycean ocean",
+    "orbital.orbitales_zone_aspect.mixed_fluids_ocean":     "mixed fluids ocean",
+    "orbital.orbitales_zone_aspect.glace_hyceane":          "hyceane ice",
+    "orbital.orbitales_zone_aspect.glace_hyperdense":       "hyperdense ice",
+    "orbital.orbitales_zone_aspect.large_noyau":            "large core"
+
+}

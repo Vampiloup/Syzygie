@@ -54,7 +54,7 @@ local P = panneau.new({
         love.graphics.setColor(1, 0.55, 1)
         for k = 1, NB_ORBITES do                                        -- Orbitals     :   température
             if reponse.orbites[k] ~= 0 then
-                local texte = i18n.t("hud_orbital.temperature."..reponse.temperatures[k])
+                local texte = i18n.t("orbital.temperature."..reponse.temperatures[k])
                 love.graphics.print(texte, p.x + LIGNE_X, p.y + ligne_y(k) + 16 )
             end
         end
@@ -62,7 +62,7 @@ local P = panneau.new({
         love.graphics.setColor(1, 0.55, 0.1)
         for k = 1, NB_ORBITES do                                        -- Orbitals     :   taille
             if reponse.orbites[k] ~= 0 then
-                local texte = i18n.t("hud_orbital.taille."..reponse.orbites[k].."."..reponse.taille[k])
+                local texte = i18n.t("orbital.taille."..reponse.orbites[k].."."..reponse.taille[k])
                 love.graphics.print(texte, p.x + (bord_droit - police:getWidth(texte)) / 2, p.y + ligne_y(k) + 16)
             end
         end
@@ -70,7 +70,7 @@ local P = panneau.new({
         love.graphics.setColor(0.2, 0.6, 1)
         for k = 1, NB_ORBITES do                                        -- Orbitals     :   humidité
             if reponse.orbites[k] ~= 0 and registre.get_field("base_orbitales", reponse.orbites[k], "eau_dans_hud") == "oui" then
-                local texte = i18n.t("hud_orbital.humidite."..reponse.humidite[k])
+                local texte = i18n.t("orbital.humidite."..reponse.humidite[k])
                 love.graphics.print(texte, p.x + bord_droit - police:getWidth(texte) - LIGNE_X, p.y + ligne_y(k) + 16)
             end
         end

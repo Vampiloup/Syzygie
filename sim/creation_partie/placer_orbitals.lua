@@ -156,7 +156,7 @@ local function generer_zones_aspect(zones, orbits, g)
     return aspects
 end
 
-local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
+local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones, rng_aspects)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
     local sigma = registre.get_field("etoiles_type", couleur, "nbplanets_disp")
     if not mu or not sigma then error("etoiles_type unknown: " .. tostring(couleur)) end
@@ -180,7 +180,7 @@ local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng
     local humidite          = generer_humidite(rng_eau)
     local taille            = generer_taille(rng_taille)
     local zones             = generer_zones(orbites, humidite, rng_zones)
-    local aspects           = generer_zones_aspect(zones, orbites, rng_zones)
+    local aspects           = generer_zones_aspect(zones, orbites, rng_aspects)
 
     return orbites, phases, temperatures, humidite, taille, zones, aspects
 end

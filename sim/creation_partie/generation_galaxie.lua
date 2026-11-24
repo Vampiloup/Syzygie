@@ -18,7 +18,7 @@ local orbitals =                  require("sim.creation_partie.placer_orbitals")
 local Graine  =                   require("sim.creation_partie.graine")
 
 local PI2 = 2 * math.pi
-local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8, TAILLE = 9, ZONES = 10 }
+local ETAPE = { POS = 1, TYPE = 2, NOM = 3, NB_PLANETES = 4, PLANETES = 5, PHASES = 6, TEMP = 7, EAU = 8, TAILLE = 9, ZONES = 10, ASPECTS = 11 }
 
 
 
@@ -214,7 +214,8 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
         local rng_eau       = Graine.rng(graine, ETAPE.EAU, n)                             -- Humidité orbites
         local rng_taille    = Graine.rng(graine, ETAPE.TAILLE, n)                          -- Taille orbitales (planètes)
         local rng_zones     = Graine.rng(graine, ETAPE.ZONES, n)                           -- Zones des orbitales (planètes)
-        orbites[n], phases[n], temperatures[n], humidite[n], taille[n], zones[n], aspects[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
+        local rng_aspects   = Graine.rng(graine, ETAPE.ASPECTS, n)                         -- Aspects des zones des orbitales (planètes)
+        orbites[n], phases[n], temperatures[n], humidite[n], taille[n], zones[n], aspects[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones, rng_aspects)
 
     end
     return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones, aspects
