@@ -130,11 +130,31 @@ local function generer_zones(orbits, humidite, g)
         elseif orbits[i] == "gazeuse" then
             local proba = registre.get_field("base_orbitales", orbits[i], "type")
             zones[i] = {proba["surface1"], proba["surface2"], proba["profondeur1"], proba["profondeur2"]}
+        else
+            zones[i] = {0,0,0,0}
         end
     end
     return zones
 end
 
+local function generer_zones_aspect(zones, orbits, g)
+    --print (zones[1][1])
+    local aspects = {}
+    for i = 1, 5 do
+        aspects[i] = {}
+        if orbits[i] ~= 0 then
+            for j = 1, NB_ZONES do
+                local table = registre.get_field("base_orbitales_zone", zones[i][j], "zone")
+                local nb = #table
+                local k = g:random(1, nb)
+                aspects[i][j] = table[k]
+            end
+        else
+            aspects[i] = {0,0,0,0}
+        end
+    end
+    return aspects
+end
 
 local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
     local mu = registre.get_field("etoiles_type", couleur, "nbplanets_pic")
@@ -154,14 +174,15 @@ local function placer_orbitals(couleur, rng_nb, rng_types, rng_ph, rng_temp, rng
             break
         end
     end
-    local orbites       = generer_orbites(choix, couleur, rng_types)
-    local phases        = generer_phases(rng_ph)
-    local temperatures  = generer_temperatures(couleur, rng_temp)
-    local humidite      = generer_humidite(rng_eau)
-    local taille        = generer_taille(rng_taille)
-    local zones         = generer_zones(orbites, humidite, rng_zones)
+    local orbites           = generer_orbites(choix, couleur, rng_types)
+    local phases            = generer_phases(rng_ph)
+    local temperatures      = generer_temperatures(couleur, rng_temp)
+    local humidite          = generer_humidite(rng_eau)
+    local taille            = generer_taille(rng_taille)
+    local zones             = generer_zones(orbites, humidite, rng_zones)
+    local aspects           = generer_zones_aspect(zones, orbites, rng_zones)
 
-    return orbites, phases, temperatures, humidite, taille, zones
+    return orbites, phases, temperatures, humidite, taille, zones, aspects
 end
 
 

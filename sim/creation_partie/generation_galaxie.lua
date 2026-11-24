@@ -166,7 +166,7 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
     }
 
     local xs, ys, etoiles_type, noms  = {}, {}, {}, {}
-    local orbites, phases, temperatures, humidite, taille, zones = {}, {}, {}, {}, {}, {}
+    local orbites, phases, temperatures, humidite, taille, zones, aspects = {}, {}, {}, {}, {}, {}, {}
     local n = 0
     local d2 = dist_mini * dist_mini
     local MAX_ESSAIS = 1000
@@ -214,10 +214,10 @@ local function generer_etoiles(map_X, map_Y, nombre_cible, dist_mini, map_form, 
         local rng_eau       = Graine.rng(graine, ETAPE.EAU, n)                             -- Humidité orbites
         local rng_taille    = Graine.rng(graine, ETAPE.TAILLE, n)                          -- Taille orbitales (planètes)
         local rng_zones     = Graine.rng(graine, ETAPE.ZONES, n)                           -- Zones des orbitales (planètes)
-        orbites[n], phases[n], temperatures[n], humidite[n], taille[n], zones[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
+        orbites[n], phases[n], temperatures[n], humidite[n], taille[n], zones[n], aspects[n] = orbitals.placer_orbitals(etoiles_type[n], rng_nb, rng_pl, rng_ph, rng_temp, rng_eau, rng_taille, rng_zones)
 
     end
-    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones
+    return xs, ys, n, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones, aspects
 end
 
 ----------------------------------------------------------------------
@@ -243,7 +243,7 @@ function M.generer(params)
     registre.clear("jeu_galaxie_etoiles")
 
     local nombre_cible = math.ceil((map_X * map_Y) / 4000000 * 100 * densite)
-    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones =
+    local xs, ys, nombre_etoiles, boite, etoiles_type, noms, orbites, phases, temperatures, humidite, taille, zones, aspects =
         generer_etoiles(map_X, map_Y, nombre_cible, distance_mini, map_form, graine)
 
     registre.add("jeu_galaxie_details", "principal", {
@@ -265,7 +265,8 @@ function M.generer(params)
             temperatures    = temperatures[i],
             humidite        = humidite[i],
             taille          = taille[i],
-            zones           = zones[i]
+            zones           = zones[i],
+            aspects         = aspects[i]
         })
     end
     events.emit("galaxie_generee")

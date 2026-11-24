@@ -16,15 +16,16 @@ local PL = panneau.new({
     id = ID, preset = ID, groupe = "panneaux_secondaires",
     draw = function(p)
         local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
-        local reponse_zones = reponse.zones[orbite]
+        local reponse_zones   = reponse.zones[orbite]
+        local reponse_aspects = reponse.aspects[orbite]
         -- local reponse = registre.get("jeu_galaxie_etoiles", tostring(etoile_id))
         love.graphics.setColor(1, 0.9, 0.4)
         love.graphics.rectangle("fill", p.x , p.y , 1200, 160, 6, 6)
         for i = 1, 4 do
-            zone_couleur = registre.get_field("base_orbitales_type", reponse_zones[i], "RGB")
+            zone_couleur = registre.get_field("base_orbitales_zone", reponse_zones[i], "RGB")
             love.graphics.setColor(zone_couleur)
             love.graphics.rectangle("fill", p.x + ((i-1)*263),         p.y + 160 + 8 ,  255, 776, 6, 6)
-            local texte = registre.get_field("base_orbitales_type", reponse_zones[i], "id")
+            local texte = registre.get_field("base_orbitales_zone", reponse_zones[i], "id") .. " " .. reponse_aspects[i]
             love.graphics.setColor(0, 0, 0)
             love.graphics.print(texte, p.x + ((i-1)*263) + 16, p.y + 160 + 8 + 16 )
         end

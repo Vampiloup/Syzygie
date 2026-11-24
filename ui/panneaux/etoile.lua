@@ -69,7 +69,7 @@ local P = panneau.new({
         love.graphics.setFont(police)
         love.graphics.setColor(0.2, 0.6, 1)
         for k = 1, NB_ORBITES do                                        -- Orbitals     :   humidité
-            if reponse.orbites[k] ~= 0 and registre.get_field("base_orbitales", reponse.orbites[k], "eau_dans_hud") =="oui" then
+            if reponse.orbites[k] ~= 0 and registre.get_field("base_orbitales", reponse.orbites[k], "eau_dans_hud") == "oui" then
                 local texte = i18n.t("hud_orbital.humidite."..reponse.humidite[k])
                 love.graphics.print(texte, p.x + bord_droit - police:getWidth(texte) - LIGNE_X, p.y + ligne_y(k) + 16)
             end

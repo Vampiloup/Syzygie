@@ -1,14 +1,15 @@
 {
     "base_orbitales": [
-        { "id": "tellurique", "type": {"sec":"terre", "humide":"ocean"}, "eau_dans_hud":"oui"},
-        { "id": "gazeuse", "type": {"surface1":"glace","surface2":"ocean","profondeur1":"ocean profond","profondeur2":"glace hyperdense",} , "eau_dans_hud":"non" }
+        { "id": "tellurique", "type": {"sec":"terre", "humide":"eau"}, "eau_dans_hud":"oui"},
+        { "id": "gazeuse",    "type": {"surface1":"surface1","surface2":"surface2","profondeur1":"profondeur1","profondeur2":"profondeur2"} , "eau_dans_hud":"non" }
     ],
-    "base_orbitales_type": [
-        { "id": "terre",             "RGB": [0.733, 0.396, 0.157 ] },
-        { "id": "ocean",             "RGB": [0.255, 0.412, 0.882] },
-        { "id": "glace",             "RGB": [1, 1, 1 ] },
-        { "id": "ocean profond",     "RGB": [0, 0, 0.9] },
-        { "id": "glace hyperdense",  "RGB": [0.65, 0.65, 0.65 ] }
+    "base_orbitales_zone": [
+        { "id": "terre",          "zone": ["champs_de_pierres", "champs_de_dunes", "collines_seches", "hautes_montagnes", "hauts_plateaux"],                "RGB": [0.733, 0.396, 0.157]  },
+        { "id": "eau",            "zone": ["ocean_profond", "ocean", "mers_peu_profondes"],                                                                 "RGB": [0.255, 0.412, 0.882]  },
+        { "id": "surface1",       "zone": ["glace_epaisse", "banquise", "vaste_ocean"],                                                                     "RGB": [1, 1, 1]  },
+        { "id": "surface2",       "zone": ["glace_epaisse", "banquise", "vaste_ocean"],                                                                     "RGB": [0.750, 0.750, 0.750]  },
+        { "id": "profondeur1",    "zone": ["ocean_profond", "mixed_fluids_oceans", "glace"],                                                                "RGB": [0.500, 0.500, 0.500]  },
+        { "id": "profondeur2",    "zone": ["glace_hyperdense", "mixed_fluids_oceans", "large_noyau"],                                                       "RGB": [0.250, 0.250, 0.250]  }
     ]
 }
 
