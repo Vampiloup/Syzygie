@@ -112,6 +112,7 @@ end
 
 local function generer_zones(orbits, humidite, g)
     local zones = {}
+    local relief = {}
     for i = 1, #orbits do
         -- Mélange fait pour toutes les orbites : nombre de tirages constant
         local indices = {1, 2, 3, 4}
@@ -136,6 +137,8 @@ local function generer_zones(orbits, humidite, g)
     end
     return zones
 end
+
+
 
 local function generer_zones_aspect(zones, orbits, g)
     --print (zones[1][1])

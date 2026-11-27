@@ -33,22 +33,21 @@
     "orbital.base_orbitales_zone.profondeur1":              "profondeur 1",
     "orbital.base_orbitales_zone.profondeur2":              "profondeur 2",
 
-
-    "orbital.orbitales_zone_aspect.champs_de_pierres":      "champs de pierres",
-    "orbital.orbitales_zone_aspect.champs_de_dunes":        "champs de dunes",
-    "orbital.orbitales_zone_aspect.collines":               "collines",
-    "orbital.orbitales_zone_aspect.hautes_montagnes":       "hautes montagnes",
-    "orbital.orbitales_zone_aspect.hauts_plateaux":         "hauts plateaux",
-    "orbital.orbitales_zone_aspect.ocean_profond":          "océan profond",
-    "orbital.orbitales_zone_aspect.ocean":                  "ocean",
-    "orbital.orbitales_zone_aspect.mers_peu_profondes":     "mer peu profonde",
-    "orbital.orbitales_zone_aspect.glace_epaisse":          "glace épaisse",
-    "orbital.orbitales_zone_aspect.banquise":               "banquise",
-    "orbital.orbitales_zone_aspect.vaste_ocean":            "vaste océan",
-    "orbital.orbitales_zone_aspect.Hycean_ocean":           "océan hycéan",
-    "orbital.orbitales_zone_aspect.mixed_fluids_ocean":     "océan à fluides mixés",
-    "orbital.orbitales_zone_aspect.glace_hyceane":          "glace hycéane",
-    "orbital.orbitales_zone_aspect.glace_hyperdense":       "glace hyperdense",
-    "orbital.orbitales_zone_aspect.large_noyau":            "large noyau"
+    "orbital.base_orbitales_zone_aspect.champs_de_pierres":      "champs de pierres",
+    "orbital.base_orbitales_zone_aspect.champs_de_dunes":        "champs de dunes",
+    "orbital.base_orbitales_zone_aspect.collines":               "collines",
+    "orbital.base_orbitales_zone_aspect.hautes_montagnes":       "hautes montagnes",
+    "orbital.base_orbitales_zone_aspect.hauts_plateaux":         "hauts plateaux",
+    "orbital.base_orbitales_zone_aspect.ocean_abyssal":          "océan abyssal",
+    "orbital.base_orbitales_zone_aspect.ocean":                  "océan",
+    "orbital.base_orbitales_zone_aspect.mer_peu_profonde":       "mer peu profonde",
+    "orbital.base_orbitales_zone_aspect.glace_epaisse":          "glace épaisse",
+    "orbital.base_orbitales_zone_aspect.banquise":               "banquise",
+    "orbital.base_orbitales_zone_aspect.vaste_ocean":            "vaste océan",
+    "orbital.base_orbitales_zone_aspect.Hycean_ocean":           "océan hycéan",
+    "orbital.base_orbitales_zone_aspect.mixed_fluids_ocean":     "océan à fluides mixés",
+    "orbital.base_orbitales_zone_aspect.glace_hyceane":          "glace hycéane",
+    "orbital.base_orbitales_zone_aspect.glace_hyperdense":       "glace hyperdense",
+    "orbital.base_orbitales_zone_aspect.large_noyau":            "large noyau"
 
 }

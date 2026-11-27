@@ -4,12 +4,23 @@
         { "id": "gazeuse",    "type": {"surface1":"surface1","surface2":"surface2","profondeur1":"profondeur1","profondeur2":"profondeur2"} , "eau_dans_hud":"non" }
     ],
     "base_orbitales_zone": [
-        { "id": "terre",          "zone": ["champs_de_pierres", "champs_de_dunes", "collines", "hautes_montagnes", "hauts_plateaux"],                "RGB": [0.733, 0.396, 0.157]  },
-        { "id": "eau",            "zone": ["ocean_profond", "ocean", "mers_peu_profondes"],                                                                 "RGB": [0.255, 0.412, 0.882]  },
+        { "id": "terre",          "zone": ["champs_de_pierres", "champs_de_dunes", "collines", "hautes_montagnes", "hauts_plateaux"],                       "RGB": [0.733, 0.396, 0.157]  },
+        { "id": "eau",            "zone": ["ocean_abyssal", "ocean", "mer_peu_profonde"],                                                                   "RGB": [0.255, 0.412, 0.882]  },
         { "id": "surface1",       "zone": ["glace_epaisse", "banquise", "vaste_ocean"],                                                                     "RGB": [1, 1, 1]              },
         { "id": "surface2",       "zone": ["glace_epaisse", "banquise", "vaste_ocean"],                                                                     "RGB": [0.750, 0.750, 0.750]  },
-        { "id": "profondeur1",    "zone": ["Hycean_ocean", "mixed_fluids_ocean", "glace_hyceane"],                                                                "RGB": [0.500, 0.500, 0.500]  },
-        { "id": "profondeur2",    "zone": ["glace_hyperdense", "mixed_fluids_ocean", "large_noyau"],                                                       "RGB": [0.250, 0.250, 0.250]  }
+        { "id": "profondeur1",    "zone": ["Hycean_ocean", "mixed_fluids_ocean", "glace_hyceane"],                                                          "RGB": [0.500, 0.500, 0.500]  },
+        { "id": "profondeur2",    "zone": ["glace_hyperdense", "mixed_fluids_ocean", "large_noyau"],                                                        "RGB": [0.250, 0.250, 0.250]  }
+    ],
+    "base_orbitales_zone_aspect":[
+        {"id": "ocean_abyssal",     "relief": -3, "apparence": "ocean"},
+        {"id": "ocean",             "relief": -2, "apparence": "ocean"},
+        {"id": "mer_peu_profonde",  "relief": -1, "apparence": "ocean"},
+        {"id": "champs_de_pierres", "relief":  1, "apparence": "champs_de_pierres"},
+        {"id": "champs_de_dunes",   "relief":  1, "apparence": "champs_de_dunes"},
+        {"id": "collines",          "relief":  2, "apparence": "collines"},
+        {"id": "hautes_montagnes",  "relief":  3, "apparence": "hautes_montagnes"},
+        {"id": "hauts_plateaux",    "relief":  3, "apparence": "hauts_plateaux"}
+
     ]
 }
 
